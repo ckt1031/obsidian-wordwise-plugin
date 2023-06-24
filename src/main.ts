@@ -1,4 +1,4 @@
-import { addIcon, Plugin } from 'obsidian';
+import { addIcon, Notice, Plugin } from 'obsidian';
 
 import { runPrompts } from './generate';
 import { log } from './logging';
@@ -42,7 +42,15 @@ export default class AiPlugin extends Plugin {
 				name: prompt.name,
 				icon: 'openai',
 				editorCallback: async editor => {
-					await runPrompts(editor, this.settings, prompt.name);
+					try {
+						await runPrompts(editor, this.settings, prompt.name);
+						new Notice('Text generated.');
+					} catch (error) {
+						if (error instanceof Error) {
+							log(this.settings, error.message);
+						}
+						new Notice('Error generating text.');
+					}
 				},
 			});
 		}

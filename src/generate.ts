@@ -31,8 +31,10 @@ export async function runPrompts(editor: Editor, settings: PluginSettings, comma
 
 		const result = await callAPI(settings, prompt);
 
-		editor.replaceSelection(result);
+		if (result) {
+			editor.replaceSelection(result);
 
-		log(settings, `Replaced selection with result: ${result}`);
+			log(settings, `Replaced selection with result: ${result}`);
+		}
 	}
 }
