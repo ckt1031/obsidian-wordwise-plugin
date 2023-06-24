@@ -26,7 +26,7 @@ To configure the AI plugin, you need to provide your OpenAI API key and further 
 There are also some additional options that you can configure:
 
 - **OpenAI Base URL**: The base URL for the OpenAI API. You can change this if you want to use a different API endpoint, suitable for users who cannot access the OpenAI directly or intented to use third party services.
-- **OpenAI Model**: The model to use for the AI. The default is `gpt-3.5-turbo`, which is the most stablest and suitable model. You can also use `gpt-3.5-turbo-0613` or `gpt-3.5-turbo-16k` for faster  or longer results. or even `gpt-4` (Not recommended) and `gpt-4-32k`  (Not recommended) for the most powerful model.
+- **OpenAI Model**: The model to use for the AI. The default is `gpt-3.5-turbo`, which is the most stablest and suitable model. You can also use `gpt-3.5-turbo-0613` or `gpt-3.5-turbo-16k` for faster or longer results. or even `gpt-4` (Not recommended) and `gpt-4-32k` (Not recommended) for the most powerful model.
 - **Temperature**: The higher the temperature, the crazier the text. The temperature can be any number between 0 and 1, but OpenAI recommends keeping it between 0.7 and 1.0.
 - **Frequency Penalty**: Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
 - **Presence Penalty**: Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics..
