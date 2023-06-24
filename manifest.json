@@ -1,0 +1,10 @@
+{
+	"author": "ckt1031",
+	"authorUrl": "https://github.com/ckt1031",
+	"description": "AI content generation",
+	"id": "ai-plugin",
+	"isDesktopOnly": false,
+	"minAppVersion": "1.0.0",
+	"name": "AI Plugin",
+	"version": "0.0.1"
+}
