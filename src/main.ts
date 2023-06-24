@@ -2,6 +2,7 @@ import { addIcon, Notice, Plugin } from 'obsidian';
 
 import { runPrompts } from './generate';
 import { log } from './logging';
+import { deobfuscateConfig, obfuscateConfig } from './obfuscate-config';
 import { PROMPTS } from './prompts';
 import { SettingTab } from './settings-tab';
 import type { PluginSettings } from './types';
@@ -66,10 +67,10 @@ export default class AiPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, deobfuscateConfig(await this.loadData() as Record<string, string>));
 	}
 
 	async saveSettings() {
-		await this.saveData(this.settings);
+		await this.saveData(obfuscateConfig(this.settings));
 	}
 }

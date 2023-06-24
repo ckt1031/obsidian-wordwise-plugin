@@ -14,6 +14,7 @@
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
 	"dependencies": {
+		"base64url": "3.0.1",
 		"mustache": "4.2.0"
 	},
 	"devDependencies": {
