@@ -5,7 +5,7 @@ import type { App, Editor } from 'obsidian';
 
 import { callAPI } from './ai';
 import { log } from './logging';
-import type { Commands } from './prompts';
+import type { CommandNames } from './prompts';
 import { PROMPTS } from './prompts';
 import type { PluginSettings } from './types';
 
@@ -13,7 +13,7 @@ export async function runPrompts(
 	app: App,
 	editor: Editor,
 	settings: PluginSettings,
-	command: Commands,
+	command: CommandNames,
 ) {
 	log(settings, `Running prompt with command ${command}`);
 

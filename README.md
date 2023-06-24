@@ -30,14 +30,15 @@ There are also some additional options that you can configure:
 - **Temperature**: The higher the temperature, the crazier the text. The temperature can be any number between 0 and 1, but OpenAI recommends keeping it between 0.7 and 1.0.
 - **Maxmium Tokens**: The maximum number of tokens to generate. Remember that the start token counts as one token. In general, the longer the input prompt, the more tokens you will need to use. More tokens will also increase the time and cost of the request.
 
-## Usage
-
-### Commands
+## Commands
 
 The plugin provides the following commands:
 
 - **AI: Improve Writing**: Improve your writing such as grammar, sentence structure, and word choice.
-
+- **AI: Simplify Text**: Simplify your text to make it easier to read.
+- **AI: Make Shorter**: Condense your text while retaining the main points, ideal for creating summaries.
+- **AI: Make Longer**: Expand on your text to provide more detail or explanation.
+- **AI: Paraphrase**: Rewrite your text in a different way while keeping the same meaning, perfect for avoiding repetition or enhancing understanding.
 
 ## License
 
