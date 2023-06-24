@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 import Mustache from 'mustache';
-import type { App, Editor } from 'obsidian';
+import type { Editor } from 'obsidian';
 
 import { callAPI } from './ai';
 import { log } from './logging';
@@ -10,7 +10,6 @@ import { PROMPTS } from './prompts';
 import type { PluginSettings } from './types';
 
 export async function runPrompts(
-	app: App,
 	editor: Editor,
 	settings: PluginSettings,
 	command: CommandNames,

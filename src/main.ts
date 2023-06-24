@@ -42,7 +42,7 @@ export default class AiPlugin extends Plugin {
 				name: prompt.name,
 				icon: 'openai',
 				editorCallback: async editor => {
-					await runPrompts(this.app, editor, this.settings, prompt.name);
+					await runPrompts(editor, this.settings, prompt.name);
 				},
 			});
 		}
