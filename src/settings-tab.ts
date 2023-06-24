@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-zero-fractions */
 import type { App } from 'obsidian';
 import { PluginSettingTab, Setting } from 'obsidian';
 
@@ -77,6 +78,46 @@ export class SettingTab extends PluginSettingTab {
 			.addText(text =>
 				text.setValue(plugin.settings.temperature.toString()).onChange(async value => {
 					plugin.settings.temperature = Number.parseFloat(value);
+					await plugin.saveSettings();
+				}),
+			);
+
+		new Setting(containerEl)
+			.setName('Presence Penalty')
+			.setDesc(
+				SettingTab.createFragmentWithHTML(
+					"Presence penalty for the model, increasing the model's likelihood to talk about new topics, defaults to **0.0**.",
+				),
+			)
+			.addText(text =>
+				text.setValue(plugin.settings.presencePenalty.toString()).onChange(async value => {
+					let numValue = Number.parseFloat(value);
+					if (numValue < -2.0) {
+						numValue = -2.0;
+					} else if (numValue > 2.0) {
+						numValue = 2.0;
+					}
+					plugin.settings.presencePenalty = numValue;
+					await plugin.saveSettings();
+				}),
+			);
+
+		new Setting(containerEl)
+			.setName('Frequency Penalty')
+			.setDesc(
+				SettingTab.createFragmentWithHTML(
+					"Frequency penalty for the model, decreasing the model's likelihood to repeat the same line verbatim, defaults to **0.0**.",
+				),
+			)
+			.addText(text =>
+				text.setValue(plugin.settings.frequencyPenalty.toString()).onChange(async value => {
+					let numValue = Number.parseFloat(value);
+					if (numValue < -2.0) {
+						numValue = -2.0;
+					} else if (numValue > 2.0) {
+						numValue = 2.0;
+					}
+					plugin.settings.frequencyPenalty = numValue;
 					await plugin.saveSettings();
 				}),
 			);

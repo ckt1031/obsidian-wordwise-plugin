@@ -12,6 +12,8 @@ const DEFAULT_SETTINGS: PluginSettings = {
 	openAiModel: 'gpt-3.5-turbo',
 	maxTokens: 2000,
 	temperature: 0.5,
+	presencePenalty: 0,
+	frequencyPenalty: 0,
 	debugMode: false,
 };
 

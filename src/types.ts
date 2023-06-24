@@ -4,5 +4,7 @@ export interface PluginSettings {
 	openAiModel: string;
 	maxTokens: number;
 	temperature: number;
+	presencePenalty: number;
+	frequencyPenalty: number;
 	debugMode: boolean;
 }

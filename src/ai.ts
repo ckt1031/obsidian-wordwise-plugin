@@ -11,7 +11,10 @@ export async function callAPI(settings: PluginSettings, prompt: string): Promise
 		model: settings.openAiModel,
 		temperature: settings.temperature,
 		max_tokens: settings.maxTokens,
+		presence_penalty: settings.presencePenalty,
+		frequency_penalty: settings.frequencyPenalty,
 		messages: [
+			{ role: 'system', content: 'You are helpful assistant to help the Obsidian Note app users.' },
 			{
 				role: 'user',
 				content: prompt,
