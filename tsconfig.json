@@ -2,7 +2,6 @@
 	"compilerOptions": {
 		"allowJs": true,
 		"baseUrl": ".",
-		"noEmit": true,
 		"importHelpers": true,
 		"inlineSourceMap": true,
 		"inlineSources": true,
@@ -10,6 +9,7 @@
 		"lib": ["DOM", "es2021"],
 		"module": "ESNext",
 		"moduleResolution": "node",
+		"noEmit": true,
 		"noImplicitAny": true,
 		"strictNullChecks": true,
 		"target": "ES6"
