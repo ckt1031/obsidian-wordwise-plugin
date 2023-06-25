@@ -20,7 +20,8 @@ export async function callAPI(
 			messages: [
 				{
 					role: 'system',
-					content: 'You are helpful assistant to help the Obsidian Note app users.',
+					content:
+						'You are helpful assistant to help the Obsidian Note app users, please keep the markdown format in your response.',
 				},
 				{
 					role: 'user',
@@ -48,13 +49,7 @@ export async function callAPI(
 
 		log(settings, `Received response: ${JSON.stringify(json)}`);
 
-		const content = json.choices[0].message.content as string | undefined;
-
-		if (!content) {
-			throw new Error('No content returned from OpenAI');
-		}
-
-		return content;
+		return json.choices[0].message.content as string | undefined;
 	} catch (error) {
 		if (error instanceof Error) {
 			log(settings, error.message);

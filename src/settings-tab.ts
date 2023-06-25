@@ -55,7 +55,7 @@ export class SettingTab extends PluginSettingTab {
 			.setName('OpenAI Model')
 			.setDesc(
 				SettingTab.createFragmentWithHTML(
-					'OpenAI Model to use, defaults to **gpt-3.5-turbo**, see <a href="https://platform.openai.com/docs/models">OpenAI Models</a> for more info',
+					'OpenAI Model to use, defaults to <b>gpt-3.5-turbo</b>, see <a href="https://platform.openai.com/docs/models">OpenAI Models</a> for more info',
 				),
 			)
 			.addText(text =>
@@ -72,7 +72,7 @@ export class SettingTab extends PluginSettingTab {
 			.setName('Temperature')
 			.setDesc(
 				SettingTab.createFragmentWithHTML(
-					'Temperature for the model, defaults to **0.5**, see <a href="https://platform.openai.com/docs/api-reference/completions/create">OpenAI Reference</a> for more info',
+					'Temperature for the model, defaults to <b>0.5</b>, see <a href="https://platform.openai.com/docs/api-reference/completions/create">OpenAI Reference</a> for more info',
 				),
 			)
 			.addText(text =>
@@ -86,7 +86,7 @@ export class SettingTab extends PluginSettingTab {
 			.setName('Presence Penalty')
 			.setDesc(
 				SettingTab.createFragmentWithHTML(
-					"Presence penalty for the model, increasing the model's likelihood to talk about new topics, defaults to **0.0**.",
+					"Presence penalty for the model, increasing the model's likelihood to talk about new topics, defaults to <b>0.0</b>.",
 				),
 			)
 			.addText(text =>
@@ -106,7 +106,7 @@ export class SettingTab extends PluginSettingTab {
 			.setName('Frequency Penalty')
 			.setDesc(
 				SettingTab.createFragmentWithHTML(
-					"Frequency penalty for the model, decreasing the model's likelihood to repeat the same line verbatim, defaults to **0.0**.",
+					"Frequency penalty for the model, decreasing the model's likelihood to repeat the same line verbatim, defaults to <b>0.0</b>.",
 				),
 			)
 			.addText(text =>
@@ -126,7 +126,7 @@ export class SettingTab extends PluginSettingTab {
 			.setName('Max Tokens')
 			.setDesc(
 				SettingTab.createFragmentWithHTML(
-					'Maximum number of tokens to generate, defaults to **2000**, see <a href="https://platform.openai.com/docs/api-reference/completions/create">OpenAI Reference</a> for more info',
+					'Maximum number of tokens to generate, defaults to <b>2000</b>, see <a href="https://platform.openai.com/docs/api-reference/completions/create">OpenAI Reference</a> for more info',
 				),
 			)
 			.addText(text =>
