@@ -2,7 +2,7 @@ import { type Editor, Notice } from 'obsidian';
 
 import { callAPI } from './ai';
 import { log } from './logging';
-import { render } from './mustache';
+import { mustacheRender } from './mustache';
 import type { CommandNames } from './prompts';
 import { PROMPTS } from './prompts';
 import type { PluginSettings } from './types';
@@ -23,7 +23,7 @@ export async function runPrompts(editor: Editor, settings: PluginSettings, comma
 
 		if (!promptData) throw new Error(`Could not find prompt data with name ${command}`);
 
-		const prompt: string = render(promptData.description, {
+		const prompt: string = mustacheRender(promptData.description, {
 			input,
 		});
 
