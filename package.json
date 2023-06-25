@@ -13,10 +13,6 @@
 		"lint:fix": "eslint . --ext .ts,.js,.mjs --fix",
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
-	"dependencies": {
-		"base64url": "3.0.1",
-		"mustache": "4.2.0"
-	},
 	"devDependencies": {
 		"@ckt1031/eslint-config": "1.1.9",
 		"@ckt1031/prettier-config": "1.1.9",
@@ -24,7 +20,7 @@
 		"@types/node": "20.3.1",
 		"@typescript-eslint/eslint-plugin": "5.60.0",
 		"builtin-modules": "3.3.0",
-		"esbuild": "0.18.7",
+		"esbuild": "0.18.8",
 		"eslint": "8.43.0",
 		"obsidian": "1.2.8",
 		"prettier": "2.8.8",

@@ -1,10 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-import Mustache from 'mustache';
 import { type Editor, Notice } from 'obsidian';
 
 import { callAPI } from './ai';
 import { log } from './logging';
+import { render } from './mustache';
 import type { CommandNames } from './prompts';
 import { PROMPTS } from './prompts';
 import type { PluginSettings } from './types';
@@ -25,7 +23,7 @@ export async function runPrompts(editor: Editor, settings: PluginSettings, comma
 
 		if (!promptData) throw new Error(`Could not find prompt data with name ${command}`);
 
-		const prompt: string = Mustache.render(promptData.description, {
+		const prompt: string = render(promptData.description, {
 			input,
 		});
 
