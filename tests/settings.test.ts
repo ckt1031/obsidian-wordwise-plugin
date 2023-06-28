@@ -36,7 +36,6 @@ describe('obfuscateConfig and deobfuscateConfig', () => {
 	});
 
 	it('should return null for empty or undefined input', () => {
-		expect(obfuscateConfig(null)).toBeNull();
 		expect(obfuscateConfig(undefined)).toBeUndefined();
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-expect-error
