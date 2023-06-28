@@ -65,8 +65,6 @@ export default class AiPlugin extends Plugin {
 	}
 
 	async saveSettings() {
-		console.log(this.settings);
-		console.log(obfuscateConfig(this.settings));
 		await this.saveData(obfuscateConfig(this.settings));
 	}
 }
