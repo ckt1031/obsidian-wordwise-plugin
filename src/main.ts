@@ -32,13 +32,15 @@ export default class AiPlugin extends Plugin {
 		addIcon('openai', AiIcon);
 
 		for (const prompt of PROMPTS) {
+			// slugify and remove spaces
+			const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
 			// Add icon if it exists
-			if (prompt.icon) addIcon(prompt.name, prompt.icon);
+			if (prompt.icon) addIcon(iconName, prompt.icon);
 
 			this.addCommand({
 				id: prompt.name,
 				name: prompt.name,
-				icon: prompt.icon ? prompt.name : AiIcon,
+				icon: prompt.icon ? iconName : AiIcon,
 				editorCallback: async editor => {
 					try {
 						await runPrompts(editor, this.settings, prompt.name);
