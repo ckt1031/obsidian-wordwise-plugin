@@ -62,6 +62,11 @@ export default class AiPlugin extends Plugin {
 		// This is called when the plugin is deactivated
 	}
 
+	async resetSettings() {
+		this.settings = DEFAULT_SETTINGS;
+		await this.saveSettings();
+	}
+
 	async loadSettings() {
 		const localData: ObfuscatedPluginSettings = await this.loadData();
 

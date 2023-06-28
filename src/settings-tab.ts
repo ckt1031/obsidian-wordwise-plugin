@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-zero-fractions */
 import type { App } from 'obsidian';
-import { PluginSettingTab, Setting } from 'obsidian';
+import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
 import type AiPlugin from './main';
 
@@ -19,7 +19,6 @@ export class SettingTab extends PluginSettingTab {
 		const { containerEl, plugin } = this;
 
 		containerEl.empty();
-		containerEl.createEl('h2', { text: 'General Configurations:' });
 
 		new Setting(containerEl)
 			.setName('API Key')
@@ -38,7 +37,7 @@ export class SettingTab extends PluginSettingTab {
 			.setName('OpenAI Endpoint Base URL')
 			.setDesc(
 				SettingTab.createFragmentWithHTML(
-					'Base URL for the OpenAI API, defaults to <a href="https://api.openai.com">https://api.openai.com</a>, DO NOT include / trailing slash and /v1 suffix',
+					'Base URL for the OpenAI API, defaults to <a href="https://api.openai.com">https://api.openai.com</a>.<br/><b>DO NOT include / trailing slash and /v1 suffix</b>.',
 				),
 			)
 			.addText(text =>
@@ -136,8 +135,6 @@ export class SettingTab extends PluginSettingTab {
 				}),
 			);
 
-		containerEl.createEl('h2', { text: 'Debug Configurations:' });
-
 		new Setting(containerEl)
 			.setName('Debug Mode')
 			.setDesc('Enable debug mode, which will log more information to the console')
@@ -147,5 +144,15 @@ export class SettingTab extends PluginSettingTab {
 					await plugin.saveSettings();
 				}),
 			);
+
+		new Setting(containerEl)
+			.setName('Reset Settings')
+			.setDesc('This will reset all settings to their default values')
+			.addButton(button => {
+				button.setButtonText('Reset').onClick(async () => {
+					await plugin.resetSettings();
+					new Notice('Resetting settings to default values');
+				});
+			});
 	}
 }
