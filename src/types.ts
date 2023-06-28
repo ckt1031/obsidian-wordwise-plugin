@@ -8,3 +8,8 @@ export interface PluginSettings {
 	frequencyPenalty: number;
 	debugMode: boolean;
 }
+
+export interface ObfuscatedPluginSettings {
+	_NOTICE: string;
+	z: string;
+}

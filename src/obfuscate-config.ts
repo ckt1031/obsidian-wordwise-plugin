@@ -1,5 +1,4 @@
-import { base64UrlDecode, base64UrlEncode } from './base64-url';
-import type { PluginSettings } from './types';
+import type { ObfuscatedPluginSettings, PluginSettings } from './types';
 
 const key = 'RSUH6NwtuGcUS252ssX2U4dCeCi48Yg2ekqnrKatZkmQRetZpxMUxqE'; // Replace with your own secret key
 
@@ -16,7 +15,9 @@ export const xorCipher = (s: string, key: string) => {
 	);
 };
 
-export const deobfuscateConfig = (x: Record<string, string>) => {
+export const deobfuscateConfig = (
+	x: ObfuscatedPluginSettings | undefined,
+): PluginSettings | null => {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (!x?.z) {
 		return null;
@@ -27,31 +28,23 @@ export const deobfuscateConfig = (x: Record<string, string>) => {
 	// Reverse the string
 	deobfuscatedConfig = reverseString(deobfuscatedConfig);
 
-	// Apply multiple rounds of base64 decoding
-	for (let i = 0; i < 3; i++) {
-		deobfuscatedConfig = base64UrlDecode(deobfuscatedConfig);
-	}
-
 	// Apply XOR cipher
 	deobfuscatedConfig = xorCipher(deobfuscatedConfig, key);
 
 	return JSON.parse(deobfuscatedConfig) as PluginSettings;
 };
 
-export const obfuscateConfig = (x: PluginSettings | null | undefined) => {
+export const obfuscateConfig = (
+	x: PluginSettings | null | undefined,
+): ObfuscatedPluginSettings | undefined => {
 	if (x === null || x === undefined) {
-		return x;
+		return undefined;
 	}
 
 	let obfuscatedConfig = JSON.stringify(x);
 
 	// Apply XOR cipher
 	obfuscatedConfig = xorCipher(obfuscatedConfig, key);
-
-	// Apply multiple rounds of base64 encoding
-	for (let i = 0; i < 3; i++) {
-		obfuscatedConfig = base64UrlEncode(obfuscatedConfig);
-	}
 
 	// Reverse the string
 	obfuscatedConfig = reverseString(obfuscatedConfig);

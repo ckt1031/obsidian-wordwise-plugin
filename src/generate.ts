@@ -13,29 +13,32 @@ export async function runPrompts(editor: Editor, settings: PluginSettings, comma
 		return;
 	}
 
-	log(settings, `Running prompt with command ${command}`);
-
 	const input = editor.getSelection();
 
-	if (input.length > 0) {
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		const promptData = PROMPTS.find(p => p.name === command);
-
-		if (!promptData) throw new Error(`Could not find prompt data with name ${command}`);
-
-		const prompt: string = mustacheRender(promptData.description, {
-			input,
-		});
-
-		const result = await callAPI(settings, prompt);
-
-		if (!result) {
-			new Notice('No result from OpenAI');
-			return;
-		}
-
-		editor.replaceSelection(result);
-
-		log(settings, `Replaced selection with result: ${result}`);
+	if (input.length === 0) {
+		new Notice('No input selected');
+		return;
 	}
+
+	log(settings, `Running prompt with command ${command}`);
+
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	const promptData = PROMPTS.find(p => p.name === command);
+
+	if (!promptData) throw new Error(`Could not find prompt data with name ${command}`);
+
+	const prompt: string = mustacheRender(promptData.description, {
+		input,
+	});
+
+	const result = await callAPI(settings, prompt);
+
+	if (!result) {
+		new Notice('No result from OpenAI');
+		return;
+	}
+
+	editor.replaceSelection(result);
+
+	log(settings, `Replaced selection with result: ${result}`);
 }

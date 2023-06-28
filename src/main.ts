@@ -5,7 +5,7 @@ import { log } from './logging';
 import { deobfuscateConfig, obfuscateConfig } from './obfuscate-config';
 import { PROMPTS } from './prompts';
 import { SettingTab } from './settings-tab';
-import type { PluginSettings } from './types';
+import type { ObfuscatedPluginSettings, PluginSettings } from './types';
 
 const DEFAULT_SETTINGS: PluginSettings = {
 	openAiApiKey: '',
@@ -59,14 +59,14 @@ export default class AiPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign(
-			{},
-			DEFAULT_SETTINGS,
-			deobfuscateConfig((await this.loadData()) as Record<string, string>),
-		);
+		const localData: ObfuscatedPluginSettings = await this.loadData();
+
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, deobfuscateConfig(localData));
 	}
 
 	async saveSettings() {
+		console.log(this.settings);
+		console.log(obfuscateConfig(this.settings));
 		await this.saveData(obfuscateConfig(this.settings));
 	}
 }
