@@ -5,7 +5,11 @@ import { log } from './logging';
 import { deobfuscateConfig, obfuscateConfig } from './obfuscate-config';
 import { PROMPTS } from './prompts';
 import { SettingTab } from './settings-tab';
-import { type ObfuscatedPluginSettings, type PluginSettings, PluginSettingsSchema } from './types';
+import {
+	type ObfuscatedPluginSettings,
+	ObfuscatedPluginSettingsSchema,
+	type PluginSettings,
+} from './types';
 
 const DEFAULT_SETTINGS: PluginSettings = {
 	openAiApiKey: '',
@@ -61,11 +65,11 @@ export default class AiPlugin extends Plugin {
 	async loadSettings() {
 		const localData: ObfuscatedPluginSettings = await this.loadData();
 
-		const { success } = await PluginSettingsSchema.safeParseAsync(localData);
+		const { success } = await ObfuscatedPluginSettingsSchema.safeParseAsync(localData);
 
 		if (!success) {
-			log(this.settings, 'Failed to parse settings, using defaults.');
 			this.settings = DEFAULT_SETTINGS;
+			console.log('Failed to parse settings, using defaults.');
 			return;
 		}
 
