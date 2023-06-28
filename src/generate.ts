@@ -41,4 +41,6 @@ export async function runPrompts(editor: Editor, settings: PluginSettings, comma
 	editor.replaceSelection(result);
 
 	log(settings, `Replaced selection with result: ${result}`);
+
+	new Notice('Text generated.');
 }
