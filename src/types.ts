@@ -1,15 +1,21 @@
-export interface PluginSettings {
-	openAiApiKey: string;
-	openAiBaseUrl: string;
-	openAiModel: string;
-	maxTokens: number;
-	temperature: number;
-	presencePenalty: number;
-	frequencyPenalty: number;
-	debugMode: boolean;
-}
+import { z } from 'zod';
 
-export interface ObfuscatedPluginSettings {
-	_NOTICE: string;
-	z: string;
-}
+export const PluginSettingsSchema = z.object({
+	openAiApiKey: z.string(),
+	openAiBaseUrl: z.string(),
+	openAiModel: z.string(),
+	maxTokens: z.number(),
+	temperature: z.number(),
+	presencePenalty: z.number(),
+	frequencyPenalty: z.number(),
+	debugMode: z.boolean(),
+});
+
+export type PluginSettings = z.infer<typeof PluginSettingsSchema>;
+
+export const ObfuscatedPluginSettingsSchema = z.object({
+	_NOTICE: z.string(),
+	z: z.string(),
+});
+
+export type ObfuscatedPluginSettings = z.infer<typeof ObfuscatedPluginSettingsSchema>;
