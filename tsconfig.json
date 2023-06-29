@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"allowJs": true,
+		"allowSyntheticDefaultImports": true,
 		"baseUrl": ".",
 		"importHelpers": true,
 		"inlineSourceMap": true,
@@ -11,10 +12,9 @@
 		"moduleResolution": "node",
 		"noEmit": true,
 		"noImplicitAny": true,
-		"strictNullChecks": true,
-		"target": "ES6",
 		"resolveJsonModule": true,
-		"allowSyntheticDefaultImports": true
+		"strictNullChecks": true,
+		"target": "ES6"
 	},
 	"include": ["**/*.ts", "*.mjs"]
 }
