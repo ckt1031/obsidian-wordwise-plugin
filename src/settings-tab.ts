@@ -2,7 +2,9 @@
 import type { App } from 'obsidian';
 import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
+import manifest from '../manifest.json';
 import type AiPlugin from './main';
+import ConfirmModal from './modals/confirm';
 
 export class SettingTab extends PluginSettingTab {
 	plugin: AiPlugin;
@@ -19,6 +21,8 @@ export class SettingTab extends PluginSettingTab {
 		const { containerEl, plugin } = this;
 
 		containerEl.empty();
+
+		containerEl.createEl('h1', { text: manifest.name });
 
 		new Setting(containerEl)
 			.setName('API Key')
@@ -139,9 +143,11 @@ export class SettingTab extends PluginSettingTab {
 			.setName('Debug Mode')
 			.setDesc('Enable debug mode, which will log more information to the console')
 			.addToggle(toggle =>
-				toggle.setValue(plugin.settings.debugMode).onChange(async value => {
-					plugin.settings.debugMode = value;
-					await plugin.saveSettings();
+				toggle.setValue(plugin.settings.debugMode).onChange(value => {
+					new ConfirmModal(app, async () => {
+						plugin.settings.debugMode = value;
+						await plugin.saveSettings();
+					}).open();
 				}),
 			);
 
@@ -149,9 +155,11 @@ export class SettingTab extends PluginSettingTab {
 			.setName('Reset Settings')
 			.setDesc('This will reset all settings to their default values')
 			.addButton(button => {
-				button.setButtonText('Reset').onClick(async () => {
-					await plugin.resetSettings();
-					new Notice('Resetting settings to default values');
+				button.setButtonText('Reset').onClick(() => {
+					new ConfirmModal(app, async () => {
+						await plugin.resetSettings();
+						new Notice('Resetting settings to default values');
+					}).open();
 				});
 			});
 	}

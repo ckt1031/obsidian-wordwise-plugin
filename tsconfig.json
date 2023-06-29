@@ -12,7 +12,9 @@
 		"noEmit": true,
 		"noImplicitAny": true,
 		"strictNullChecks": true,
-		"target": "ES6"
+		"target": "ES6",
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true
 	},
 	"include": ["**/*.ts", "*.mjs"]
 }
