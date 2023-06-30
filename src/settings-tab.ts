@@ -194,7 +194,6 @@ export class SettingTab extends PluginSettingTab {
 			cb.onClick(async () => {
 				await (plugin as any).app.setting.close();
 				new AddCustomPromptModal(plugin, false).open();
-				new Notice('Please reload the plugin after adding a new prompt');
 			});
 		});
 
@@ -226,7 +225,6 @@ export class SettingTab extends PluginSettingTab {
 								p => p.name !== prompts.name,
 							);
 							await plugin.saveSettings();
-							new Notice('Please reload the plugin after deleting the prompt');
 						}
 					});
 				});

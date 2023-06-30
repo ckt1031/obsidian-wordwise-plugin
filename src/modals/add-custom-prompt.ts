@@ -31,7 +31,7 @@ export default class AddCustomPromptModal extends Modal {
 			return;
 		}
 
-		// CHeck if name is already in use
+		// Check if name is already in use
 		const result = this.plugin.settings.customPrompts.find(prompt => prompt.name === this.name);
 
 		if (!this.isEdit && result) {
@@ -62,7 +62,7 @@ export default class AddCustomPromptModal extends Modal {
 
 		await this.plugin.saveSettings();
 
-		new Notice(`Custom prompt ${this.isEdit ? 'edited' : 'added'}`);
+		new Notice(`Please reload the plugin after ${this.isEdit ? 'editing' : 'adding'} a prompt`);
 
 		this.close();
 	}
