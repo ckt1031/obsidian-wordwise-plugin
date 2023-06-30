@@ -4,7 +4,7 @@ import MakeLongerIcon from './icons/make-longer';
 import MakeShorterIcon from './icons/make-shorter';
 import ParaphraseIcon from './icons/paraphrase';
 import SimplifyTextIcon from './icons/simplify-text';
-import type {Prompt } from './types';
+import type { Prompt } from './types';
 import { CommandActions, CommandNames, type PluginSettings } from './types';
 
 export function getPrompts(settings: PluginSettings) {
