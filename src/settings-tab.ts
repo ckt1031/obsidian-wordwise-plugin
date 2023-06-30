@@ -1,10 +1,11 @@
 /* eslint-disable unicorn/no-zero-fractions */
-import type { App } from 'obsidian';
+import type { App, ButtonComponent } from 'obsidian';
 import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
 import manifest from '../manifest.json';
 import { checkCredits } from './ai';
 import type AiPlugin from './main';
+import AddCustomPromptModal from './modals/add-custom-prompt';
 import ConfirmModal from './modals/confirm';
 
 export class SettingTab extends PluginSettingTab {
@@ -18,6 +19,7 @@ export class SettingTab extends PluginSettingTab {
 	private static createFragmentWithHTML = (html: string) =>
 		createFragment(documentFragment => (documentFragment.createDiv().innerHTML = html));
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	display(): void {
 		const { containerEl, plugin } = this;
 
@@ -184,5 +186,50 @@ export class SettingTab extends PluginSettingTab {
 					}).open();
 				});
 			});
+
+		containerEl.createEl('h2', { text: 'Custom Prompts' });
+
+		new Setting(containerEl).addButton((cb: ButtonComponent) => {
+			cb.setButtonText('Add');
+			cb.onClick(async () => {
+				await (plugin as any).app.setting.close();
+				new AddCustomPromptModal(plugin, false).open();
+				new Notice('Please reload the plugin after adding a new prompt');
+			});
+		});
+
+		for (const prompts of plugin.settings.customPrompts) {
+			new Setting(containerEl)
+				.setName(prompts.name)
+				.addButton((btn: ButtonComponent) => {
+					btn.setIcon('pencil');
+					btn.setTooltip('Edit this prompt');
+					btn.onClick(async () => {
+						await (plugin as any).app.setting.close();
+						new AddCustomPromptModal(plugin, true, prompts.name, prompts.data).open();
+					});
+				})
+				.addButton((btn: ButtonComponent) => {
+					btn.setIcon('cross');
+					btn.setTooltip('Delete this prompt');
+					btn.onClick(async () => {
+						if (btn.buttonEl.textContent === '') {
+							btn.setButtonText('Click once more to confirm removal');
+							setTimeout(() => {
+								btn.setIcon('cross');
+							}, 5000);
+						} else {
+							if (btn.buttonEl.parentElement?.parentElement) {
+								btn.buttonEl.parentElement.parentElement.remove();
+							}
+							plugin.settings.customPrompts = plugin.settings.customPrompts.filter(
+								p => p.name !== prompts.name,
+							);
+							await plugin.saveSettings();
+							new Notice('Please reload the plugin after deleting the prompt');
+						}
+					});
+				});
+		}
 	}
 }

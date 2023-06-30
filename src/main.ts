@@ -4,7 +4,7 @@ import { runPrompts } from './generate';
 import AiIcon from './icons/ai';
 import { log } from './logging';
 import { deobfuscateConfig, obfuscateConfig } from './obfuscate-config';
-import { PROMPTS } from './prompts';
+import { getPrompts } from './prompts';
 import { SettingTab } from './settings-tab';
 import {
 	type ObfuscatedPluginSettings,
@@ -21,6 +21,7 @@ const DEFAULT_SETTINGS: PluginSettings = {
 	presencePenalty: 0,
 	frequencyPenalty: 0,
 	debugMode: false,
+	customPrompts: [],
 };
 
 export default class AiPlugin extends Plugin {
@@ -31,9 +32,10 @@ export default class AiPlugin extends Plugin {
 
 		addIcon('openai', AiIcon);
 
-		for (const prompt of PROMPTS) {
+		for (const prompt of getPrompts(this.settings)) {
 			// slugify and remove spaces
 			const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
+
 			// Add icon if it exists
 			if (prompt.icon) addIcon(iconName, prompt.icon);
 

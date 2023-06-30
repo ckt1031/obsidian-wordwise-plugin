@@ -3,11 +3,14 @@ import { type Editor, Notice } from 'obsidian';
 import { callAPI } from './ai';
 import { log } from './logging';
 import { mustacheRender } from './mustache';
-import type { CommandNames } from './prompts';
-import { PROMPTS } from './prompts';
-import type { PluginSettings } from './types';
+import { getPrompts } from './prompts';
+import type { CommandNames, PluginSettings } from './types';
 
-export async function runPrompts(editor: Editor, settings: PluginSettings, command: CommandNames) {
+export async function runPrompts(
+	editor: Editor,
+	settings: PluginSettings,
+	command: CommandNames | string,
+) {
 	if (!settings.openAiApiKey || settings.openAiApiKey === '') {
 		new Notice('No OpenAI API key set');
 		return;
@@ -23,11 +26,11 @@ export async function runPrompts(editor: Editor, settings: PluginSettings, comma
 	log(settings, `Running prompt with command ${command}`);
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	const promptData = PROMPTS.find(p => p.name === command);
+	const promptData = getPrompts(settings).find(p => p.name === command);
 
 	if (!promptData) throw new Error(`Could not find prompt data with name ${command}`);
 
-	const prompt: string = mustacheRender(promptData.description, {
+	const prompt: string = mustacheRender(promptData.data, {
 		input,
 	});
 
