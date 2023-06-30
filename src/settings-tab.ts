@@ -3,6 +3,7 @@ import type { App } from 'obsidian';
 import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
 import manifest from '../manifest.json';
+import { checkCredits } from './ai';
 import type AiPlugin from './main';
 import ConfirmModal from './modals/confirm';
 
@@ -52,6 +53,27 @@ export class SettingTab extends PluginSettingTab {
 						plugin.settings.openAiBaseUrl = value;
 						await plugin.saveSettings();
 					}),
+			);
+
+		new Setting(containerEl)
+			.setName('Check OpenAI API Credit')
+			.setDesc(
+				SettingTab.createFragmentWithHTML(
+					'This will check the remaining credits, expiring time and consumed credits for the OpenAI API',
+				),
+			)
+			.addButton(button =>
+				button.setButtonText('Check').onClick(async () => {
+					const result = await checkCredits(plugin.settings);
+
+					if (result) {
+						new Notice(
+							`You have ${result.remainingCredits.toFixed(2)}/${result.totalCredits.toFixed(
+								2,
+							)} credits remaining, expiring on ${result.expiryDate}`,
+						);
+					}
+				}),
 			);
 
 		new Setting(containerEl)
