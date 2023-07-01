@@ -25,7 +25,7 @@
 		"@types/node": "20.3.2",
 		"@typescript-eslint/eslint-plugin": "5.60.1",
 		"builtin-modules": "3.3.0",
-		"esbuild": "0.18.10",
+		"esbuild": "0.18.11",
 		"eslint": "8.44.0",
 		"obsidian": "1.2.8",
 		"prettier": "2.8.8",
