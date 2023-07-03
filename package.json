@@ -33,6 +33,6 @@
 		"typescript": "5.1.6",
 		"vitest": "0.32.4"
 	},
-	"packageManager": "pnpm@8.6.5",
+	"packageManager": "pnpm@8.6.6",
 	"prettier": "@ckt1031/prettier-config"
 }
