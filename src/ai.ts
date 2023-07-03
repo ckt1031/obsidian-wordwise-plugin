@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { Notice, request } from 'obsidian';
 
+import { DEFAULT_API_HOST } from './config';
 import { log } from './logging';
 import type {
 	OpenAiBillingSubscription,
@@ -9,10 +10,14 @@ import type {
 	PluginSettings,
 } from './types';
 
+export function getAPIHost(settings: PluginSettings): string {
+	return settings.openAiBaseUrl.length > 0 ? settings.openAiBaseUrl : DEFAULT_API_HOST;
+}
+
 export async function checkCredits(settings: PluginSettings): Promise<OpenAiKeyCredit | undefined> {
 	try {
 		const billionResponse = await request({
-			url: `${settings.openAiBaseUrl}/v1/dashboard/billing/subscription`,
+			url: `${getAPIHost(settings)}/v1/dashboard/billing/subscription`,
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -30,7 +35,9 @@ export async function checkCredits(settings: PluginSettings): Promise<OpenAiKeyC
 		const end_date = dayjs().add(1, 'day').format('YYYY-MM-DD');
 
 		const usageResponse = await request({
-			url: `${settings.openAiBaseUrl}/v1/dashboard/billing/usage?start_date=${start_date}&end_date=${end_date}`,
+			url: `${getAPIHost(
+				settings,
+			)}/v1/dashboard/billing/usage?start_date=${start_date}&end_date=${end_date}`,
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -61,7 +68,7 @@ export async function callAPI(
 	prompt: string,
 ): Promise<string | undefined> {
 	try {
-		const url = `${settings.openAiBaseUrl}/v1/chat/completions`;
+		const url = `${getAPIHost(settings)}/v1/chat/completions`;
 
 		const body = {
 			stream: false,
