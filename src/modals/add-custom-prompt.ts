@@ -39,11 +39,6 @@ export default class AddCustomPromptModal extends Modal {
 			return;
 		}
 
-		if (!this.data.includes('{{INPUT}}')) {
-			new Notice('Prompt must include {{INPUT}}');
-			return;
-		}
-
 		if (this.isEdit) {
 			const index = this.plugin.settings.customPrompts.findIndex(
 				prompt => prompt.name === this.name,
@@ -82,9 +77,7 @@ export default class AddCustomPromptModal extends Modal {
 
 		new Setting(contentEl).setName('Prompt:').addTextArea((textArea: TextAreaComponent) => {
 			textArea.inputEl.className = 'modal-text-area';
-			textArea.setPlaceholder(
-				'Change the tone of the text, response with the text only: {{INPUT}}',
-			);
+			textArea.setPlaceholder('Change the tone of the text');
 			textArea.onChange((value: string) => {
 				this.data = value;
 			});
