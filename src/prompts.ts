@@ -11,11 +11,12 @@ export function getPrompts(settings: PluginSettings) {
 	const localPrompts = settings.customPrompts;
 
 	// Add basePromptEnding to all prompts ending
-	for (const prompt of localPrompts) {
-		prompt.data += `\n${basePromptEnding}`;
-	}
-
-	return [...PROMPTS, ...localPrompts];
+	return [...PROMPTS, ...localPrompts].map(prompt => {
+		return {
+			...prompt,
+			data: `${prompt.data}\n\n${basePromptEnding}`,
+		};
+	});
 }
 
 export const basePromptEnding = `Please preserve the text symbols such as bold, markdown, Obsidian specialized markdown, <HTML>, etc.

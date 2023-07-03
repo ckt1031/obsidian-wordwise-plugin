@@ -224,8 +224,12 @@ export class SettingTab extends PluginSettingTab {
 					button.setIcon('pencil');
 					button.setTooltip('Edit this prompt');
 					button.onClick(async () => {
+						const prompt = plugin.settings.customPrompts.find(x => x.name === prompts.name);
+
+						if (!prompt) return;
+
 						await (plugin as any).app.setting.close();
-						new AddCustomPromptModal(plugin, true, prompts.name, prompts.data).open();
+						new AddCustomPromptModal(plugin, true, prompts.name, prompt.data).open();
 					});
 				})
 				.addButton(button => {
