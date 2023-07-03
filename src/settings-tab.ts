@@ -6,7 +6,6 @@ import manifest from '../manifest.json';
 import { checkCredits } from './ai';
 import type AiPlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
-import ConfirmModal from './modals/confirm';
 
 export class SettingTab extends PluginSettingTab {
 	plugin: AiPlugin;
@@ -102,11 +101,14 @@ export class SettingTab extends PluginSettingTab {
 					'Temperature for the model, defaults to <b>0.5</b>, see <a href="https://platform.openai.com/docs/api-reference/completions/create">OpenAI Reference</a> for more info',
 				),
 			)
-			.addText(text =>
-				text.setValue(plugin.settings.temperature.toString()).onChange(async value => {
-					plugin.settings.temperature = Number.parseFloat(value);
-					await plugin.saveSettings();
-				}),
+			.addSlider(slider =>
+				slider
+					.setLimits(0.0, 1.0, 0.1)
+					.setValue(plugin.settings.temperature)
+					.onChange(async value => {
+						plugin.settings.temperature = value;
+						await plugin.saveSettings();
+					}),
 			);
 
 		new Setting(containerEl)
@@ -116,17 +118,14 @@ export class SettingTab extends PluginSettingTab {
 					"Presence penalty for the model, increasing the model's likelihood to talk about new topics, defaults to <b>0.0</b>.",
 				),
 			)
-			.addText(text =>
-				text.setValue(plugin.settings.presencePenalty.toString()).onChange(async value => {
-					let numValue = Number.parseFloat(value);
-					if (numValue < -2.0) {
-						numValue = -2.0;
-					} else if (numValue > 2.0) {
-						numValue = 2.0;
-					}
-					plugin.settings.presencePenalty = numValue;
-					await plugin.saveSettings();
-				}),
+			.addSlider(slider =>
+				slider
+					.setLimits(-2.0, 2.0, 0.1)
+					.setValue(plugin.settings.presencePenalty)
+					.onChange(async value => {
+						plugin.settings.presencePenalty = value;
+						await plugin.saveSettings();
+					}),
 			);
 
 		new Setting(containerEl)
@@ -136,17 +135,14 @@ export class SettingTab extends PluginSettingTab {
 					"Frequency penalty for the model, decreasing the model's likelihood to repeat the same line verbatim, defaults to <b>0.0</b>.",
 				),
 			)
-			.addText(text =>
-				text.setValue(plugin.settings.frequencyPenalty.toString()).onChange(async value => {
-					let numValue = Number.parseFloat(value);
-					if (numValue < -2.0) {
-						numValue = -2.0;
-					} else if (numValue > 2.0) {
-						numValue = 2.0;
-					}
-					plugin.settings.frequencyPenalty = numValue;
-					await plugin.saveSettings();
-				}),
+			.addSlider(slider =>
+				slider
+					.setLimits(-2.0, 2.0, 0.1)
+					.setValue(plugin.settings.frequencyPenalty)
+					.onChange(async value => {
+						plugin.settings.frequencyPenalty = value;
+						await plugin.saveSettings();
+					}),
 			);
 
 		new Setting(containerEl)
@@ -158,8 +154,10 @@ export class SettingTab extends PluginSettingTab {
 			)
 			.addText(text =>
 				text.setValue(plugin.settings.maxTokens.toString()).onChange(async value => {
-					plugin.settings.maxTokens = Number.parseInt(value);
-					await plugin.saveSettings();
+					if (!Number.isNaN(Number.parseInt(value))) {
+						plugin.settings.maxTokens = Number.parseInt(value);
+						await plugin.saveSettings();
+					}
 				}),
 			);
 
@@ -167,11 +165,9 @@ export class SettingTab extends PluginSettingTab {
 			.setName('Debug Mode')
 			.setDesc('Enable debug mode, which will log more information to the console')
 			.addToggle(toggle =>
-				toggle.setValue(plugin.settings.debugMode).onChange(value => {
-					new ConfirmModal(app, async () => {
-						plugin.settings.debugMode = value;
-						await plugin.saveSettings();
-					}).open();
+				toggle.setValue(plugin.settings.debugMode).onChange(async value => {
+					plugin.settings.debugMode = value;
+					await plugin.saveSettings();
 				}),
 			);
 
@@ -179,11 +175,17 @@ export class SettingTab extends PluginSettingTab {
 			.setName('Reset Settings')
 			.setDesc('This will reset all settings to their default values')
 			.addButton(button => {
-				button.setButtonText('Reset').onClick(() => {
-					new ConfirmModal(app, async () => {
+				button.setButtonText('Reset').onClick(async () => {
+					if (button.buttonEl.textContent === 'Reset') {
+						button.setButtonText('Click once more to confirm removal');
+						setTimeout(() => {
+							button.setButtonText('Reset');
+						}, 5000);
+					} else {
+						// This has already been clicked once, so reset the settings
 						await plugin.resetSettings();
 						new Notice('Resetting settings to default values');
-					}).open();
+					}
 				});
 			});
 
@@ -200,26 +202,26 @@ export class SettingTab extends PluginSettingTab {
 		for (const prompts of plugin.settings.customPrompts) {
 			new Setting(containerEl)
 				.setName(prompts.name)
-				.addButton((btn: ButtonComponent) => {
-					btn.setIcon('pencil');
-					btn.setTooltip('Edit this prompt');
-					btn.onClick(async () => {
+				.addButton(button => {
+					button.setIcon('pencil');
+					button.setTooltip('Edit this prompt');
+					button.onClick(async () => {
 						await (plugin as any).app.setting.close();
 						new AddCustomPromptModal(plugin, true, prompts.name, prompts.data).open();
 					});
 				})
-				.addButton((btn: ButtonComponent) => {
-					btn.setIcon('cross');
-					btn.setTooltip('Delete this prompt');
-					btn.onClick(async () => {
-						if (btn.buttonEl.textContent === '') {
-							btn.setButtonText('Click once more to confirm removal');
+				.addButton(button => {
+					button.setIcon('cross');
+					button.setTooltip('Delete this prompt');
+					button.onClick(async () => {
+						if (button.buttonEl.textContent === '') {
+							button.setButtonText('Click once more to confirm removal');
 							setTimeout(() => {
-								btn.setIcon('cross');
+								button.setIcon('cross');
 							}, 5000);
 						} else {
-							if (btn.buttonEl.parentElement?.parentElement) {
-								btn.buttonEl.parentElement.parentElement.remove();
+							if (button.buttonEl.parentElement?.parentElement) {
+								button.buttonEl.parentElement.parentElement.remove();
 							}
 							plugin.settings.customPrompts = plugin.settings.customPrompts.filter(
 								p => p.name !== prompts.name,
