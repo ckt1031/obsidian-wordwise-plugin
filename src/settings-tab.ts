@@ -101,15 +101,15 @@ export class SettingTab extends PluginSettingTab {
 					'Temperature for the model, defaults to <b>0.5</b>, see <a href="https://platform.openai.com/docs/api-reference/completions/create">OpenAI Reference</a> for more info',
 				),
 			)
-			.addSlider(slider =>
-				slider
-					.setLimits(0.0, 1.0, 0.1)
-					.setValue(plugin.settings.temperature)
-					.onChange(async value => {
-						plugin.settings.temperature = value;
-						await plugin.saveSettings();
-					}),
-			);
+			.addSlider(slider => {
+				slider.setDynamicTooltip();
+				slider.setLimits(0.0, 1.0, 0.1);
+				slider.setValue(plugin.settings.temperature);
+				slider.onChange(async value => {
+					plugin.settings.temperature = value;
+					await plugin.saveSettings();
+				});
+			});
 
 		new Setting(containerEl)
 			.setName('Presence Penalty')
@@ -118,15 +118,16 @@ export class SettingTab extends PluginSettingTab {
 					"Presence penalty for the model, increasing the model's likelihood to talk about new topics, defaults to <b>0.0</b>.",
 				),
 			)
-			.addSlider(slider =>
-				slider
-					.setLimits(-2.0, 2.0, 0.1)
-					.setValue(plugin.settings.presencePenalty)
-					.onChange(async value => {
-						plugin.settings.presencePenalty = value;
-						await plugin.saveSettings();
-					}),
-			);
+
+			.addSlider(slider => {
+				slider.setDynamicTooltip();
+				slider.setLimits(-2.0, 2.0, 0.1);
+				slider.setValue(plugin.settings.presencePenalty);
+				slider.onChange(async value => {
+					plugin.settings.presencePenalty = value;
+					await plugin.saveSettings();
+				});
+			});
 
 		new Setting(containerEl)
 			.setName('Frequency Penalty')
@@ -135,15 +136,15 @@ export class SettingTab extends PluginSettingTab {
 					"Frequency penalty for the model, decreasing the model's likelihood to repeat the same line verbatim, defaults to <b>0.0</b>.",
 				),
 			)
-			.addSlider(slider =>
-				slider
-					.setLimits(-2.0, 2.0, 0.1)
-					.setValue(plugin.settings.frequencyPenalty)
-					.onChange(async value => {
-						plugin.settings.frequencyPenalty = value;
-						await plugin.saveSettings();
-					}),
-			);
+			.addSlider(slider => {
+				slider.setDynamicTooltip();
+				slider.setLimits(-2.0, 2.0, 0.1);
+				slider.setValue(plugin.settings.frequencyPenalty);
+				slider.onChange(async value => {
+					plugin.settings.frequencyPenalty = value;
+					await plugin.saveSettings();
+				});
+			});
 
 		new Setting(containerEl)
 			.setName('Max Tokens')
@@ -154,7 +155,8 @@ export class SettingTab extends PluginSettingTab {
 			)
 			.addText(text =>
 				text.setValue(plugin.settings.maxTokens.toString()).onChange(async value => {
-					if (!Number.isNaN(Number.parseInt(value))) {
+					// Should be a number and not negative or zero
+					if (!Number.isNaN(Number.parseInt(value)) && Number.parseInt(value) > 0) {
 						plugin.settings.maxTokens = Number.parseInt(value);
 						await plugin.saveSettings();
 					}
@@ -175,9 +177,19 @@ export class SettingTab extends PluginSettingTab {
 			.setName('Reset Settings')
 			.setDesc('This will reset all settings to their default values')
 			.addButton(button => {
+				button.setTooltip('Irrevisible action, please be careful!');
 				button.setButtonText('Reset').onClick(async () => {
 					if (button.buttonEl.textContent === 'Reset') {
-						button.setButtonText('Click once more to confirm removal');
+						// Are you sure? (seconds), give 5 seconds, loop 5 times
+						for (let i = 0; i < 5; i++) {
+							button.setButtonText(`Are you sure to reset? (${5 - i})`);
+							button.setDisabled(true);
+							await new Promise(resolve => setTimeout(resolve, 1000));
+						}
+
+						button.setDisabled(false);
+						button.setButtonText('Are you sure to reset?');
+
 						setTimeout(() => {
 							button.setButtonText('Reset');
 						}, 5000);
@@ -185,19 +197,25 @@ export class SettingTab extends PluginSettingTab {
 						// This has already been clicked once, so reset the settings
 						await plugin.resetSettings();
 						new Notice('Resetting settings to default values');
+						await (plugin as any).app.setting.close();
 					}
 				});
 			});
 
 		containerEl.createEl('h2', { text: 'Custom Prompts' });
 
-		new Setting(containerEl).addButton((cb: ButtonComponent) => {
-			cb.setButtonText('Add');
-			cb.onClick(async () => {
-				await (plugin as any).app.setting.close();
-				new AddCustomPromptModal(plugin, false).open();
+		new Setting(containerEl)
+			.setDesc(
+				"Here is a list of all the custom prompts you've created. You can edit or delete them here, or add a new one below.",
+			)
+			.addButton((cb: ButtonComponent) => {
+				cb.setTooltip('Add a new custom prompt');
+				cb.setButtonText('Add');
+				cb.onClick(async () => {
+					await (plugin as any).app.setting.close();
+					new AddCustomPromptModal(plugin, false).open();
+				});
 			});
-		});
 
 		for (const prompts of plugin.settings.customPrompts) {
 			new Setting(containerEl)
@@ -215,7 +233,16 @@ export class SettingTab extends PluginSettingTab {
 					button.setTooltip('Delete this prompt');
 					button.onClick(async () => {
 						if (button.buttonEl.textContent === '') {
-							button.setButtonText('Click once more to confirm removal');
+							// Are you sure? (seconds), give 5 seconds, loop 5 times
+							for (let i = 0; i < 5; i++) {
+								button.setButtonText(`Are you sure to delete? (${5 - i})`);
+								button.setDisabled(true);
+								await new Promise(resolve => setTimeout(resolve, 1000));
+							}
+
+							button.setDisabled(false);
+							button.setButtonText('Are you sure to delete?');
+
 							setTimeout(() => {
 								button.setIcon('cross');
 							}, 5000);
