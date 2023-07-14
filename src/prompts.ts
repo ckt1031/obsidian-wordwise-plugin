@@ -21,9 +21,9 @@ export function getPrompts(settings: PluginSettings) {
 
 export const basePromptEnding = `Please preserve the text symbols such as bold, markdown, Obsidian specialized markdown, <HTML>, etc.
 Now, using the concepts above, re-write the following text. Respond in the same language variety or dialect of the following text:
-"""
+
 {{input}}
-"""`;
+`;
 
 /// {{input}} as the text content to be rewritten
 export const PROMPTS: Prompt = [
