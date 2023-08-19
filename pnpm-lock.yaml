@@ -9,8 +9,8 @@ dependencies:
     specifier: 1.11.9
     version: 1.11.9
   zod:
-    specifier: 3.22.0
-    version: 3.22.0
+    specifier: 3.22.2
+    version: 3.22.2
 
 devDependencies:
   '@ckt1031/eslint-config':
@@ -4257,6 +4257,6 @@ packages:
     engines: {node: '>=12.20'}
     dev: true
 
-  /zod@3.22.0:
-    resolution: {integrity: sha512-y5KZY/ssf5n7hCGDGGtcJO/EBJEm5Pa+QQvFBeyMOtnFYOSflalxIFFvdaYevPhePcmcKC4aTbFkCcXN7D0O8Q==}
+  /zod@3.22.2:
+    resolution: {integrity: sha512-wvWkphh5WQsJbVk1tbx1l1Ly4yg+XecD+Mq280uBGt9wa5BKSWf4Mhp6GmrkPixhMxmabYY7RbzlwVP32pbGCg==}
     dev: false
