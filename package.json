@@ -28,7 +28,7 @@
 		"esbuild": "0.18.19",
 		"eslint": "8.46.0",
 		"obsidian": "1.4.0",
-		"prettier": "3.0.0",
+		"prettier": "3.0.2",
 		"tslib": "2.6.1",
 		"typescript": "5.1.6",
 		"vitest": "0.34.1"
