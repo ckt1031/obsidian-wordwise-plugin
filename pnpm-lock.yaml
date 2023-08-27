@@ -38,8 +38,8 @@ devDependencies:
     specifier: 8.46.0
     version: 8.46.0
   obsidian:
-    specifier: 1.4.0
-    version: 1.4.0(@codemirror/state@6.2.1)(@codemirror/view@6.14.0)
+    specifier: 1.4.4
+    version: 1.4.4(@codemirror/state@6.2.1)(@codemirror/view@6.14.0)
   prettier:
     specifier: 3.0.2
     version: 3.0.2
@@ -2993,8 +2993,8 @@ packages:
       es-abstract: 1.21.2
     dev: true
 
-  /obsidian@1.4.0(@codemirror/state@6.2.1)(@codemirror/view@6.14.0):
-    resolution: {integrity: sha512-fsZMPlxgflGSBSP6P4BjQi5+0MqZl3h6FEDEZ3CNnweNdDw0doyqN3FMO/PGWfuxPT77WicVwUxekuI3e6eCGg==}
+  /obsidian@1.4.4(@codemirror/state@6.2.1)(@codemirror/view@6.14.0):
+    resolution: {integrity: sha512-q2V5GNT/M40uYOENdVw5kovPSoaO6vppiiyBCkIqWgKp4oN654jA/GQ0OaNBA7p5NdfS245QCeRgCFQ42wOZiw==}
     peerDependencies:
       '@codemirror/state': ^6.0.0
       '@codemirror/view': ^6.0.0
