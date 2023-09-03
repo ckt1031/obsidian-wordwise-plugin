@@ -31,7 +31,7 @@
 		"prettier": "3.0.3",
 		"tslib": "2.6.2",
 		"typescript": "5.2.2",
-		"vitest": "0.34.2"
+		"vitest": "0.34.3"
 	},
 	"packageManager": "pnpm@8.7.1",
 	"prettier": "@ckt1031/prettier-config"
