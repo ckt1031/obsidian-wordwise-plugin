@@ -1,66 +1,11 @@
-import dayjs from 'dayjs';
 import { Notice, request } from 'obsidian';
 
 import { DEFAULT_API_HOST } from './config';
 import { log } from './logging';
-import type {
-	OpenAiBillingSubscription,
-	OpenAiKeyCredit,
-	OpenAiUsage,
-	PluginSettings,
-} from './types';
+import type { PluginSettings } from './types';
 
 export function getAPIHost(settings: PluginSettings): string {
 	return settings.openAiBaseUrl.length > 0 ? settings.openAiBaseUrl : DEFAULT_API_HOST;
-}
-
-export async function checkCredits(settings: PluginSettings): Promise<OpenAiKeyCredit | undefined> {
-	try {
-		const billionResponse = await request({
-			url: `${getAPIHost(settings)}/v1/dashboard/billing/subscription`,
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${settings.openAiApiKey}`,
-			},
-		});
-
-		const billionData: OpenAiBillingSubscription = JSON.parse(billionResponse);
-
-		const date = dayjs.unix(billionData.access_until).format('YYYY-MM-DD HH:mm:ss');
-
-		// 90 days ago, in YYYY-MM-DD
-		const start_date = dayjs().subtract(90, 'day').format('YYYY-MM-DD');
-		// 1 day later, in YYYY-MM-DD
-		const end_date = dayjs().add(1, 'day').format('YYYY-MM-DD');
-
-		const usageResponse = await request({
-			url: `${getAPIHost(
-				settings,
-			)}/v1/dashboard/billing/usage?start_date=${start_date}&end_date=${end_date}`,
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${settings.openAiApiKey}`,
-			},
-		});
-
-		const usageData: OpenAiUsage = JSON.parse(usageResponse);
-
-		return {
-			consumedCredits: usageData.total_usage / 100,
-			remainingCredits: billionData.system_hard_limit_usd - usageData.total_usage / 100,
-			totalCredits: billionData.system_hard_limit_usd,
-			expiryDate: date,
-		};
-	} catch (error) {
-		if (error instanceof Error) {
-			log(settings, error.message);
-			new Notice(`Provided API Key seemed to be invalid: ${error.message}`);
-		}
-
-		return undefined;
-	}
 }
 
 export async function callAPI(

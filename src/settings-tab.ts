@@ -3,7 +3,6 @@ import type { App, ButtonComponent } from 'obsidian';
 import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
 import manifest from '../manifest.json';
-import { checkCredits } from './ai';
 import type AiPlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
 
@@ -54,27 +53,6 @@ export class SettingTab extends PluginSettingTab {
 						plugin.settings.openAiBaseUrl = value;
 						await plugin.saveSettings();
 					}),
-			);
-
-		new Setting(containerEl)
-			.setName('Check OpenAI API Credit')
-			.setDesc(
-				SettingTab.createFragmentWithHTML(
-					'This will check the remaining credits, expiring time and consumed credits for the OpenAI API',
-				),
-			)
-			.addButton(button =>
-				button.setButtonText('Check').onClick(async () => {
-					const result = await checkCredits(plugin.settings);
-
-					if (result) {
-						new Notice(
-							`You have ${result.remainingCredits.toFixed(2)}/${result.totalCredits.toFixed(
-								2,
-							)} credits remaining, expiring on ${result.expiryDate}`,
-						);
-					}
-				}),
 			);
 
 		new Setting(containerEl)
@@ -197,6 +175,7 @@ export class SettingTab extends PluginSettingTab {
 						// This has already been clicked once, so reset the settings
 						await plugin.resetSettings();
 						new Notice('Resetting settings to default values');
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
 						await (plugin as any).app.setting.close();
 					}
 				});
@@ -212,6 +191,7 @@ export class SettingTab extends PluginSettingTab {
 				cb.setTooltip('Add a new custom prompt');
 				cb.setButtonText('Add');
 				cb.onClick(async () => {
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					await (plugin as any).app.setting.close();
 					new AddCustomPromptModal(plugin, false).open();
 				});
@@ -228,6 +208,7 @@ export class SettingTab extends PluginSettingTab {
 
 						if (!prompt) return;
 
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
 						await (plugin as any).app.setting.close();
 						new AddCustomPromptModal(plugin, true, prompts.name, prompt.data).open();
 					});
