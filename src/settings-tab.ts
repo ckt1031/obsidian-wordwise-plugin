@@ -175,8 +175,7 @@ export class SettingTab extends PluginSettingTab {
 						// This has already been clicked once, so reset the settings
 						await plugin.resetSettings();
 						new Notice('Resetting settings to default values');
-						// eslint-disable-next-line @typescript-eslint/no-explicit-any
-						await (plugin as any).app.setting.close();
+						await plugin.app.setting.close();
 					}
 				});
 			});
@@ -191,8 +190,7 @@ export class SettingTab extends PluginSettingTab {
 				cb.setTooltip('Add a new custom prompt');
 				cb.setButtonText('Add');
 				cb.onClick(async () => {
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					await (plugin as any).app.setting.close();
+					await plugin.app.setting.close();
 					new AddCustomPromptModal(plugin, false).open();
 				});
 			});
@@ -208,8 +206,7 @@ export class SettingTab extends PluginSettingTab {
 
 						if (!prompt) return;
 
-						// eslint-disable-next-line @typescript-eslint/no-explicit-any
-						await (plugin as any).app.setting.close();
+						await plugin.app.setting.close();
 						new AddCustomPromptModal(plugin, true, prompts.name, prompt.data).open();
 					});
 				})

@@ -97,7 +97,7 @@ export default class AddCustomPromptModal extends Modal {
 	async onClose() {
 		const { contentEl, plugin } = this;
 		contentEl.empty();
-		await (plugin as any).app.setting.open();
-		await (plugin as any).app.setting.openTabById(manifest.id);
+		await plugin.app.setting.open();
+		await plugin.app.setting.openTabById(manifest.id);
 	}
 }

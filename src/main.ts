@@ -1,5 +1,6 @@
 import { addIcon, Notice, Plugin } from 'obsidian';
 
+import manifest from '../manifest.json';
 import { runPrompts } from './generate';
 import AiIcon from './icons/ai';
 import { log } from './logging';
@@ -27,6 +28,7 @@ const DEFAULT_SETTINGS: PluginSettings = {
 export default class AiPlugin extends Plugin {
 	settings: PluginSettings;
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	async onload() {
 		await this.loadSettings();
 
@@ -55,6 +57,39 @@ export default class AiPlugin extends Plugin {
 				},
 			});
 		}
+
+		this.registerEvent(
+			this.app.workspace.on('editor-menu', (menu, editor) => {
+				menu.addItem(item => {
+					item.setTitle(manifest.name).setIcon('brain-cog');
+
+					const subMenu = item.setSubmenu();
+
+					for (const prompt of getPrompts(this.settings)) {
+						// slugify and remove spaces
+						const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
+
+						// Add icon if it exists
+						if (prompt.icon) addIcon(iconName, prompt.icon);
+						subMenu.addItem(item => {
+							item
+								.setTitle(prompt.name)
+								.setIcon(prompt.icon ? iconName : AiIcon)
+								.onClick(async () => {
+									try {
+										await runPrompts(editor, this.settings, prompt.name);
+									} catch (error) {
+										if (error instanceof Error) {
+											log(this.settings, error.message);
+										}
+										new Notice('Error generating text.');
+									}
+								});
+						});
+					}
+				});
+			}),
+		);
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SettingTab(this.app, this));
