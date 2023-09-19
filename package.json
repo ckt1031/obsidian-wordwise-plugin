@@ -15,7 +15,7 @@
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
 	"dependencies": {
-		"dayjs": "1.11.9",
+		"dayjs": "1.11.10",
 		"zod": "3.22.2"
 	},
 	"devDependencies": {
