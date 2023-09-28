@@ -12,9 +12,11 @@ export async function callAPI(
 	settings: PluginSettings,
 	prompt: string,
 ): Promise<string | undefined> {
-	try {
-		const url = `${getAPIHost(settings)}/v1/chat/completions`;
+	// Only add http:// if the user didn't specify a protocol
+	const urlPrefix = settings.openAiBaseUrl.startsWith('http') ? '' : 'http://';
+	const url = `${urlPrefix}${getAPIHost(settings)}/v1/chat/completions`;
 
+	try {
 		const body = {
 			stream: false,
 			model: settings.openAiModel,
