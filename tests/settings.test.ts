@@ -13,6 +13,7 @@ const DEFAULT_SETTINGS: PluginSettings = {
 	openAiBaseUrl: 'https://api.example.com',
 	openAiModel: 'gpt-4-32k',
 	debugMode: false,
+	advancedSettings: false,
 	customPrompts: [],
 };
 
