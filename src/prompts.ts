@@ -1,4 +1,5 @@
 import FixGrammarIcon from './icons/fix-grammar';
+import HighlightMainPointIcon from './icons/highlight-mainpoint';
 import ImproveWritingIcon from './icons/improve-writing';
 import MakeLongerIcon from './icons/make-longer';
 import MakeShorterIcon from './icons/make-shorter';
@@ -69,5 +70,12 @@ export const PROMPTS: Prompt = [
 		action: CommandActions.DirectReplacement,
 		data: `I will give you text content, you will rewrite it and output that in a re-worded version of my text. Reword the text to convey the same meaning using different words and sentence structures. Avoiding plagiarism, improving the flow and readability of the text, and ensuring that the re-written content is unique and original. Keep the tone the same. 
     Keep the meaning the same. Make sure the re-written content's number of characters is exactly the same as the original text's number of characters. Do not alter the original structure and formatting outlined in any way. Only give me the output and nothing else.`,
+	},
+	{
+		name: CommandNames.HighlightMainPoint,
+		icon: HighlightMainPointIcon,
+		action: CommandActions.DirectReplacement,
+		data: `I will give you text content, you will hightlighting and bolding the main concept, important ideas and significant sentence with markdown ** ** to highlight them.
+		You should not highlight too much words, keep it simple.`,
 	},
 ];

@@ -7,6 +7,7 @@ export enum CommandNames {
 	MakeShorter = 'Make Shorter',
 	MakeLonger = 'Make Longer',
 	Paraphrase = 'Paraphrase',
+	HighlightMainPoint = 'Highlight Main Point',
 }
 
 export enum CommandActions {
@@ -31,6 +32,7 @@ export const PluginSettingsSchema = z.object({
 	openAiApiKey: z.string(),
 	openAiBaseUrl: z.string(),
 	openAiModel: z.string(),
+	advancedSettings: z.boolean(),
 	maxTokens: z.number(),
 	temperature: z.number(),
 	presencePenalty: z.number(),
@@ -55,42 +57,4 @@ export interface OpenAiKeyCredit {
 	remainingCredits: number;
 	totalCredits: number;
 	expiryDate: string;
-}
-
-export interface OpenAiBillingSubscription {
-	object: 'billing_subscription';
-	has_payment_method: boolean;
-	canceled: boolean;
-	canceled_at: null | Date;
-	delinquent: null | boolean;
-	access_until: number;
-	soft_limit: number;
-	hard_limit: number;
-	system_hard_limit: number;
-	soft_limit_usd: number;
-	hard_limit_usd: number;
-	system_hard_limit_usd: number;
-	plan: {
-		title: string;
-		id: string;
-	};
-	primary: boolean;
-	account_name: string;
-	po_number: null | string;
-	billing_email: null | string;
-	tax_ids: null | string;
-	billing_address: null | string;
-	business_address: null | string;
-}
-
-export interface OpenAiUsage {
-	object: 'list';
-	daily_costs: {
-		timestamp: number;
-		line_items: {
-			name: string;
-			cost: number;
-		}[];
-	}[];
-	total_usage: number;
 }

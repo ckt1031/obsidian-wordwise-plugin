@@ -21,6 +21,7 @@ const DEFAULT_SETTINGS: PluginSettings = {
 	temperature: 0.5,
 	presencePenalty: 0,
 	frequencyPenalty: 0,
+	advancedSettings: false,
 	debugMode: false,
 	customPrompts: [],
 };

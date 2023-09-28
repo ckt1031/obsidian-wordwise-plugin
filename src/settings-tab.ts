@@ -42,12 +42,12 @@ export class SettingTab extends PluginSettingTab {
 			.setName('OpenAI Endpoint Base URL')
 			.setDesc(
 				SettingTab.createFragmentWithHTML(
-					'Base URL for the OpenAI API, defaults to <a href="https://api.openai.com">https://api.openai.com</a>.<br/><b>DO NOT include / trailing slash and /v1 suffix</b>.',
+					'Base URL for the OpenAI API, defaults to <code>https://api.openai.com</code>.<br/><b>DO NOT include / trailing slash and /v1 suffix</b>.',
 				),
 			)
 			.addText(text =>
 				text
-					.setPlaceholder('Enter the base URL')
+					.setPlaceholder('https://api.openai.com')
 					.setValue(plugin.settings.openAiBaseUrl)
 					.onChange(async value => {
 						plugin.settings.openAiBaseUrl = value;
@@ -73,73 +73,90 @@ export class SettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('Temperature')
+			.setName('Advanced Mode')
 			.setDesc(
-				SettingTab.createFragmentWithHTML(
-					'Temperature for the model, defaults to <b>0.5</b>, see <a href="https://platform.openai.com/docs/api-reference/completions/create">OpenAI Reference</a> for more info',
-				),
+				'Configure advanced GPT model settings, enable this in order to send extra parameters to the API',
 			)
-			.addSlider(slider => {
-				slider.setDynamicTooltip();
-				slider.setLimits(0.0, 1.0, 0.1);
-				slider.setValue(plugin.settings.temperature);
-				slider.onChange(async value => {
-					plugin.settings.temperature = value;
+			.addToggle(toggle =>
+				toggle.setValue(plugin.settings.advancedSettings).onChange(async value => {
+					plugin.settings.advancedSettings = value;
 					await plugin.saveSettings();
-				});
-			});
-
-		new Setting(containerEl)
-			.setName('Presence Penalty')
-			.setDesc(
-				SettingTab.createFragmentWithHTML(
-					"Presence penalty for the model, increasing the model's likelihood to talk about new topics, defaults to <b>0.0</b>.",
-				),
-			)
-
-			.addSlider(slider => {
-				slider.setDynamicTooltip();
-				slider.setLimits(-2.0, 2.0, 0.1);
-				slider.setValue(plugin.settings.presencePenalty);
-				slider.onChange(async value => {
-					plugin.settings.presencePenalty = value;
-					await plugin.saveSettings();
-				});
-			});
-
-		new Setting(containerEl)
-			.setName('Frequency Penalty')
-			.setDesc(
-				SettingTab.createFragmentWithHTML(
-					"Frequency penalty for the model, decreasing the model's likelihood to repeat the same line verbatim, defaults to <b>0.0</b>.",
-				),
-			)
-			.addSlider(slider => {
-				slider.setDynamicTooltip();
-				slider.setLimits(-2.0, 2.0, 0.1);
-				slider.setValue(plugin.settings.frequencyPenalty);
-				slider.onChange(async value => {
-					plugin.settings.frequencyPenalty = value;
-					await plugin.saveSettings();
-				});
-			});
-
-		new Setting(containerEl)
-			.setName('Max Tokens')
-			.setDesc(
-				SettingTab.createFragmentWithHTML(
-					'Maximum number of tokens to generate, defaults to <b>2000</b>, see <a href="https://platform.openai.com/docs/api-reference/completions/create">OpenAI Reference</a> for more info',
-				),
-			)
-			.addText(text =>
-				text.setValue(plugin.settings.maxTokens.toString()).onChange(async value => {
-					// Should be a number and not negative or zero
-					if (!Number.isNaN(Number.parseInt(value)) && Number.parseInt(value) > 0) {
-						plugin.settings.maxTokens = Number.parseInt(value);
-						await plugin.saveSettings();
-					}
+					// Reload the settings tab
+					await plugin.app.setting.close();
+					await plugin.app.setting.open();
 				}),
 			);
+
+		if (plugin.settings.advancedSettings) {
+			new Setting(containerEl)
+				.setName('Temperature')
+				.setDesc(
+					SettingTab.createFragmentWithHTML(
+						'Temperature for the model, defaults to <b>0.5</b>, see <a href="https://platform.openai.com/docs/api-reference/completions/create">OpenAI Reference</a> for more info',
+					),
+				)
+				.addSlider(slider => {
+					slider.setDynamicTooltip();
+					slider.setLimits(0.0, 1.0, 0.1);
+					slider.setValue(plugin.settings.temperature);
+					slider.onChange(async value => {
+						plugin.settings.temperature = value;
+						await plugin.saveSettings();
+					});
+				});
+
+			new Setting(containerEl)
+				.setName('Presence Penalty')
+				.setDesc(
+					SettingTab.createFragmentWithHTML(
+						"Presence penalty for the model, increasing the model's likelihood to talk about new topics, defaults to <b>0.0</b>.",
+					),
+				)
+
+				.addSlider(slider => {
+					slider.setDynamicTooltip();
+					slider.setLimits(-2.0, 2.0, 0.1);
+					slider.setValue(plugin.settings.presencePenalty);
+					slider.onChange(async value => {
+						plugin.settings.presencePenalty = value;
+						await plugin.saveSettings();
+					});
+				});
+
+			new Setting(containerEl)
+				.setName('Frequency Penalty')
+				.setDesc(
+					SettingTab.createFragmentWithHTML(
+						"Frequency penalty for the model, decreasing the model's likelihood to repeat the same line verbatim, defaults to <b>0.0</b>.",
+					),
+				)
+				.addSlider(slider => {
+					slider.setDynamicTooltip();
+					slider.setLimits(-2.0, 2.0, 0.1);
+					slider.setValue(plugin.settings.frequencyPenalty);
+					slider.onChange(async value => {
+						plugin.settings.frequencyPenalty = value;
+						await plugin.saveSettings();
+					});
+				});
+
+			new Setting(containerEl)
+				.setName('Max Tokens')
+				.setDesc(
+					SettingTab.createFragmentWithHTML(
+						'Maximum number of tokens to generate (0 means not specifying in API)',
+					),
+				)
+				.addText(text =>
+					text.setValue(plugin.settings.maxTokens.toString()).onChange(async value => {
+						// Should be a number and not negative or zero
+						if (!Number.isNaN(Number.parseInt(value)) && Number.parseInt(value) >= 0) {
+							plugin.settings.maxTokens = Number.parseInt(value);
+							await plugin.saveSettings();
+						}
+					}),
+				);
+		}
 
 		new Setting(containerEl)
 			.setName('Debug Mode')

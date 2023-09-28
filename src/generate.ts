@@ -11,11 +11,6 @@ export async function runPrompts(
 	settings: PluginSettings,
 	command: CommandNames | string,
 ) {
-	if (!settings.openAiApiKey || settings.openAiApiKey === '') {
-		new Notice('No OpenAI API key set');
-		return;
-	}
-
 	const input = editor.getSelection();
 
 	if (input.length === 0) {
@@ -30,20 +25,30 @@ export async function runPrompts(
 
 	if (!promptData) throw new Error(`Could not find prompt data with name ${command}`);
 
+	new Notice(`Generating text with ${command}...`);
+
 	const prompt: string = mustacheRender(promptData.data, {
 		input,
 	});
 
-	const result = await callAPI(settings, prompt);
+	try {
+		const result = await callAPI(settings, prompt);
 
-	if (!result) {
-		new Notice('No result from OpenAI');
-		return;
+		if (!result) {
+			new Notice('No result from OpenAI');
+			return;
+		}
+
+		editor.replaceSelection(result);
+
+		log(settings, `Replaced selection with result: ${result}`);
+
+		new Notice('Text generated.');
+	} catch (error) {
+		if (error instanceof Error) {
+			log(settings, error.message);
+			new Notice(`Error requesting OpenAI: ${error.message}`);
+			return undefined;
+		}
 	}
-
-	editor.replaceSelection(result);
-
-	log(settings, `Replaced selection with result: ${result}`);
-
-	new Notice('Text generated.');
 }
