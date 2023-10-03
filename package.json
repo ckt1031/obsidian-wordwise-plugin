@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"dayjs": "1.11.10",
-		"zod": "3.22.2"
+		"zod": "3.22.3"
 	},
 	"devDependencies": {
 		"@ckt1031/eslint-config": "1.1.13",
