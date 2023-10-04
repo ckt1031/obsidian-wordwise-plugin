@@ -34,8 +34,7 @@ export async function callAPI(
 		messages: [
 			{
 				role: 'system',
-				content:
-					'You are helpful assistant to help the Obsidian Note app users, please keep the markdown format in your response.',
+				content: 'You are helping the Obsidian Note app users, keep markdown format in response.',
 			},
 			{
 				role: 'user',
