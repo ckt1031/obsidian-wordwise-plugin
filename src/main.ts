@@ -3,8 +3,6 @@ import { addIcon, Notice, Plugin } from 'obsidian';
 import manifest from '../manifest.json';
 import { runPrompts } from './generate';
 import AiIcon from './icons/ai';
-import { log } from './logging';
-import { deobfuscateConfig, obfuscateConfig } from './obfuscate-config';
 import { getPrompts } from './prompts';
 import { SettingTab } from './settings-tab';
 import {
@@ -12,6 +10,8 @@ import {
 	ObfuscatedPluginSettingsSchema,
 	type PluginSettings,
 } from './types';
+import { log } from './utils/logging';
+import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 
 const DEFAULT_SETTINGS: PluginSettings = {
 	openAiApiKey: '',

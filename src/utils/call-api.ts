@@ -1,9 +1,9 @@
 import { request } from 'obsidian';
 
-import { DEFAULT_API_HOST } from './config';
+import { DEFAULT_API_HOST } from '../config';
+import type { PluginSettings } from '../types';
+import { checkAPIKey } from './check-api-key';
 import { log } from './logging';
-import type { PluginSettings } from './types';
-import { checkAPIKey } from './utils/check-api-key';
 
 export function getAPIHost(settings: PluginSettings): string {
 	const urlPrefix = settings.openAiBaseUrl.startsWith('http') ? '' : 'http://';

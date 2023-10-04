@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { deobfuscateConfig, obfuscateConfig } from '../src/obfuscate-config';
 import type { PluginSettings } from '../src/types';
+import { deobfuscateConfig, obfuscateConfig } from '../src/utils/obfuscate-config';
 
 const DEFAULT_SETTINGS: PluginSettings = {
 	// This API key is fake, random characters

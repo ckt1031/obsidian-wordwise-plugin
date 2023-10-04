@@ -9,6 +9,7 @@ export function checkAPIKey(settings: PluginSettings) {
 
 	const hasNoAPIKey = !settings.openAiApiKey || settings.openAiApiKey === '';
 
+	// Some extra endpoints may have different API key requirements
 	if (isOfficialAPI && hasNoAPIKey) {
 		new Notice('No OpenAI API key set');
 		return false;

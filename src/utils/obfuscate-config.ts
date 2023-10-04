@@ -1,4 +1,4 @@
-import type { ObfuscatedPluginSettings, PluginSettings } from './types';
+import type { ObfuscatedPluginSettings, PluginSettings } from '../types';
 
 const key = 'RSUH6NwtuGcUS252ssX2U4dCeCi48Yg2ekqnrKatZkmQRetZpxMUxqE'; // Replace with your own secret key
 

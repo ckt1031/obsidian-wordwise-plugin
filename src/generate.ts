@@ -1,10 +1,10 @@
 import { type Editor, Notice } from 'obsidian';
 
-import { callAPI } from './ai';
-import { log } from './logging';
-import { mustacheRender } from './mustache';
 import { getPrompts } from './prompts';
 import type { CommandNames, PluginSettings } from './types';
+import { callAPI } from './utils/call-api';
+import { log } from './utils/logging';
+import { mustacheRender } from './utils/mustache';
 
 export async function runPrompts(
 	editor: Editor,

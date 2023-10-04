@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { mustacheRender } from '../src/mustache';
+import { mustacheRender } from '../src/utils/mustache';
 
 type TemplateData = Record<string, string | number | boolean>;
 
