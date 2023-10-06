@@ -32,7 +32,11 @@ export async function runPrompts(
 	});
 
 	try {
-		const result = await callAPI(settings, prompt);
+		const result = await callAPI({
+			settings,
+			userMessages: prompt,
+			enableSystemMessages: true,
+		});
 
 		if (!result) {
 			new Notice('No result from OpenAI');
