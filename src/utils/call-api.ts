@@ -1,7 +1,8 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { request } from 'obsidian';
 
 import { DEFAULT_API_HOST } from '../config';
-import type { PluginSettings } from '../types';
+import type { CallAPIProps, PluginSettings } from '../types';
 import { checkAPIKey } from './check-api-key';
 import { log } from './logging';
 
@@ -12,10 +13,11 @@ export function getAPIHost(settings: PluginSettings): string {
 	return `${urlPrefix}${host}`;
 }
 
-export async function callAPI(
-	settings: PluginSettings,
-	prompt: string,
-): Promise<string | undefined> {
+export async function callAPI({
+	settings,
+	userMessages,
+	enableSystemMessages = true,
+}: CallAPIProps): Promise<string | undefined> {
 	checkAPIKey(settings);
 
 	const url = `${getAPIHost(settings)}/v1/chat/completions`;
@@ -32,20 +34,25 @@ export async function callAPI(
 			frequency_penalty: settings.frequencyPenalty,
 		}),
 		messages: [
-			{
-				role: 'system',
-				content: 'You are helping the Obsidian Note app users, keep markdown format in response.',
-			},
+			...(enableSystemMessages
+				? [
+						{
+							role: 'system',
+							content:
+								'You are helping the Obsidian Note app users, keep markdown format in response.',
+						},
+				  ]
+				: []),
 			{
 				role: 'user',
-				content: prompt,
+				content: userMessages,
 			},
 		],
 	};
 
 	log(
 		settings,
-		`Sending request to ${url} (${settings.openAiModel}, Temp: ${settings.temperature}) with prompt ${prompt}`,
+		`Sending request to ${url} (${settings.openAiModel}, Temp: ${settings.temperature}) with prompt ${userMessages}`,
 	);
 
 	const response = await request({

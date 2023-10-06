@@ -1,6 +1,7 @@
 import { addIcon, Notice, Plugin } from 'obsidian';
 
 import manifest from '../manifest.json';
+import { DEFAULT_SETTINGS } from './config';
 import { runPrompts } from './generate';
 import AiIcon from './icons/ai';
 import { getPrompts } from './prompts';
@@ -12,19 +13,6 @@ import {
 } from './types';
 import { log } from './utils/logging';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
-
-const DEFAULT_SETTINGS: PluginSettings = {
-	openAiApiKey: '',
-	openAiBaseUrl: 'https://api.openai.com',
-	openAiModel: 'gpt-3.5-turbo',
-	maxTokens: 2000,
-	temperature: 0.5,
-	presencePenalty: 0,
-	frequencyPenalty: 0,
-	advancedSettings: false,
-	debugMode: false,
-	customPrompts: [],
-};
 
 export default class AiPlugin extends Plugin {
 	settings: PluginSettings;

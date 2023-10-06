@@ -58,3 +58,9 @@ export interface OpenAiKeyCredit {
 	totalCredits: number;
 	expiryDate: string;
 }
+
+export interface CallAPIProps {
+	settings: PluginSettings;
+	userMessages: string;
+	enableSystemMessages: boolean;
+}

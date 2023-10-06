@@ -5,6 +5,7 @@ import { Notice, PluginSettingTab, Setting } from 'obsidian';
 import manifest from '../manifest.json';
 import type AiPlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
+import { callAPI } from './utils/call-api';
 
 export class SettingTab extends PluginSettingTab {
 	plugin: AiPlugin;
@@ -70,6 +71,23 @@ export class SettingTab extends PluginSettingTab {
 						plugin.settings.openAiModel = value;
 						await plugin.saveSettings();
 					}),
+			);
+
+		new Setting(containerEl)
+			.setName('Check API Availability')
+			.setDesc('Test if your API Key is valid and working.')
+			.addButton(button =>
+				button.setButtonText('Check').onClick(async () => {
+					const result = await callAPI({
+						settings: plugin.settings,
+						enableSystemMessages: false,
+						userMessages: 'Say 1 only',
+					});
+
+					if (result && result.length > 0) {
+						new Notice('API Key is valid and working!');
+					}
+				}),
 			);
 
 		new Setting(containerEl)
