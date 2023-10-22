@@ -102,7 +102,7 @@ export default class AiPlugin extends Plugin {
 
 		if (!success) {
 			this.settings = DEFAULT_SETTINGS;
-			console.log('Failed to parse settings, using defaults.');
+			log(this.settings, 'Failed to parse settings, using defaults.');
 			return;
 		}
 
