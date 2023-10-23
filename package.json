@@ -23,7 +23,7 @@
 		"@ckt1031/prettier-config": "1.1.14",
 		"@types/mustache": "4.2.4",
 		"@types/node": "20.8.7",
-		"@typescript-eslint/eslint-plugin": "6.8.0",
+		"@typescript-eslint/eslint-plugin": "6.9.0",
 		"builtin-modules": "3.3.0",
 		"esbuild": "0.19.5",
 		"eslint": "8.52.0",
