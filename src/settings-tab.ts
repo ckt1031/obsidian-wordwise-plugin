@@ -78,6 +78,8 @@ export class SettingTab extends PluginSettingTab {
 			.setDesc('Test if your API Key is valid and working.')
 			.addButton(button =>
 				button.setButtonText('Check').onClick(async () => {
+					new Notice('Checking API Status...');
+
 					const result = await callAPI({
 						settings: plugin.settings,
 						enableSystemMessages: false,
