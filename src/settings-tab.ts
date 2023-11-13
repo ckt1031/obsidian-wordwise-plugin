@@ -3,9 +3,11 @@ import type { App, ButtonComponent } from 'obsidian';
 import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
 import manifest from '../manifest.json';
+import { OPENAI_MODELS } from './config';
 import type AiPlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
 import { callAPI } from './utils/call-api';
+import { log } from './utils/logging';
 
 export class SettingTab extends PluginSettingTab {
 	plugin: AiPlugin;
@@ -63,31 +65,37 @@ export class SettingTab extends PluginSettingTab {
 					'OpenAI Model to use, defaults to <b>gpt-3.5-turbo</b>, see <a href="https://platform.openai.com/docs/models">OpenAI Models</a> for more info',
 				),
 			)
-			.addText(text =>
-				text
-					.setPlaceholder('Enter the model name')
-					.setValue(plugin.settings.openAiModel)
-					.onChange(async value => {
-						plugin.settings.openAiModel = value;
-						await plugin.saveSettings();
-					}),
-			);
+			.addDropdown(dropDown => {
+				for (const model of OPENAI_MODELS) {
+					dropDown.addOption(model, model);
+				}
+				dropDown.setValue(plugin.settings.openAiModel);
+				dropDown.onChange(async value => {
+					plugin.settings.openAiModel = value;
+					await plugin.saveSettings();
+				});
+			});
 
 		new Setting(containerEl)
 			.setName('Check API Availability')
 			.setDesc('Test if your API Key is valid and working.')
 			.addButton(button =>
 				button.setButtonText('Check').onClick(async () => {
-					new Notice('Checking API Status...');
+					try {
+						new Notice('Checking API Status...');
 
-					const result = await callAPI({
-						settings: plugin.settings,
-						enableSystemMessages: false,
-						userMessages: 'Say 1 only',
-					});
+						const result = await callAPI({
+							settings: plugin.settings,
+							enableSystemMessages: false,
+							userMessages: 'Say 1 only',
+						});
 
-					if (result && result.length > 0) {
-						new Notice('API Key is valid and working!');
+						if (result && result.length > 0) {
+							new Notice('API Key is valid and working!');
+						}
+					} catch (error) {
+						if (error instanceof Error) log(plugin.settings, error.message);
+						new Notice('API is not working properly.');
 					}
 				}),
 			);
@@ -124,6 +132,21 @@ export class SettingTab extends PluginSettingTab {
 						await plugin.saveSettings();
 					});
 				});
+
+			new Setting(containerEl)
+				.setName('Custom OpenAI Model ID')
+				.setDesc(
+					'Enter custom model ID for your own API, if this is empty, it will follow the selected menu above.',
+				)
+				.addText(text =>
+					text
+						.setPlaceholder('Enter the model name')
+						.setValue(plugin.settings.customAiModel)
+						.onChange(async value => {
+							plugin.settings.customAiModel = value;
+							await plugin.saveSettings();
+						}),
+				);
 
 			new Setting(containerEl)
 				.setName('Presence Penalty')

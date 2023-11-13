@@ -33,6 +33,7 @@ export const PluginSettingsSchema = z.object({
 	openAiBaseUrl: z.string(),
 	openAiModel: z.string(),
 	advancedSettings: z.boolean(),
+	customAiModel: z.string(),
 	maxTokens: z.number(),
 	temperature: z.number(),
 	presencePenalty: z.number(),

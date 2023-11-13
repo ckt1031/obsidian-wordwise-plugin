@@ -7,6 +7,7 @@ const DEFAULT_SETTINGS: PluginSettings = {
 	// This API key is fake, random characters
 	openAiApiKey: 'sk-iHj5FfRt8ZbD4XsLcNnMmKp2aUo6EeGgYyWq3v1',
 	temperature: 0.7,
+	customAiModel: '',
 	maxTokens: 1750,
 	frequencyPenalty: 1,
 	presencePenalty: -1,

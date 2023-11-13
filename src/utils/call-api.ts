@@ -19,12 +19,17 @@ export async function callAPI({
 	enableSystemMessages = true,
 }: CallAPIProps): Promise<string | undefined> {
 	checkAPIKey(settings);
+	let callModel = settings.openAiModel;
 
 	const url = `${getAPIHost(settings)}/v1/chat/completions`;
 
+	if (settings.customAiModel.length > 0 && settings.advancedSettings) {
+		callModel = settings.customAiModel;
+	}
+
 	const body = {
 		stream: false,
-		model: settings.openAiModel,
+		model: callModel,
 		...(settings.advancedSettings && {
 			temperature: settings.temperature,
 			...(settings.maxTokens !== 0 && {
@@ -52,7 +57,7 @@ export async function callAPI({
 
 	log(
 		settings,
-		`Sending request to ${url} (${settings.openAiModel}, Temp: ${settings.temperature}) with prompt ${userMessages}`,
+		`Sending request to ${url} (${callModel}, Temp: ${settings.temperature}) with prompt ${userMessages}`,
 	);
 
 	const response = await request({
