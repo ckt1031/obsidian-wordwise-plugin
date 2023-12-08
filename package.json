@@ -22,16 +22,16 @@
 		"@ckt1031/eslint-config": "1.1.17",
 		"@ckt1031/prettier-config": "1.1.17",
 		"@types/mustache": "4.2.5",
-		"@types/node": "20.10.2",
-		"@typescript-eslint/eslint-plugin": "6.13.1",
+		"@types/node": "20.10.4",
+		"@typescript-eslint/eslint-plugin": "6.13.2",
 		"builtin-modules": "3.3.0",
 		"esbuild": "0.19.8",
 		"eslint": "8.55.0",
 		"obsidian": "1.4.11",
 		"prettier": "3.1.0",
 		"tslib": "2.6.2",
-		"typescript": "5.3.2",
-		"vitest": "1.0.1"
+		"typescript": "5.3.3",
+		"vitest": "1.0.2"
 	},
 	"packageManager": "pnpm@8.10.2",
 	"prettier": "@ckt1031/prettier-config"
