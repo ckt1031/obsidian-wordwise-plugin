@@ -12,7 +12,7 @@ export function getPrompts(settings: PluginSettings) {
 	const localPrompts = settings.customPrompts;
 
 	// Add basePromptEnding to all prompts ending
-	return [...PROMPTS, ...localPrompts].map(prompt => {
+	return [...PROMPTS, ...localPrompts].map((prompt) => {
 		return {
 			...prompt,
 			data: `${prompt.data}\n\n${basePromptEnding}`,

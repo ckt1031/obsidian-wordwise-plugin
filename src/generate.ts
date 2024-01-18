@@ -20,10 +20,10 @@ export async function runPrompts(
 
 	log(settings, `Running prompt with command ${command}`);
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	const promptData = getPrompts(settings).find(p => p.name === command);
+	const promptData = getPrompts(settings).find((p) => p.name === command);
 
-	if (!promptData) throw new Error(`Could not find prompt data with name ${command}`);
+	if (!promptData)
+		throw new Error(`Could not find prompt data with name ${command}`);
 
 	new Notice(`Generating text with ${command}...`);
 

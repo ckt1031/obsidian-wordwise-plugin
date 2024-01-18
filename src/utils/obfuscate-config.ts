@@ -7,18 +7,16 @@ export const reverseString = (s: string) => {
 };
 
 export const xorCipher = (s: string, key: string) => {
-	return (
-		[...s]
-			// eslint-disable-next-line unicorn/prefer-code-point
-			.map((c, i) => String.fromCharCode(c.charCodeAt(0) ^ key.charCodeAt(i % key.length)))
-			.join('')
-	);
+	return [...s]
+		.map((c, i) =>
+			String.fromCharCode(c.charCodeAt(0) ^ key.charCodeAt(i % key.length)),
+		)
+		.join('');
 };
 
 export const deobfuscateConfig = (
 	x: ObfuscatedPluginSettings | undefined,
 ): PluginSettings | null => {
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (!x?.z) {
 		return null;
 	}

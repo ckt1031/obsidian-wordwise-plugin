@@ -37,7 +37,9 @@ describe('Utils', () => {
 			const renderedTemplate = mustacheRender(template, data);
 
 			expect(renderedTemplate).toBe('Hello, ! Your age is .');
-			expect(renderedTemplate).not.toBe('Hello, {{name}}! Your age is {{age}}.');
+			expect(renderedTemplate).not.toBe(
+				'Hello, {{name}}! Your age is {{age}}.',
+			);
 		});
 	});
 });

@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-zero-fractions */
 import type { App, ButtonComponent } from 'obsidian';
 import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
@@ -18,9 +17,11 @@ export class SettingTab extends PluginSettingTab {
 	}
 
 	private static createFragmentWithHTML = (html: string) =>
-		createFragment(documentFragment => (documentFragment.createDiv().innerHTML = html));
+		createFragment((documentFragment) => {
+			const div = documentFragment.createDiv();
+			div.innerHTML = html;
+		});
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	display(): void {
 		const { containerEl, plugin } = this;
 
@@ -31,11 +32,11 @@ export class SettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('API Key')
 			.setDesc('API Key for the OpenAI API')
-			.addText(text =>
+			.addText((text) =>
 				text
 					.setPlaceholder('Enter your API Key')
 					.setValue(plugin.settings.openAiApiKey)
-					.onChange(async value => {
+					.onChange(async (value) => {
 						plugin.settings.openAiApiKey = value;
 						await plugin.saveSettings();
 					}),
@@ -48,11 +49,11 @@ export class SettingTab extends PluginSettingTab {
 					'Base URL for the OpenAI API, defaults to <code>https://api.openai.com</code>.<br/><b>DO NOT include / trailing slash and /v1 suffix</b>.',
 				),
 			)
-			.addText(text =>
+			.addText((text) =>
 				text
 					.setPlaceholder('https://api.openai.com')
 					.setValue(plugin.settings.openAiBaseUrl)
-					.onChange(async value => {
+					.onChange(async (value) => {
 						plugin.settings.openAiBaseUrl = value;
 						await plugin.saveSettings();
 					}),
@@ -65,12 +66,12 @@ export class SettingTab extends PluginSettingTab {
 					'OpenAI Model to use, defaults to <b>gpt-3.5-turbo</b>, see <a href="https://platform.openai.com/docs/models">OpenAI Models</a> for more info',
 				),
 			)
-			.addDropdown(dropDown => {
+			.addDropdown((dropDown) => {
 				for (const model of OPENAI_MODELS) {
 					dropDown.addOption(model, model);
 				}
 				dropDown.setValue(plugin.settings.openAiModel);
-				dropDown.onChange(async value => {
+				dropDown.onChange(async (value) => {
 					plugin.settings.openAiModel = value;
 					await plugin.saveSettings();
 				});
@@ -79,7 +80,7 @@ export class SettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('Check API Availability')
 			.setDesc('Test if your API Key is valid and working.')
-			.addButton(button =>
+			.addButton((button) =>
 				button.setButtonText('Check').onClick(async () => {
 					try {
 						new Notice('Checking API Status...');
@@ -105,14 +106,16 @@ export class SettingTab extends PluginSettingTab {
 			.setDesc(
 				'Configure advanced GPT model settings, enable this in order to send extra parameters to the API',
 			)
-			.addToggle(toggle =>
-				toggle.setValue(plugin.settings.advancedSettings).onChange(async value => {
-					plugin.settings.advancedSettings = value;
-					await plugin.saveSettings();
-					// Reload the settings tab
-					await plugin.app.setting.close();
-					await plugin.app.setting.open();
-				}),
+			.addToggle((toggle) =>
+				toggle
+					.setValue(plugin.settings.advancedSettings)
+					.onChange(async (value) => {
+						plugin.settings.advancedSettings = value;
+						await plugin.saveSettings();
+						// Reload the settings tab
+						await plugin.app.setting.close();
+						await plugin.app.setting.open();
+					}),
 			);
 
 		if (plugin.settings.advancedSettings) {
@@ -123,11 +126,11 @@ export class SettingTab extends PluginSettingTab {
 						'Temperature for the model, defaults to <b>0.5</b>, see <a href="https://platform.openai.com/docs/api-reference/completions/create">OpenAI Reference</a> for more info',
 					),
 				)
-				.addSlider(slider => {
+				.addSlider((slider) => {
 					slider.setDynamicTooltip();
 					slider.setLimits(0.0, 1.0, 0.1);
 					slider.setValue(plugin.settings.temperature);
-					slider.onChange(async value => {
+					slider.onChange(async (value) => {
 						plugin.settings.temperature = value;
 						await plugin.saveSettings();
 					});
@@ -138,11 +141,11 @@ export class SettingTab extends PluginSettingTab {
 				.setDesc(
 					'Enter custom model ID for your own API, if this is empty, it will follow the selected menu above.',
 				)
-				.addText(text =>
+				.addText((text) =>
 					text
 						.setPlaceholder('Enter the model name')
 						.setValue(plugin.settings.customAiModel)
-						.onChange(async value => {
+						.onChange(async (value) => {
 							plugin.settings.customAiModel = value;
 							await plugin.saveSettings();
 						}),
@@ -156,11 +159,11 @@ export class SettingTab extends PluginSettingTab {
 					),
 				)
 
-				.addSlider(slider => {
+				.addSlider((slider) => {
 					slider.setDynamicTooltip();
 					slider.setLimits(-2.0, 2.0, 0.1);
 					slider.setValue(plugin.settings.presencePenalty);
-					slider.onChange(async value => {
+					slider.onChange(async (value) => {
 						plugin.settings.presencePenalty = value;
 						await plugin.saveSettings();
 					});
@@ -173,11 +176,11 @@ export class SettingTab extends PluginSettingTab {
 						"Frequency penalty for the model, decreasing the model's likelihood to repeat the same line verbatim, defaults to <b>0.0</b>.",
 					),
 				)
-				.addSlider(slider => {
+				.addSlider((slider) => {
 					slider.setDynamicTooltip();
 					slider.setLimits(-2.0, 2.0, 0.1);
 					slider.setValue(plugin.settings.frequencyPenalty);
-					slider.onChange(async value => {
+					slider.onChange(async (value) => {
 						plugin.settings.frequencyPenalty = value;
 						await plugin.saveSettings();
 					});
@@ -190,22 +193,29 @@ export class SettingTab extends PluginSettingTab {
 						'Maximum number of tokens to generate (0 means not specifying in API)',
 					),
 				)
-				.addText(text =>
-					text.setValue(plugin.settings.maxTokens.toString()).onChange(async value => {
-						// Should be a number and not negative or zero
-						if (!Number.isNaN(Number.parseInt(value)) && Number.parseInt(value) >= 0) {
-							plugin.settings.maxTokens = Number.parseInt(value);
-							await plugin.saveSettings();
-						}
-					}),
+				.addText((text) =>
+					text
+						.setValue(plugin.settings.maxTokens.toString())
+						.onChange(async (value) => {
+							// Should be a number and not negative or zero
+							if (
+								!Number.isNaN(Number.parseInt(value)) &&
+								Number.parseInt(value) >= 0
+							) {
+								plugin.settings.maxTokens = Number.parseInt(value);
+								await plugin.saveSettings();
+							}
+						}),
 				);
 		}
 
 		new Setting(containerEl)
 			.setName('Debug Mode')
-			.setDesc('Enable debug mode, which will log more information to the console')
-			.addToggle(toggle =>
-				toggle.setValue(plugin.settings.debugMode).onChange(async value => {
+			.setDesc(
+				'Enable debug mode, which will log more information to the console',
+			)
+			.addToggle((toggle) =>
+				toggle.setValue(plugin.settings.debugMode).onChange(async (value) => {
 					plugin.settings.debugMode = value;
 					await plugin.saveSettings();
 				}),
@@ -214,7 +224,7 @@ export class SettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('Reset Settings')
 			.setDesc('This will reset all settings to their default values')
-			.addButton(button => {
+			.addButton((button) => {
 				button.setTooltip('Irrevisible action, please be careful!');
 				button.setButtonText('Reset').onClick(async () => {
 					if (button.buttonEl.textContent === 'Reset') {
@@ -222,7 +232,7 @@ export class SettingTab extends PluginSettingTab {
 						for (let i = 0; i < 5; i++) {
 							button.setButtonText(`Are you sure to reset? (${5 - i})`);
 							button.setDisabled(true);
-							await new Promise(resolve => setTimeout(resolve, 1000));
+							await new Promise((resolve) => setTimeout(resolve, 1000));
 						}
 
 						button.setDisabled(false);
@@ -258,19 +268,26 @@ export class SettingTab extends PluginSettingTab {
 		for (const prompts of plugin.settings.customPrompts) {
 			new Setting(containerEl)
 				.setName(prompts.name)
-				.addButton(button => {
+				.addButton((button) => {
 					button.setIcon('pencil');
 					button.setTooltip('Edit this prompt');
 					button.onClick(async () => {
-						const prompt = plugin.settings.customPrompts.find(x => x.name === prompts.name);
+						const prompt = plugin.settings.customPrompts.find(
+							(x) => x.name === prompts.name,
+						);
 
 						if (!prompt) return;
 
 						await plugin.app.setting.close();
-						new AddCustomPromptModal(plugin, true, prompts.name, prompt.data).open();
+						new AddCustomPromptModal(
+							plugin,
+							true,
+							prompts.name,
+							prompt.data,
+						).open();
 					});
 				})
-				.addButton(button => {
+				.addButton((button) => {
 					button.setIcon('cross');
 					button.setTooltip('Delete this prompt');
 					button.onClick(async () => {
@@ -279,7 +296,7 @@ export class SettingTab extends PluginSettingTab {
 							for (let i = 0; i < 5; i++) {
 								button.setButtonText(`Are you sure to delete? (${5 - i})`);
 								button.setDisabled(true);
-								await new Promise(resolve => setTimeout(resolve, 1000));
+								await new Promise((resolve) => setTimeout(resolve, 1000));
 							}
 
 							button.setDisabled(false);
@@ -292,9 +309,10 @@ export class SettingTab extends PluginSettingTab {
 							if (button.buttonEl.parentElement?.parentElement) {
 								button.buttonEl.parentElement.parentElement.remove();
 							}
-							plugin.settings.customPrompts = plugin.settings.customPrompts.filter(
-								p => p.name !== prompts.name,
-							);
+							plugin.settings.customPrompts =
+								plugin.settings.customPrompts.filter(
+									(p) => p.name !== prompts.name,
+								);
 							await plugin.saveSettings();
 						}
 					});

@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
 import type { PluginSettings } from '../src/types';
-import { deobfuscateConfig, obfuscateConfig } from '../src/utils/obfuscate-config';
+import {
+	deobfuscateConfig,
+	obfuscateConfig,
+} from '../src/utils/obfuscate-config';
 
 const DEFAULT_SETTINGS: PluginSettings = {
 	// This API key is fake, random characters
@@ -40,7 +43,6 @@ describe('obfuscateConfig and deobfuscateConfig', () => {
 
 	it('should return null for empty or undefined input', () => {
 		expect(obfuscateConfig(undefined)).toBeUndefined();
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-expect-error
 		expect(deobfuscateConfig({})).toBeNull();
 	});

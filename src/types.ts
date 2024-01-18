@@ -51,7 +51,9 @@ export const ObfuscatedPluginSettingsSchema = z.object({
 	z: z.string(),
 });
 
-export type ObfuscatedPluginSettings = z.infer<typeof ObfuscatedPluginSettingsSchema>;
+export type ObfuscatedPluginSettings = z.infer<
+	typeof ObfuscatedPluginSettingsSchema
+>;
 
 export interface OpenAiKeyCredit {
 	consumedCredits: number;

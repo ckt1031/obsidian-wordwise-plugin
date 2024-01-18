@@ -1,4 +1,4 @@
-import { addIcon, Notice, Plugin } from 'obsidian';
+import { Notice, Plugin, addIcon } from 'obsidian';
 
 import manifest from '../manifest.json';
 import { DEFAULT_SETTINGS } from './config';
@@ -17,7 +17,6 @@ import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 export default class AiPlugin extends Plugin {
 	settings: PluginSettings;
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	async onload() {
 		await this.loadSettings();
 
@@ -34,7 +33,7 @@ export default class AiPlugin extends Plugin {
 				id: prompt.name,
 				name: prompt.name,
 				icon: prompt.icon ? iconName : AiIcon,
-				editorCallback: async editor => {
+				editorCallback: async (editor) => {
 					try {
 						await runPrompts(editor, this.settings, prompt.name);
 					} catch (error) {
@@ -49,7 +48,7 @@ export default class AiPlugin extends Plugin {
 
 		this.registerEvent(
 			this.app.workspace.on('editor-menu', (menu, editor) => {
-				menu.addItem(item => {
+				menu.addItem((item) => {
 					item.setTitle(manifest.name).setIcon('brain-cog');
 
 					const subMenu = item.setSubmenu();
@@ -60,7 +59,7 @@ export default class AiPlugin extends Plugin {
 
 						// Add icon if it exists
 						if (prompt.icon) addIcon(iconName, prompt.icon);
-						subMenu.addItem(item => {
+						subMenu.addItem((item) => {
 							item
 								.setTitle(prompt.name)
 								.setIcon(prompt.icon ? iconName : AiIcon)
@@ -98,7 +97,8 @@ export default class AiPlugin extends Plugin {
 	async loadSettings() {
 		const localData: ObfuscatedPluginSettings = await this.loadData();
 
-		const { success } = await ObfuscatedPluginSettingsSchema.safeParseAsync(localData);
+		const { success } =
+			await ObfuscatedPluginSettingsSchema.safeParseAsync(localData);
 
 		if (!success) {
 			this.settings = DEFAULT_SETTINGS;
@@ -106,7 +106,11 @@ export default class AiPlugin extends Plugin {
 			return;
 		}
 
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, deobfuscateConfig(localData));
+		this.settings = Object.assign(
+			{},
+			DEFAULT_SETTINGS,
+			deobfuscateConfig(localData),
+		);
 	}
 
 	async saveSettings() {

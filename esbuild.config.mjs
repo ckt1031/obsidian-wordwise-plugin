@@ -46,7 +46,6 @@ const context = await esbuild.context({
 
 if (prod) {
 	await context.rebuild();
-	// eslint-disable-next-line unicorn/no-process-exit
 	process.exit(0);
 } else {
 	await context.watch();

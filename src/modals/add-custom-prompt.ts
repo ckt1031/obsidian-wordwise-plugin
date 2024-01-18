@@ -32,7 +32,9 @@ export default class AddCustomPromptModal extends Modal {
 		}
 
 		// Check if name is already in use
-		const result = this.plugin.settings.customPrompts.find(prompt => prompt.name === this.name);
+		const result = this.plugin.settings.customPrompts.find(
+			(prompt) => prompt.name === this.name,
+		);
 
 		if (!this.isEdit && result) {
 			new Notice('Name already in use');
@@ -41,7 +43,7 @@ export default class AddCustomPromptModal extends Modal {
 
 		if (this.isEdit) {
 			const index = this.plugin.settings.customPrompts.findIndex(
-				prompt => prompt.name === this.name,
+				(prompt) => prompt.name === this.name,
 			);
 
 			this.plugin.settings.customPrompts[index] = {
@@ -57,7 +59,11 @@ export default class AddCustomPromptModal extends Modal {
 
 		await this.plugin.saveSettings();
 
-		new Notice(`Please reload the plugin after ${this.isEdit ? 'editing' : 'adding'} a prompt`);
+		new Notice(
+			`Please reload the plugin after ${
+				this.isEdit ? 'editing' : 'adding'
+			} a prompt`,
+		);
 
 		this.close();
 	}
@@ -75,16 +81,18 @@ export default class AddCustomPromptModal extends Modal {
 			text.setValue(name);
 		});
 
-		new Setting(contentEl).setName('Prompt:').addTextArea((textArea: TextAreaComponent) => {
-			textArea.inputEl.className = 'modal-text-area';
-			textArea.setPlaceholder('Change the tone of the text');
-			textArea.onChange((value: string) => {
-				this.data = value;
+		new Setting(contentEl)
+			.setName('Prompt:')
+			.addTextArea((textArea: TextAreaComponent) => {
+				textArea.inputEl.className = 'modal-text-area';
+				textArea.setPlaceholder('Change the tone of the text');
+				textArea.onChange((value: string) => {
+					this.data = value;
+				});
+				textArea.setValue(data);
 			});
-			textArea.setValue(data);
-		});
 
-		new Setting(contentEl).addButton(btn =>
+		new Setting(contentEl).addButton((btn) =>
 			btn
 				.setButtonText('Confirm')
 				.setCta()

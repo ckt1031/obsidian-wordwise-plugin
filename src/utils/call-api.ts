@@ -1,4 +1,3 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
 import { request } from 'obsidian';
 
 import { DEFAULT_API_HOST } from '../config';
@@ -8,7 +7,10 @@ import { log } from './logging';
 
 export function getAPIHost(settings: PluginSettings): string {
 	const urlPrefix = settings.openAiBaseUrl.startsWith('http') ? '' : 'http://';
-	const host = settings.openAiBaseUrl.length > 0 ? settings.openAiBaseUrl : DEFAULT_API_HOST;
+	const host =
+		settings.openAiBaseUrl.length > 0
+			? settings.openAiBaseUrl
+			: DEFAULT_API_HOST;
 
 	return `${urlPrefix}${host}`;
 }
