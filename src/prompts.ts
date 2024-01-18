@@ -1,10 +1,8 @@
-import FixGrammarIcon from './icons/fix-grammar';
-import HighlightMainPointIcon from './icons/highlight-mainpoint';
-import ImproveWritingIcon from './icons/improve-writing';
-import MakeLongerIcon from './icons/make-longer';
-import MakeShorterIcon from './icons/make-shorter';
-import ParaphraseIcon from './icons/paraphrase';
-import SimplifyTextIcon from './icons/simplify-text';
+import FixGrammarIcon from './icons/fix-grammar.svg';
+import HighlightMainPointIcon from './icons/highlight-mainpoint.svg';
+import ImproveWritingIcon from './icons/improve-writing.svg';
+import MakeLongerIcon from './icons/make-longer.svg';
+import MakeShorterIcon from './icons/make-shorter.svg';
 import type { Prompt } from './types';
 import { CommandActions, CommandNames, type PluginSettings } from './types';
 
@@ -20,11 +18,18 @@ export function getPrompts(settings: PluginSettings) {
 	});
 }
 
-export const basePromptEnding = `Please preserve the text symbols such as bold, markdown, Obsidian specialized markdown, <HTML>, etc.
-Keep the meaning the same. Only give me the output and nothing else.
-Now, using the concepts above, re-write the following text. Respond in the same language variety or dialect of the following text:
+export const basePromptEnding = `
+## Instructions
 
-{{input}}
+- Keep the meaning the same. If possible, retain the structure of the paragraphs. Ensure the re-written text's word count is near to the original text.
+- Output the answer without additional context, explanation, or extra wording, just the corrected text itself. Don't use any punctuation, especially no quotes or backticks, around the text.
+- Respond in the same language variety or dialect of the text.
+- Keep the suitable markdown compounds if present, such as images, URLs.
+- You should not return the 3 backticks **wrapper** in the text response.
+
+Text:
+
+\`\`\`{{input}}\`\`\`
 `;
 
 /// {{input}} as the text content to be rewritten
@@ -33,49 +38,66 @@ export const PROMPTS: Prompt = [
 		name: CommandNames.ImproveWriting,
 		icon: ImproveWritingIcon,
 		action: CommandActions.DirectReplacement,
-		data: `I will give you text content, you will rewrite it and output a better version of my text.
-    Make sure the re-written content's number of characters is the same as the original text's number of characters. Do not alter the original structure and formatting outlined in any way. Only give me the output and nothing else.`,
+		data: `
+		## Tasks
+
+		- You are a real human that can read and write properly and fluently.
+		- Your task is to write a better version of the following text delimited by triple backticks.
+		- Your task means making the text clearer, easier to understand, and well put together, by correcting grammar, spelling, choosing the most suitable punctuation marks, selecting the best tone and style based on the topic and purpose of the text.
+		- Choose simple words and phrases to improve the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do. If a word, phrase, or part of the text is already clear and effective, leave it as it is, unchanged.
+		`,
 	},
 	{
 		name: CommandNames.FixGrammar,
 		icon: FixGrammarIcon,
 		action: CommandActions.DirectReplacement,
-		data: `I will give you text content, you will correct the spelling, syntax and grammar of this text. Correct any spelling, syntax, or grammar mistakes in the text I give you without making any improvements or changes to the original meaning or style. In other words, only correct spelling, syntax, or grammar mistakes, do not make improvements. If the original text has no mistake, just output the original text and nothing else.
-    Make sure the re-written content's number of words is the same as the original text's number of characters. Do not alter the original structure and formatting outlined in any way. Only give me the output and nothing else.`,
-	},
-	{
-		name: CommandNames.SimplifyText,
-		icon: SimplifyTextIcon,
-		action: CommandActions.DirectReplacement,
-		data: `Definition of "simplify language": "Simplifying language means using clear and concise language that is easy for the intended audience to understand. This involves avoiding overly complex sentence structures, technical jargon, or obscure vocabulary, and using familiar words and straightforward expressions. The goal is to make the text more accessible to a wider audience, ensuring that the message is communicated effectively without causing confusion or misunderstanding. Simplifying language can be particularly important when writing for a general audience or when trying to convey complex information or ideas in a more approachable way. It is essential for writers to strike a balance between simplifying language and maintaining the tone and voice of the text, so that it remains engaging and informative while being easy to read and understand."
-    I will give you text content, you will rewrite it to "simply language" of it and output that in an easy-to-understand version of my text. 
-    Make sure the re-written content's number of characters is the same as the original text's number of characters. Do not alter the original structure and formatting outlined in any way. Only give me the output and nothing else.`,
+		data: `
+		## Tasks
+
+		- You are a highly proficient writer that can read and write properly and fluently. Your task is to proofread and correct the spelling and grammar mistakes of the following text delimited by triple backticks.
+		- Make as few changes as possible. Only correct any spelling or grammar mistakes if the original text has spelling or grammar mistakes. Do not make any writing improvements.
+		- If the original text has no spelling or grammar mistakes, simply repeat the original text.
+    `,
 	},
 	{
 		name: CommandNames.MakeShorter,
 		icon: MakeShorterIcon,
 		action: CommandActions.DirectReplacement,
-		data: "I'll give you text. You'll rewrite it and output it shorter to be no more than half the number of characters of the original text.",
+		data: `
+		## Tasks
+
+    - You are a real human that can read and write properly and fluently.
+    - Your task is to write a shorter version of the following text delimited by triple backticks.
+    - Your task means making the text shorter, and keeping the text clear, easy to understand, and well put together.
+    - Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
+    `,
 	},
 	{
 		name: CommandNames.MakeLonger,
 		icon: MakeLongerIcon,
 		action: CommandActions.DirectReplacement,
-		data: "I'll give you text. You'll rewrite it and output it longer to be more than twice the number of characters of the original text.",
-	},
-	{
-		name: CommandNames.Paraphrase,
-		icon: ParaphraseIcon,
-		action: CommandActions.DirectReplacement,
-		data: `I will give you text content, you will rewrite it and output that in a re-worded version of my text. Reword the text to convey the same meaning using different words and sentence structures. Avoiding plagiarism, improving the flow and readability of the text, and ensuring that the re-written content is unique and original. Keep the tone the same. 
-    Make sure the re-written content's number of characters is exactly the same as the original text's number of characters. Do not alter the original structure and formatting outlined in any way. Only give me the output and nothing else.`,
+		data: `
+		## Tasks
+
+		- You are a real human that can read and write properly and fluently. Your task is to write a longer version of the following text delimited by triple backticks.
+		- Your task means making the text longer, and keeping the text clear, easy to understand, and well put together.
+		- Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
+		- Keep the meaning the same if possible. Ensure the rewritten text's word count is more than twice the original text but no more than 4 times the original text.
+		- Output the answer without additional context, explanation, or extra wording, just the lengthened text itself. Don't use any punctuation, especially no quotes or backticks, around the text.
+		- Respond in the same language variety or dialect of the text.
+		`,
 	},
 	{
 		name: CommandNames.HighlightMainPoint,
 		icon: HighlightMainPointIcon,
 		action: CommandActions.DirectReplacement,
-		data: `I will give you text content, you will hightlighting and bolding the main concept, important ideas and significant sentence with markdown ** ** to highlight them.
-		You should not highlight too much words, keep it simple.
-		Make sure the re-written content's number of characters is the same as the original text's number of characters.`,
+		data: `
+		## Tasks
+
+		- You are a real human that can read and write properly and fluently.
+		- Your task is to write a shorter version of the following text delimited by triple backticks.
+		- Your task means making the text shorter, and keeping the text clear, easy to understand, and well put together.
+		- Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
+		`,
 	},
 ];

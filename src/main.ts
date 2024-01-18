@@ -3,7 +3,7 @@ import { Notice, Plugin, addIcon } from 'obsidian';
 import manifest from '../manifest.json';
 import { DEFAULT_SETTINGS } from './config';
 import { runPrompts } from './generate';
-import AiIcon from './icons/ai';
+import AiIcon from './icons/ai.svg';
 import { getPrompts } from './prompts';
 import { SettingTab } from './settings-tab';
 import {

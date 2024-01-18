@@ -1,5 +1,10 @@
 import type { Plugin, SettingTab } from 'obsidian';
 
+declare module '*.svg' {
+	const content: string;
+	export default content;
+}
+
 interface PluginManifest {
 	author?: string;
 	authorUrl?: string;
