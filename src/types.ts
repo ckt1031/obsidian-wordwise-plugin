@@ -1,4 +1,12 @@
-import { z } from 'zod';
+import {
+	type Output,
+	array,
+	boolean,
+	number,
+	object,
+	optional,
+	string,
+} from 'valibot';
 
 export enum CommandNames {
 	ImproveWriting = 'Improve Writing',
@@ -22,36 +30,36 @@ export type Prompt = {
 	data: string;
 }[];
 
-export const customPromptSchema = z.object({
-	name: z.string(),
-	icon: z.string().optional(),
-	data: z.string(),
+export const CustomPromptSchema = object({
+	name: string(),
+	icon: optional(string()),
+	data: string(),
 });
 
-export const PluginSettingsSchema = z.object({
-	openAiApiKey: z.string(),
-	openAiBaseUrl: z.string(),
-	openAiModel: z.string(),
-	advancedSettings: z.boolean(),
-	customAiModel: z.string(),
-	maxTokens: z.number(),
-	temperature: z.number(),
-	presencePenalty: z.number(),
-	frequencyPenalty: z.number(),
-	debugMode: z.boolean(),
+export const PluginSettingsSchema = object({
+	openAiApiKey: string(),
+	openAiBaseUrl: string(),
+	openAiModel: string(),
+	advancedSettings: boolean(),
+	customAiModel: string(),
+	maxTokens: number(),
+	temperature: number(),
+	presencePenalty: number(),
+	frequencyPenalty: number(),
+	debugMode: boolean(),
 
 	// Custom Prompt Settings
-	customPrompts: z.array(customPromptSchema),
+	customPrompts: array(CustomPromptSchema),
 });
 
-export type PluginSettings = z.infer<typeof PluginSettingsSchema>;
+export type PluginSettings = Output<typeof PluginSettingsSchema>;
 
-export const ObfuscatedPluginSettingsSchema = z.object({
-	_NOTICE: z.string(),
-	z: z.string(),
+export const ObfuscatedPluginSettingsSchema = object({
+	_NOTICE: string(),
+	z: string(),
 });
 
-export type ObfuscatedPluginSettings = z.infer<
+export type ObfuscatedPluginSettings = Output<
 	typeof ObfuscatedPluginSettingsSchema
 >;
 

@@ -1,20 +1,21 @@
 {
 	"compilerOptions": {
 		"allowJs": true,
-		"allowSyntheticDefaultImports": true,
 		"baseUrl": ".",
+		"allowSyntheticDefaultImports": true,
 		"importHelpers": true,
 		"inlineSourceMap": true,
 		"inlineSources": true,
 		"isolatedModules": true,
 		"lib": ["DOM", "es2021"],
 		"module": "ESNext",
-		"moduleResolution": "node",
+		"moduleResolution": "Bundler",
 		"noEmit": true,
 		"noImplicitAny": true,
 		"resolveJsonModule": true,
 		"strictNullChecks": true,
 		"target": "ES6"
 	},
-	"include": ["**/*.ts", "src/index.d.ts", "*.mjs"]
+	"include": ["**/*.ts", "*.mjs", "src/custom.d.ts"],
+	"exclude": ["node_modules", "**/*.spec.ts"]
 }

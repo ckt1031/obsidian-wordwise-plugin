@@ -1,5 +1,6 @@
 import { Notice, Plugin, addIcon } from 'obsidian';
 
+import { safeParseAsync } from 'valibot';
 import manifest from '../manifest.json';
 import { DEFAULT_SETTINGS } from './config';
 import { runPrompts } from './generate';
@@ -97,8 +98,10 @@ export default class AiPlugin extends Plugin {
 	async loadSettings() {
 		const localData: ObfuscatedPluginSettings = await this.loadData();
 
-		const { success } =
-			await ObfuscatedPluginSettingsSchema.safeParseAsync(localData);
+		const { success } = await safeParseAsync(
+			ObfuscatedPluginSettingsSchema,
+			localData,
+		);
 
 		if (!success) {
 			this.settings = DEFAULT_SETTINGS;
