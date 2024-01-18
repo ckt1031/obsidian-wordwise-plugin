@@ -1,38 +1,38 @@
 {
-	"name": "obsidian-wordwise-plugin",
-	"version": "0.2.3",
-	"description": "Obsidian plugin for AI content generation",
-	"license": "MIT",
-	"author": "ckt1031",
-	"main": "main.js",
-	"scripts": {
-		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"dev": "node esbuild.config.mjs",
-		"format": "prettier --write .",
-		"lint": "tsc --noEmit --skipLibCheck && eslint . --ext .ts,.js,.mjs",
-		"lint:fix": "eslint . --ext .ts,.js,.mjs --fix",
-		"test": "vitest run",
-		"version": "node version-bump.mjs && git add manifest.json versions.json"
-	},
-	"dependencies": {
-		"dayjs": "1.11.10",
-		"zod": "3.22.4"
-	},
-	"devDependencies": {
-		"@ckt1031/eslint-config": "1.1.17",
-		"@ckt1031/prettier-config": "1.1.17",
-		"@types/mustache": "4.2.5",
-		"@types/node": "20.10.4",
-		"@typescript-eslint/eslint-plugin": "6.14.0",
-		"builtin-modules": "3.3.0",
-		"esbuild": "0.19.8",
-		"eslint": "8.55.0",
-		"obsidian": "1.4.11",
-		"prettier": "3.1.1",
-		"tslib": "2.6.2",
-		"typescript": "5.3.3",
-		"vitest": "1.0.2"
-	},
-	"packageManager": "pnpm@8.12.0",
-	"prettier": "@ckt1031/prettier-config"
+  "name": "obsidian-wordwise-plugin",
+  "version": "0.2.3",
+  "description": "Obsidian plugin for AI content generation",
+  "license": "MIT",
+  "author": "ckt1031",
+  "main": "main.js",
+  "scripts": {
+    "build": "node esbuild.config.mjs production",
+    "dev": "node esbuild.config.mjs",
+    "format": "prettier --write .",
+    "lint": "tsc -noEmit -skipLibCheck && eslint . --ext .ts,.js,.mjs",
+    "lint:fix": "eslint . --ext .ts,.js,.mjs --fix",
+    "test": "vitest run",
+    "version": "node version-bump.mjs && git add manifest.json versions.json"
+  },
+  "dependencies": {
+    "dayjs": "1.11.10",
+    "zod": "3.22.4"
+  },
+  "devDependencies": {
+    "@ckt1031/eslint-config": "1.1.17",
+    "@ckt1031/prettier-config": "1.1.17",
+    "@types/mustache": "4.2.5",
+    "@types/node": "20.11.5",
+    "@typescript-eslint/eslint-plugin": "6.19.0",
+    "builtin-modules": "3.3.0",
+    "esbuild": "0.19.11",
+    "eslint": "8.56.0",
+    "obsidian": "1.4.11",
+    "prettier": "3.2.4",
+    "tslib": "2.6.2",
+    "typescript": "5.3.3",
+    "vitest": "1.2.1"
+  },
+  "packageManager": "bun@1.0.23",
+  "prettier": "@ckt1031/prettier-config"
 }

@@ -9,27 +9,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x]
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          bun-version: latest
 
-      - uses: pnpm/action-setup@v2
+      - run: bun run lint
 
-      - run: pnpm i
+      - run: bun run test
 
-      - run: pnpm lint
-
-      - run: pnpm test
-
-      - run: pnpm build
+      - run: bun run build
 
       - name: Release
         if: startsWith(github.ref, 'refs/tags/')
