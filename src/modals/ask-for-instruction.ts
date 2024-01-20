@@ -1,12 +1,11 @@
-import type { App, TextComponent } from 'obsidian';
+import type { App, TextAreaComponent } from 'obsidian';
 import { Modal, Notice, Setting } from 'obsidian';
 
 export default class AskForInstructionModal extends Modal {
 	instruction: string;
 	app: App;
 	resolve: (value: string | PromiseLike<string>) => void;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	reject: (reason?: any) => void;
+	reject: (reason?: unknown) => void;
 	promise: Promise<string>;
 
 	constructor(app: App) {
@@ -36,12 +35,12 @@ export default class AskForInstructionModal extends Modal {
 
 		contentEl.createEl('h4', { text: 'Enter custom instruction here:' });
 
-		new Setting(contentEl).setName('Name:').addText((text: TextComponent) => {
-			text.setPlaceholder('Instruction');
-			text.onChange((value: string) => {
+		new Setting(contentEl).setName('Instruction:').addTextArea((textArea: TextAreaComponent) => {
+			textArea.setPlaceholder('Help me to transform bullets into numbered lists.');
+			textArea.onChange((value: string) => {
 				this.instruction = value;
 			});
-			text.setValue(instruction);
+			textArea.setValue(instruction);
 		});
 
 		new Setting(contentEl).addButton((btn) =>

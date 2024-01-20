@@ -1,7 +1,7 @@
 import { App, type Editor, Notice } from 'obsidian';
 
-import AskForInstructionModal from './modals/custom-instruction';
-import { getActions } from './prompts';
+import AskForInstructionModal from './modals/ask-for-instruction';
+import { getCommands } from './prompts';
 import {
 	CommandActions,
 	type CommandNames,
@@ -11,7 +11,7 @@ import { callAPI } from './utils/call-api';
 import { log } from './utils/logging';
 import { mustacheRender } from './utils/mustache';
 
-export async function runAction(
+export async function runPrompt(
 	app: App,
 	editor: Editor,
 	settings: PluginSettings,
@@ -26,7 +26,7 @@ export async function runAction(
 
 	log(settings, `Running prompt with command ${command}`);
 
-	const actionData = getActions(settings).find((p) => p.name === command);
+	const actionData = getCommands(settings).find((p) => p.name === command);
 
 	if (!actionData) {
 		throw new Error(`Could not find prompt data with name ${command}`);

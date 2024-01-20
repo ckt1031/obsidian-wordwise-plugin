@@ -3,9 +3,9 @@ import { Notice, Plugin, addIcon } from 'obsidian';
 import { safeParseAsync } from 'valibot';
 import manifest from '../manifest.json';
 import { DEFAULT_SETTINGS } from './config';
-import { runAction } from './generate';
+import { runPrompt } from './run-prompt';
 import AiIcon from './icons/ai.svg';
-import { getActions } from './prompts';
+import { getCommands } from './prompts';
 import { SettingTab } from './settings-tab';
 import {
 	type ObfuscatedPluginSettings,
@@ -23,7 +23,7 @@ export default class AiPlugin extends Plugin {
 
 		addIcon('openai', AiIcon);
 
-		for (const prompt of getActions(this.settings)) {
+		for (const prompt of getCommands(this.settings)) {
 			// slugify and remove spaces
 			const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
 
@@ -36,7 +36,7 @@ export default class AiPlugin extends Plugin {
 				icon: prompt.icon ? iconName : AiIcon,
 				editorCallback: async (editor) => {
 					try {
-						await runAction(this.app, editor, this.settings, prompt.name);
+						await runPrompt(this.app, editor, this.settings, prompt.name);
 					} catch (error) {
 						if (error instanceof Error) {
 							log(this.settings, error.message);
@@ -50,11 +50,11 @@ export default class AiPlugin extends Plugin {
 		this.registerEvent(
 			this.app.workspace.on('editor-menu', (menu, editor) => {
 				menu.addItem((item) => {
-					item.setTitle(manifest.name).setIcon('brain-cog');
+					item.setTitle(`${manifest.name} Commands`).setIcon('brain-cog');
 
 					const subMenu = item.setSubmenu();
 
-					for (const prompt of getActions(this.settings)) {
+					for (const prompt of getCommands(this.settings)) {
 						// slugify and remove spaces
 						const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
 
@@ -66,7 +66,7 @@ export default class AiPlugin extends Plugin {
 								.setIcon(prompt.icon ? iconName : AiIcon)
 								.onClick(async () => {
 									try {
-										await runAction(
+										await runPrompt(
 											this.app,
 											editor,
 											this.settings,

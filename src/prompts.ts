@@ -10,11 +10,11 @@ import SimplifyIcon from './icons/simplify-text.svg';
 import { type Prompt, PromptSchema } from './types';
 import { CommandActions, CommandNames, type PluginSettings } from './types';
 
-export function getActions(settings: PluginSettings) {
+export function getCommands(settings: PluginSettings) {
 	const localCustomPrompts = settings.customPrompts;
 
 	// Add basePromptEnding to all prompts ending
-	return [...extraActions, ...nativePrompts, ...localCustomPrompts].map(
+	return [...extraPrompts, ...nativePrompts, ...localCustomPrompts].map(
 		(prompt) => {
 			let action = CommandActions.DirectReplacement;
 
@@ -26,13 +26,13 @@ export function getActions(settings: PluginSettings) {
 			return {
 				...prompt,
 				action,
-				data: `${prompt.data}\n\n${basePromptEnding}`,
+				data: `${prompt.data}\n\n${basePrompt}`,
 			};
 		},
 	);
 }
 
-export const basePromptEnding = `
+export const basePrompt = `
 ## Base Instructions
 
 - Keep the meaning the same. If possible, retain the structure of the paragraphs. Ensure the re-written text's word count is near to the original text.
@@ -47,7 +47,7 @@ Text:
 \`\`\`{{input}}\`\`\`
 `;
 
-export const extraActions: (Omit<Prompt, 'name'> & { name: CommandNames })[] = [
+export const extraPrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] = [
 	{
 		name: CommandNames.CustomInstructions,
 		icon: CustomInstructions,
