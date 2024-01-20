@@ -3,17 +3,9 @@ import process from 'node:process';
 import builtins from 'builtin-modules';
 import esbuild from 'esbuild';
 
-const banner = `/*
-To view the source, visit the GitHub repository: https://github.com/ckt1031/obsidian-wordwise-plugin
-*/
-`;
-
 const prod = process.argv[2] === 'production';
 
 const context = await esbuild.context({
-	banner: {
-		js: banner,
-	},
 	entryPoints: ['src/main.ts'],
 	bundle: true,
 	external: [
@@ -33,7 +25,7 @@ const context = await esbuild.context({
 		...builtins,
 	],
 	format: 'cjs',
-	target: 'es2018',
+	target: 'es2022',
 	logLevel: 'info',
 	minify: true,
 	sourcemap: prod ? false : 'inline',
