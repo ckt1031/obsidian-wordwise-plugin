@@ -4,6 +4,7 @@ import ImproveWritingIcon from './icons/improve-writing.svg';
 import MakeLongerIcon from './icons/make-longer.svg';
 import MakeShorterIcon from './icons/make-shorter.svg';
 import ParaphraseIcon from './icons/paraphrase.svg';
+import SimplifyIcon from './icons/simplify-text.svg';
 import type { Prompt } from './types';
 import { CommandActions, CommandNames, type PluginSettings } from './types';
 
@@ -118,6 +119,24 @@ export const PROMPTS: Prompt = [
 		- Do not add new information or your own opinion, but focus on reflecting the ideas presented in the source material.
 		- If the text is technical or contains specialized language, strive to simplify the content without losing the intended message.
 		- If a word, phrase, or part of the text is already clear and effective, you may leave it as it is, unchanged.
+		`,
+	},
+	{
+		name: CommandNames.SimplifyText,
+		icon: SimplifyIcon,
+		action: CommandActions.DirectReplacement,
+		data: `
+		## Tasks
+		
+		- You are a real human that can read and write properly and fluently.
+		- Your task is to simplify the following text delimited by triple backticks.
+		- Make the text clearer and easier to understand by using simple words and phrases. Avoid ones that are too hard or confusing.
+		- Keep sentences short and divide long statements into smaller ones. Aim for sentences that are 15 to 20 words long.
+		- Write in an active voice and use strong verbs to make your writing more direct and engaging.
+		- Remove unnecessary words, phrases, or clauses that do not contribute to the meaning of the text.
+		- Ensure that the simplified text retains the original meaning and context.
+		- Do not add new information or your own opinion, but focus on reflecting the ideas presented in the source material.
+		- If a word, phrase, or part of the text is already clear and effective, leave it as it is, unchanged.
 		`,
 	},
 ];
