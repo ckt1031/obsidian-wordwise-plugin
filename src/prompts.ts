@@ -3,6 +3,7 @@ import HighlightMainPointIcon from './icons/highlight-mainpoint.svg';
 import ImproveWritingIcon from './icons/improve-writing.svg';
 import MakeLongerIcon from './icons/make-longer.svg';
 import MakeShorterIcon from './icons/make-shorter.svg';
+import ParaphraseIcon from './icons/paraphrase.svg';
 import type { Prompt } from './types';
 import { CommandActions, CommandNames, type PluginSettings } from './types';
 
@@ -25,7 +26,7 @@ export const basePromptEnding = `
 - Output the answer without additional context, explanation, or extra wording, just the corrected text itself. Don't use any punctuation, especially no quotes or backticks, around the text.
 - Respond in the same language variety or dialect of the text.
 - Keep the suitable markdown compounds if present, such as images, URLs.
-- You should not return the 3 backticks **wrapper** in the text response.
+- Your task is to rewrite the following text delimited by triple backticks in a different way while keeping the original meaning intact.
 
 Text:
 
@@ -42,10 +43,11 @@ export const PROMPTS: Prompt = [
 		## Tasks
 
 		- You are a real human that can read and write properly and fluently.
-		- Your task is to write a better version of the following text delimited by triple backticks.
-		- Your task means making the text clearer, easier to understand, and well put together, by correcting grammar, spelling, choosing the most suitable punctuation marks, selecting the best tone and style based on the topic and purpose of the text.
-		- Choose simple words and phrases to improve the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do. If a word, phrase, or part of the text is already clear and effective, leave it as it is, unchanged.
-		`,
+		- Your task is to improve the following text.
+		- Make the text clearer, easier to understand, and well put together by correcting grammar, spelling, choosing the most suitable punctuation marks, and selecting the best tone and style based on the topic and purpose of the text.
+		- Choose simple words and phrases to improve the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
+		- Do not use advanced or strange words that are not suitable for simple writings. You may use terminology or specialized words if it is necessary.
+		- Keep everything fluent and highly readable. If a word, phrase, or part of the text is already clear and effective, leave it as it is, unchanged.`,
 	},
 	{
 		name: CommandNames.FixGrammar,
@@ -93,11 +95,29 @@ export const PROMPTS: Prompt = [
 		action: CommandActions.DirectReplacement,
 		data: `
 		## Tasks
-
+	
 		- You are a real human that can read and write properly and fluently.
-		- Your task is to write a shorter version of the following text delimited by triple backticks.
-		- Your task means making the text shorter, and keeping the text clear, easy to understand, and well put together.
-		- Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
+		- Highlighting means marking the most important words, phrases, or sentences in a text. It should be used sparingly and only for the most crucial points.
+		- Your task means identifying the key ideas or arguments, and marking them in a way that makes them stand out.
+		- Avoid highlighting too much text. If everything is highlighted, then nothing stands out. Aim to highlight only one sentence or phrase per paragraph.
+		- Keep the highlighting clear and simple. Do not make it messy or confusing.
+		- If a word, phrase, or part of the text is already clear and effective, leave it as it is, unchanged.
+		`,
+	},
+	{
+		name: CommandNames.Paraphrase,
+		icon: ParaphraseIcon,
+		action: CommandActions.DirectReplacement,
+		data: `
+		## Tasks
+	
+		- You are a real human that can read and write properly and fluently.
+		- Aim to reformulate the sentences, changing the structure and using synonyms where appropriate, without distorting the meaning of the text.
+		- Avoid using the same phrases or terminology as the original text unless necessary. The paraphrased text should be distinct yet convey the same information.
+		- Ensure that the paraphrased version is clear, concise, and maintains the tone appropriate to the context of the original text.
+		- Do not add new information or your own opinion, but focus on reflecting the ideas presented in the source material.
+		- If the text is technical or contains specialized language, strive to simplify the content without losing the intended message.
+		- If a word, phrase, or part of the text is already clear and effective, you may leave it as it is, unchanged.
 		`,
 	},
 ];
