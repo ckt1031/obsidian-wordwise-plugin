@@ -8,10 +8,7 @@ const prod = process.argv[2] === 'production';
 const context = await esbuild.context({
 	entryPoints: ['src/main.ts'],
 	bundle: true,
-	external: [
-		'obsidian',
-		...builtins,
-	],
+	external: ['obsidian', ...builtins],
 	format: 'cjs',
 	target: 'es2022',
 	logLevel: 'info',
