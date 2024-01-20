@@ -3,9 +3,9 @@ import { Notice, Plugin, addIcon } from 'obsidian';
 import { safeParseAsync } from 'valibot';
 import manifest from '../manifest.json';
 import { DEFAULT_SETTINGS } from './config';
-import { runPrompts } from './generate';
+import { runAction } from './generate';
 import AiIcon from './icons/ai.svg';
-import { getPrompts } from './prompts';
+import { getActions } from './prompts';
 import { SettingTab } from './settings-tab';
 import {
 	type ObfuscatedPluginSettings,
@@ -23,7 +23,7 @@ export default class AiPlugin extends Plugin {
 
 		addIcon('openai', AiIcon);
 
-		for (const prompt of getPrompts(this.settings)) {
+		for (const prompt of getActions(this.settings)) {
 			// slugify and remove spaces
 			const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
 
@@ -36,7 +36,7 @@ export default class AiPlugin extends Plugin {
 				icon: prompt.icon ? iconName : AiIcon,
 				editorCallback: async (editor) => {
 					try {
-						await runPrompts(editor, this.settings, prompt.name);
+						await runAction(this.app, editor, this.settings, prompt.name);
 					} catch (error) {
 						if (error instanceof Error) {
 							log(this.settings, error.message);
@@ -54,7 +54,7 @@ export default class AiPlugin extends Plugin {
 
 					const subMenu = item.setSubmenu();
 
-					for (const prompt of getPrompts(this.settings)) {
+					for (const prompt of getActions(this.settings)) {
 						// slugify and remove spaces
 						const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
 
@@ -66,7 +66,12 @@ export default class AiPlugin extends Plugin {
 								.setIcon(prompt.icon ? iconName : AiIcon)
 								.onClick(async () => {
 									try {
-										await runPrompts(editor, this.settings, prompt.name);
+										await runAction(
+											this.app,
+											editor,
+											this.settings,
+											prompt.name,
+										);
 									} catch (error) {
 										if (error instanceof Error) {
 											log(this.settings, error.message);

@@ -1,29 +1,31 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from 'vitest';
 
-import type { PluginSettings } from "../src/types";
+import { generateRandomString } from 'src/utils/random-string';
+import type { PluginSettings } from '../src/types';
 import {
 	deobfuscateConfig,
 	obfuscateConfig,
-} from "../src/utils/obfuscate-config";
-import { generateRandomString } from "src/utils/random-string";
+} from '../src/utils/obfuscate-config';
 
 const DEFAULT_SETTINGS: PluginSettings = {
 	// This API key is fake, random characters
-	openAiApiKey: `sk-${generateRandomString(20)}T3BlbkFJ${generateRandomString(20)}`,
+	openAiApiKey: `sk-${generateRandomString(20)}T3BlbkFJ${generateRandomString(
+		20,
+	)}`,
 	temperature: 0.7,
-	customAiModel: "",
+	customAiModel: '',
 	maxTokens: 1750,
 	frequencyPenalty: 1,
 	presencePenalty: -1,
-	openAiBaseUrl: "https://api.example.com",
-	openAiModel: "gpt-3.5-turbo",
+	openAiBaseUrl: 'https://api.example.com',
+	openAiModel: 'gpt-3.5-turbo',
 	debugMode: false,
 	advancedSettings: false,
 	customPrompts: [],
 };
 
-describe("obfuscateConfig and deobfuscateConfig", () => {
-	it("should obfuscate and deobfuscate the config correctly", () => {
+describe('obfuscateConfig and deobfuscateConfig', () => {
+	it('should obfuscate and deobfuscate the config correctly', () => {
 		const obfuscatedConfig = obfuscateConfig(DEFAULT_SETTINGS);
 
 		// Expect not to be equal to the default settings
@@ -40,7 +42,7 @@ describe("obfuscateConfig and deobfuscateConfig", () => {
 		expect(deobfuscatedConfig).toEqual(DEFAULT_SETTINGS);
 	});
 
-	it("should return null for empty or undefined input", () => {
+	it('should return null for empty or undefined input', () => {
 		expect(obfuscateConfig(undefined)).toBeUndefined();
 		// @ts-expect-error
 		expect(deobfuscateConfig({})).toBeNull();

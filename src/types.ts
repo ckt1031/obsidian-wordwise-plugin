@@ -2,10 +2,12 @@ import {
 	type Output,
 	array,
 	boolean,
+	enum_,
 	number,
 	object,
 	optional,
 	string,
+	union,
 } from 'valibot';
 
 export enum CommandNames {
@@ -16,19 +18,30 @@ export enum CommandNames {
 	MakeLonger = 'Make Longer',
 	Paraphrase = 'Paraphrase',
 	HighlightMainPoint = 'Highlight Main Point',
+
+	// Extra Commands
+	CustomInstructions = 'Custom Instructions',
 }
 
 export enum CommandActions {
+	/**
+	 * Directly replace the selected text with the generated text.
+	 */
 	DirectReplacement = 0,
-	ModalConfirmation = 1,
+	/**
+	 * This will not be using native prompts, but instead will be using custom prompts by a modal for custom instructions.
+	 */
+	CustomInstructions = 1,
 }
 
-export type Prompt = {
-	name: CommandNames | string;
-	icon?: string;
-	action: CommandActions;
-	data: string;
-}[];
+export const PromptSchema = object({
+	name: union([string(), enum_(CommandNames)]),
+	icon: optional(string()),
+	action: enum_(CommandActions),
+	data: string(),
+});
+
+export type Prompt = Output<typeof PromptSchema>;
 
 export const CustomPromptSchema = object({
 	name: string(),
