@@ -1,6 +1,6 @@
 {
   "name": "obsidian-wordwise-plugin",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Obsidian plugin for AI content generation akin to Notion AI.",
   "license": "MIT",
   "author": "ckt1031",
