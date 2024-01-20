@@ -1,7 +1,7 @@
 {
 	"author": "ckt1031",
 	"authorUrl": "https://github.com/ckt1031",
-	"description": "Increasing productivity and efficiency with wise AI text generation, inspired by Notion AI",
+	"description": "Obsidian plugin for AI content generation akin to Notion AI.",
 	"id": "wordwise",
 	"isDesktopOnly": false,
 	"minAppVersion": "1.0.0",
