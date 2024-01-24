@@ -21,7 +21,7 @@
     "@biomejs/biome": "1.5.3",
     "@types/node": "20.11.5",
     "builtin-modules": "3.3.0",
-    "esbuild": "0.19.11",
+    "esbuild": "0.19.12",
     "obsidian": "1.4.11",
     "tslib": "2.6.2",
     "typescript": "5.3.3",
