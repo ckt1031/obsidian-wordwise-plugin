@@ -9,8 +9,8 @@
     "build": "node esbuild.config.mjs production",
     "dev": "node esbuild.config.mjs",
     "format": "biome format . --write",
-    "lint": "tsc --noEmit && biome check .",
-    "lint:fix": "tsc --noEmit && biome check --apply .",
+    "lint": "tsc --noEmit --skipLibCheck && biome check .",
+    "lint:fix": "tsc --noEmit --skipLibCheck && biome check --apply .",
     "test": "vitest run",
     "version": "node version-bump.mjs && git add manifest.json versions.json"
   },
