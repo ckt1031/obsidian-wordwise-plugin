@@ -1,35 +1,39 @@
 name: Release A New Version
 
 on:
-  push:
-    tags:
-      - '*'
+    push:
+        tags:
+            - "*"
 
-permissions: 
-  contents: write
-  issues: write
-  pull-requests: write
+permissions:
+    contents: write
+    issues: write
+    pull-requests: write
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+        steps:
+            - uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: latest
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: lts
 
-      - run: bun install
+            - uses: oven-sh/setup-bun@v1
+              with:
+                  bun-version: latest
 
-      - run: bun run lint
+            - run: bun install
 
-      - run: bun run test
+            - run: bun run lint
 
-      - run: bun run build
+            - run: bun run test
 
-      - run: bunx semantic-release
-        if: startsWith(github.ref, 'refs/tags/')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - run: bun run build
+
+            - run: bunx semantic-release
+              if: startsWith(github.ref, 'refs/tags/')
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
