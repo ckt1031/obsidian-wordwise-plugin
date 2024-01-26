@@ -23,14 +23,10 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.5.3",
-    "@semantic-release/commit-analyzer": "11.1.0",
-    "@semantic-release/github": "9.2.6",
-    "@semantic-release/release-notes-generator": "12.1.0",
     "@types/node": "20.11.7",
     "builtin-modules": "3.3.0",
     "esbuild": "0.19.12",
     "obsidian": "1.4.11",
-    "semantic-release": "23.0.0",
     "tslib": "2.6.2",
     "typescript": "5.3.3",
     "vitest": "1.2.1"

@@ -17,10 +17,6 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: 20
-
             - uses: oven-sh/setup-bun@v1
               with:
                   bun-version: latest
@@ -33,7 +29,13 @@ jobs:
 
             - run: bun run build
 
-            - run: bunx semantic-release
+            - name: Release
               if: startsWith(github.ref, 'refs/tags/')
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              uses: softprops/action-gh-release@v1
+              with:
+                  files: |
+                      main.js
+                      manifest.json
+                      styles.css
+                  draft: false
+                  prerelease: false
