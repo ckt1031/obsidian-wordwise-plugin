@@ -8,7 +8,15 @@ Inspired by the [Notion AI](https://www.notion.so/product/ai), this plugin is bu
 
 ## Installation
 
-You can install the Obsidian TingPNG Plugin by following these steps:
+### BRAT Installation
+
+1. Install the [BRAT](https://github.com/TfTHacker/obsidian42-brat)
+2. Enter the plugin url `https://github.com/ckt1031/obsidian-wordwise-plugin` in the BRAT settings
+3. Enable the plugin and enjoy!
+
+### Manual Installation
+
+You can install the Obsidian Wordwise Plugin by following these steps:
 
 1. Download 3 files: `main.js`, `manifest.json`, `styles.css` from the [latest release](https://github.com/ckt1031/obsidian-ai-plugin/releases/latest).
 2. Create a folder named "ai-plugin" in your Obsidian vault's plugins folder.
@@ -25,22 +33,24 @@ To configure the AI plugin, you need to provide your OpenAI API key and further 
 
 There are also some additional options that you can configure:
 
-- **OpenAI Base URL**: The base URL for the OpenAI API. You can change this if you want to use a different API endpoint, suitable for users who cannot access the OpenAI directly or intented to use third party services.
-- **OpenAI Model**: The model to use for the AI. The default is `gpt-3.5-turbo`, which is the most stablest and suitable model. You can also use `gpt-3.5-turbo-0613` or `gpt-3.5-turbo-16k` for faster or longer results. or even `gpt-4` (Not recommended) and `gpt-4-32k` (Not recommended) for the most powerful model.
-- **Temperature**: The higher the temperature, the crazier the text. The temperature can be any number between 0 and 1, but OpenAI recommends keeping it between 0.7 and 1.0.
-- **Frequency Penalty**: Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
-- **Presence Penalty**: Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics..
-- **Maxmium Tokens**: The maximum number of tokens to generate. Remember that the start token counts as one token. In general, the longer the input prompt, the more tokens you will need to use. More tokens will also increase the time and cost of the request.
+- **OpenAI Base URL**: The web address for OpenAI. You can change it to use a different service.
+- **OpenAI Model**: The AI model to use. Default is `gpt-3.5-turbo`, but `gpt-4` and `gpt-4-turbo-preview` are also options.
+- **Temperature**: A value between 0 and 1 that controls the randomness of the text. Higher values make the text more random.
+- **Frequency Penalty**: A value between -2.0 and 2.0. Positive values make the AI less likely to repeat itself.
+- **Presence Penalty**: A value between -2.0 and 2.0. Positive values make the AI more likely to discuss new topics.
+- **Maximum Tokens**: The maximum length of the generated text. Longer prompts require more tokens, which increases the time and cost of the request.
 
 ## Commands
 
 The plugin provides the following commands:
 
-- **AI: Improve Writing**: Improve your writing such as grammar, sentence structure, and word choice.
-- **AI: Simplify Text**: Simplify your text to make it easier to read.
-- **AI: Make Shorter**: Condense your text while retaining the main points, ideal for creating summaries.
-- **AI: Make Longer**: Expand on your text to provide more detail or explanation.
-- **AI: Paraphrase**: Rewrite your text in a different way while keeping the same meaning, perfect for avoiding repetition or enhancing understanding.
+- **Improve Writing**: Improve your writing such as grammar, sentence structure, and word choice.
+- **Fix Grammar**: Fix grammar mistakes in your text.
+- **Make Shorter**: Condense your text while retaining the main points, ideal for creating summaries.
+- **Make Longer**: Expand on your text to provide more detail or explanation.
+- **Highlight Main Point**: Highlight the only main idea in your text.
+- **Paraphrase**: Rewrite your text in a different way while keeping the same meaning, perfect for avoiding repetition or enhancing understanding.
+- **Simplify Text**: Simplify your text to make it easier to read.
 
 ## License
 
