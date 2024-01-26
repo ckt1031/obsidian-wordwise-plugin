@@ -38,6 +38,7 @@ export default class AskForInstructionModal extends Modal {
 		new Setting(contentEl)
 			.setName('Instruction:')
 			.addTextArea((textArea: TextAreaComponent) => {
+				textArea.inputEl.className = 'modal-text-area';
 				textArea.setPlaceholder(
 					'Help me to transform bullets into numbered lists.',
 				);
