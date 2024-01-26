@@ -43,7 +43,7 @@ export class SettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('OpenAI Endpoint Base URL')
+			.setName('Endpoint Base URL')
 			.setDesc(
 				SettingTab.createFragmentWithHTML(
 					'Base URL for the OpenAI API, defaults to <code>https://api.openai.com</code>.<br/><b>DO NOT include / trailing slash and /v1 suffix</b>.',
@@ -60,10 +60,10 @@ export class SettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('OpenAI Model')
+			.setName('Language Model')
 			.setDesc(
 				SettingTab.createFragmentWithHTML(
-					'OpenAI Model to use, defaults to <b>gpt-3.5-turbo</b>, see <a href="https://platform.openai.com/docs/models">OpenAI Models</a> for more info',
+					'Model to be used, defaults to <b>gpt-3.5-turbo</b>, see <a href="https://platform.openai.com/docs/models">OpenAI Models</a> for more info',
 				),
 			)
 			.addDropdown((dropDown) => {
