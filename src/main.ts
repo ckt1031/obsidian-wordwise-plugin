@@ -3,9 +3,9 @@ import { Notice, Plugin, addIcon } from 'obsidian';
 import { safeParseAsync } from 'valibot';
 import manifest from '../manifest.json';
 import { DEFAULT_SETTINGS } from './config';
-import { runPrompt } from './run-prompt';
 import AiIcon from './icons/ai.svg';
 import { getCommands } from './prompts';
+import { runPrompt } from './run-prompt';
 import { SettingTab } from './settings-tab';
 import {
 	type ObfuscatedPluginSettings,

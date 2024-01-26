@@ -2,9 +2,10 @@ import type { App, ButtonComponent } from 'obsidian';
 import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
 import manifest from '../manifest.json';
-import { OPENAI_MODELS } from './config';
+import { ANTHROPIC_MODELS, GOOGLE_AI_MODELS, OPENAI_MODELS } from './config';
 import type AiPlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
+import { APIProvider } from './types';
 import { callAPI } from './utils/call-api';
 import { log } from './utils/logging';
 
@@ -30,52 +31,174 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.createEl('h1', { text: manifest.name });
 
 		new Setting(containerEl)
-			.setName('API Key')
-			.setDesc('API Key for the OpenAI API')
-			.addText((text) =>
-				text
-					.setPlaceholder('Enter your API Key')
-					.setValue(plugin.settings.openAiApiKey)
-					.onChange(async (value) => {
-						plugin.settings.openAiApiKey = value;
-						await plugin.saveSettings();
-					}),
-			);
-
-		new Setting(containerEl)
-			.setName('Endpoint Base URL')
+			.setName('API Provider')
 			.setDesc(
-				SettingTab.createFragmentWithHTML(
-					'Base URL for the OpenAI API, defaults to <code>https://api.openai.com</code>.<br/><b>DO NOT include / trailing slash and /v1 suffix</b>.',
-				),
-			)
-			.addText((text) =>
-				text
-					.setPlaceholder('https://api.openai.com')
-					.setValue(plugin.settings.openAiBaseUrl)
-					.onChange(async (value) => {
-						plugin.settings.openAiBaseUrl = value;
-						await plugin.saveSettings();
-					}),
-			);
-
-		new Setting(containerEl)
-			.setName('Language Model')
-			.setDesc(
-				SettingTab.createFragmentWithHTML(
-					'Model to be used, defaults to <b>gpt-3.5-turbo</b>, see <a href="https://platform.openai.com/docs/models">OpenAI Models</a> for more info',
-				),
+				'API Provider to be used, available options are OpenAI, Anthropic and Google AI',
 			)
 			.addDropdown((dropDown) => {
-				for (const model of OPENAI_MODELS) {
-					dropDown.addOption(model, model);
+				// Add all the API Providers, use value as option value
+				for (const provider of Object.values(APIProvider)) {
+					dropDown.addOption(provider, provider);
 				}
-				dropDown.setValue(plugin.settings.openAiModel);
+
+				dropDown.setValue(plugin.settings.apiProvider);
 				dropDown.onChange(async (value) => {
-					plugin.settings.openAiModel = value;
+					plugin.settings.apiProvider = value as APIProvider;
 					await plugin.saveSettings();
+					await plugin.app.setting.close();
+					await plugin.app.setting.open();
 				});
 			});
+
+		if (plugin.settings.apiProvider === APIProvider.OpenAI) {
+			new Setting(containerEl)
+				.setName('OpenAI API Key')
+				.setDesc('API Key for the OpenAI API')
+				.addText((text) =>
+					text
+						.setPlaceholder('Enter your API Key')
+						.setValue(plugin.settings.openAiApiKey)
+						.onChange(async (value) => {
+							plugin.settings.openAiApiKey = value;
+							await plugin.saveSettings();
+						}),
+				);
+
+			new Setting(containerEl)
+				.setName('OpenAI Endpoint Base URL')
+				.setDesc(
+					SettingTab.createFragmentWithHTML(
+						'Base URL for the OpenAI API, defaults to <code>https://api.openai.com</code>.<br/><b>DO NOT include / trailing slash and /v1 suffix</b>.',
+					),
+				)
+				.addText((text) =>
+					text
+						.setPlaceholder('https://api.openai.com')
+						.setValue(plugin.settings.openAiBaseUrl)
+						.onChange(async (value) => {
+							plugin.settings.openAiBaseUrl = value;
+							await plugin.saveSettings();
+						}),
+				);
+
+			new Setting(containerEl)
+				.setName('OpenAI Language Model')
+				.setDesc(
+					SettingTab.createFragmentWithHTML(
+						'Model to be used, defaults to <b>gpt-3.5-turbo</b>, see <a href="https://platform.openai.com/docs/models">OpenAI Models</a> for more info',
+					),
+				)
+				.addDropdown((dropDown) => {
+					for (const model of OPENAI_MODELS) {
+						dropDown.addOption(model, model);
+					}
+					dropDown.setValue(plugin.settings.openAiModel);
+					dropDown.onChange(async (value) => {
+						plugin.settings.openAiModel = value;
+						await plugin.saveSettings();
+					});
+				});
+		}
+
+		if (plugin.settings.apiProvider === APIProvider.Anthropic) {
+			new Setting(containerEl)
+				.setName('Anthropic API Key')
+				.setDesc('API Key for the Anthropic API')
+				.addText((text) =>
+					text
+						.setPlaceholder('Enter your API Key')
+						.setValue(plugin.settings.anthropicApiKey)
+						.onChange(async (value) => {
+							plugin.settings.anthropicApiKey = value;
+							await plugin.saveSettings();
+						}),
+				);
+
+			new Setting(containerEl)
+				.setName('Anthropic Endpoint Base URL')
+				.setDesc(
+					SettingTab.createFragmentWithHTML(
+						'Base URL for the Anthropic API, defaults to <code>https://api.anthropic.com</code>.<br/><b>DO NOT include / trailing slash and /v1 suffix</b>.',
+					),
+				)
+				.addText((text) =>
+					text
+						.setPlaceholder('https://api.anthropic.com')
+						.setValue(plugin.settings.anthropicBaseUrl)
+						.onChange(async (value) => {
+							plugin.settings.anthropicBaseUrl = value;
+							await plugin.saveSettings();
+						}),
+				);
+
+			new Setting(containerEl)
+				.setName('Anthropic Language Model')
+				.setDesc(
+					SettingTab.createFragmentWithHTML(
+						'Model to be used, defaults to <b>gpt3</b>, see <a href="https://docs.anthropic.com/claude/reference/getting-started-with-the-api">Anthropic API Reference</a> for more info',
+					),
+				)
+				.addDropdown((dropDown) => {
+					for (const model of ANTHROPIC_MODELS) {
+						dropDown.addOption(model, model);
+					}
+					dropDown.setValue(plugin.settings.anthropicModel);
+					dropDown.onChange(async (value) => {
+						plugin.settings.anthropicModel = value;
+						await plugin.saveSettings();
+					});
+				});
+		}
+
+		if (plugin.settings.apiProvider === APIProvider.GoogleGemini) {
+			new Setting(containerEl)
+				.setName('Google AI API Key')
+				.setDesc('API Key for the Google AI API')
+				.addText((text) =>
+					text
+						.setPlaceholder('Enter your API Key')
+						.setValue(plugin.settings.googleAIApiKey)
+						.onChange(async (value) => {
+							plugin.settings.googleAIApiKey = value;
+							await plugin.saveSettings();
+						}),
+				);
+
+			new Setting(containerEl)
+				.setName('Google AI Endpoint Base URL')
+				.setDesc(
+					SettingTab.createFragmentWithHTML(
+						'Base URL for the Google AI API, defaults to <code>https://generativelanguage.googleapis.com</code>.<br/><b>DO NOT include / trailing slash and /v1 suffix</b>.',
+					),
+				)
+				.addText((text) =>
+					text
+						.setPlaceholder('https://generativelanguage.googleapis.com')
+						.setValue(plugin.settings.googleAIBaseUrl)
+						.onChange(async (value) => {
+							plugin.settings.googleAIBaseUrl = value;
+							await plugin.saveSettings();
+						}),
+				);
+
+			new Setting(containerEl)
+				.setName('Google AI Language Model')
+				.setDesc(
+					SettingTab.createFragmentWithHTML(
+						'Model to be used, defaults to <b>gemini-pro</b>, see <a href="https://ai.google.dev/models/gemini">Google AI Models</a> for more info',
+					),
+				)
+				.addDropdown((dropDown) => {
+					for (const model of GOOGLE_AI_MODELS) {
+						dropDown.addOption(model, model);
+					}
+					dropDown.setValue(plugin.settings.googleAIModel);
+					dropDown.onChange(async (value) => {
+						plugin.settings.googleAIModel = value;
+						await plugin.saveSettings();
+					});
+				});
+		}
 
 		new Setting(containerEl)
 			.setName('Check API Availability')
@@ -87,8 +210,7 @@ export class SettingTab extends PluginSettingTab {
 
 						const result = await callAPI({
 							settings: plugin.settings,
-							enableSystemMessages: false,
-							userMessages: 'Say 1 only',
+							userMessages: 'Say word hello only.',
 						});
 
 						if (result && result.length > 0) {
@@ -104,7 +226,7 @@ export class SettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('Advanced Mode')
 			.setDesc(
-				'Configure advanced GPT model settings, enable this in order to send extra parameters to the API',
+				'Configure advanced model settings, enable this in order to send extra parameters to the API',
 			)
 			.addToggle((toggle) =>
 				toggle
@@ -137,7 +259,7 @@ export class SettingTab extends PluginSettingTab {
 				});
 
 			new Setting(containerEl)
-				.setName('Custom OpenAI Model ID')
+				.setName('Custom Model ID')
 				.setDesc(
 					'Enter custom model ID for your own API, if this is empty, it will follow the selected menu above.',
 				)

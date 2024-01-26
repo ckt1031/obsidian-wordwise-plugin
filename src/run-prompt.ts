@@ -56,7 +56,6 @@ export async function runPrompt(
 		const result = await callAPI({
 			settings,
 			userMessages: prompt,
-			enableSystemMessages: true,
 		});
 
 		if (!result) {

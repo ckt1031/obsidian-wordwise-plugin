@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
 import { generateRandomString } from 'src/utils/random-string';
-import type { PluginSettings } from '../src/types';
+import { APIProvider, type PluginSettings } from '../src/types';
 import {
 	deobfuscateConfig,
 	obfuscateConfig,
 } from '../src/utils/obfuscate-config';
 
 const DEFAULT_SETTINGS: PluginSettings = {
+	apiProvider: APIProvider.OpenAI,
 	// This API key is fake, random characters
 	openAiApiKey: `sk-${generateRandomString(20)}T3BlbkFJ${generateRandomString(
 		20,
@@ -18,10 +19,16 @@ const DEFAULT_SETTINGS: PluginSettings = {
 	frequencyPenalty: 1,
 	presencePenalty: -1,
 	openAiBaseUrl: 'https://api.example.com',
-	openAiModel: 'gpt-3.5-turbo',
+	openAiModel: 'gpt-250-agi',
 	debugMode: false,
 	advancedSettings: false,
 	customPrompts: [],
+	anthropicApiKey: '123',
+	anthropicBaseUrl: 'https://test.anthropic.com',
+	anthropicModel: 'claude-9999',
+	googleAIApiKey: '333',
+	googleAIBaseUrl: 'https://generativeworld.googleapis.com',
+	googleAIModel: 'gemini-10000',
 };
 
 describe('obfuscateConfig and deobfuscateConfig', () => {

@@ -1,4 +1,4 @@
-import type { PluginSettings } from './types';
+import { APIProvider, type PluginSettings } from './types';
 
 // Ref: https://platform.openai.com/docs/models/overview
 // Updated on 2024-01-26
@@ -16,12 +16,34 @@ export const OPENAI_MODELS = [
 	'gpt-4-0125-preview',
 ];
 
-export const DEFAULT_API_HOST = 'https://api.openai.com';
+// Ref: https://docs.anthropic.com/claude/reference/selecting-a-model
+// Updated on 2024-01-26
+export const ANTHROPIC_MODELS = ['claude-2.1', 'claude-instant-1.2'];
+
+// Ref: https://ai.google.dev/models/gemini
+// Updated on 2024-01-26
+export const GOOGLE_AI_MODELS = ['gemini-pro'];
+
+export const DEFAULT_OPENAI_API_HOST = 'https://api.openai.com';
+export const DEFAULT_ANTHROPIC_API_HOST = 'https://api.anthropic.com';
+export const DEFAULT_GOOGLE_AI_API_HOST =
+	'https://generativelanguage.googleapis.com';
 
 export const DEFAULT_SETTINGS: PluginSettings = {
+	apiProvider: APIProvider.OpenAI,
+
 	openAiApiKey: '',
-	openAiBaseUrl: 'https://api.openai.com',
+	openAiBaseUrl: DEFAULT_OPENAI_API_HOST,
 	openAiModel: 'gpt-3.5-turbo',
+
+	anthropicApiKey: '',
+	anthropicBaseUrl: DEFAULT_ANTHROPIC_API_HOST,
+	anthropicModel: 'claude-2.1',
+
+	googleAIApiKey: '',
+	googleAIBaseUrl: DEFAULT_GOOGLE_AI_API_HOST,
+	googleAIModel: 'gemini-pro',
+
 	customAiModel: '',
 	maxTokens: 2000,
 	temperature: 0.5,

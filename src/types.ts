@@ -10,6 +10,12 @@ import {
 	union,
 } from 'valibot';
 
+export enum APIProvider {
+	OpenAI = 'openai',
+	GoogleGemini = 'google-ai-gemini',
+	Anthropic = 'anthropic',
+}
+
 export enum CommandNames {
 	ImproveWriting = 'Improve Writing',
 	FixGrammar = 'Fix Grammar',
@@ -50,9 +56,20 @@ export const CustomPromptSchema = object({
 });
 
 export const PluginSettingsSchema = object({
+	apiProvider: enum_(APIProvider),
+
 	openAiApiKey: string(),
 	openAiBaseUrl: string(),
 	openAiModel: string(),
+
+	anthropicApiKey: string(),
+	anthropicBaseUrl: string(),
+	anthropicModel: string(),
+
+	googleAIApiKey: string(),
+	googleAIBaseUrl: string(),
+	googleAIModel: string(),
+
 	advancedSettings: boolean(),
 	customAiModel: string(),
 	maxTokens: number(),
@@ -86,5 +103,4 @@ export interface OpenAiKeyCredit {
 export interface CallAPIProps {
 	settings: PluginSettings;
 	userMessages: string;
-	enableSystemMessages: boolean;
 }

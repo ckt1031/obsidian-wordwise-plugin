@@ -35,13 +35,17 @@ export default class AskForInstructionModal extends Modal {
 
 		contentEl.createEl('h4', { text: 'Enter custom instruction here:' });
 
-		new Setting(contentEl).setName('Instruction:').addTextArea((textArea: TextAreaComponent) => {
-			textArea.setPlaceholder('Help me to transform bullets into numbered lists.');
-			textArea.onChange((value: string) => {
-				this.instruction = value;
+		new Setting(contentEl)
+			.setName('Instruction:')
+			.addTextArea((textArea: TextAreaComponent) => {
+				textArea.setPlaceholder(
+					'Help me to transform bullets into numbered lists.',
+				);
+				textArea.onChange((value: string) => {
+					this.instruction = value;
+				});
+				textArea.setValue(instruction);
 			});
-			textArea.setValue(instruction);
-		});
 
 		new Setting(contentEl).addButton((btn) =>
 			btn
