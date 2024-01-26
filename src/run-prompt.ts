@@ -71,7 +71,7 @@ export async function runPrompt(
 	} catch (error) {
 		if (error instanceof Error) {
 			log(settings, error.message);
-			new Notice(`Error requesting OpenAI: ${error.message}`);
+			new Notice(`Error requesting AI services: ${error.message}`);
 			return undefined;
 		}
 	}
