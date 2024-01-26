@@ -5,6 +5,11 @@ on:
     tags:
       - '*'
 
+permissions: 
+  contents: write
+  issues: write
+  pull-requests: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,13 +29,7 @@ jobs:
 
       - run: bun run build
 
-      - name: Release
+      - run: bunx semantic-release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            main.js
-            manifest.json
-            styles.css
-          draft: false
-          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
