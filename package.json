@@ -9,19 +9,19 @@
     "build": "node esbuild.config.mjs production",
     "dev": "node esbuild.config.mjs",
     "format": "biome format . --write",
-    "lint": "tsc --noEmit && biome check .",
-    "lint:fix": "tsc --noEmit && biome check --apply .",
+    "lint": "tsc --noEmit --skipLibCheck && biome check .",
+    "lint:fix": "tsc --noEmit --skipLibCheck && biome check --apply .",
     "test": "vitest run",
     "version": "node version-bump.mjs && git add manifest.json versions.json"
   },
   "dependencies": {
-    "valibot": "0.26.0"
+    "valibot": "0.27.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.5.2",
-    "@types/node": "20.11.5",
+    "@biomejs/biome": "1.5.3",
+    "@types/node": "20.11.6",
     "builtin-modules": "3.3.0",
-    "esbuild": "0.19.11",
+    "esbuild": "0.19.12",
     "obsidian": "1.4.11",
     "tslib": "2.6.2",
     "typescript": "5.3.3",
