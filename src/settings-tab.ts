@@ -2,13 +2,13 @@ import type { App, ButtonComponent } from 'obsidian';
 import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
 import manifest from '../manifest.json';
+import { wrapPasswordComponent } from './components/password';
 import { ANTHROPIC_MODELS, GOOGLE_AI_MODELS, OPENAI_MODELS } from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
 import { APIProvider } from './types';
 import { callAPI } from './utils/call-api';
 import { log } from './utils/logging';
-import { wrapPasswordComponent } from './components/password';
 
 export class SettingTab extends PluginSettingTab {
 	plugin: WordWisePlugin;

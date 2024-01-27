@@ -1,5 +1,6 @@
 import { App, type Editor, Notice } from 'obsidian';
 
+import Mustache from 'mustache';
 import AskForInstructionModal from './modals/ask-for-instruction';
 import { getCommands } from './prompts';
 import {
@@ -9,7 +10,6 @@ import {
 } from './types';
 import { callAPI } from './utils/call-api';
 import { log } from './utils/logging';
-import Mustache from 'mustache';
 
 export async function runPrompt(
 	app: App,
