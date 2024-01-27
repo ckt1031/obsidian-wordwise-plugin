@@ -169,7 +169,7 @@ export class SettingTab extends PluginSettingTab {
 				.setName('Google AI Endpoint Base URL')
 				.setDesc(
 					SettingTab.createFragmentWithHTML(
-						'Base URL for the Google AI API, defaults to <code>https://generativelanguage.googleapis.com</code>.<br/><b>DO NOT include / trailing slash and /v1 suffix</b>.',
+						'Base URL for the Google AI API, defaults to <code>https://generativelanguage.googleapis.com</code>.<br/><b>DO NOT include / trailing slash</b>.',
 					),
 				)
 				.addText((text) =>
