@@ -35,16 +35,18 @@ export function getCommands(settings: PluginSettings) {
 export const basePrompt = `
 ## Base Instructions
 
+- You are instructed to change text in the ## Input area, text delimited by triple backticks, make sure to response without the triple backticks wrapper except the content inside.
 - Keep the meaning the same. If possible, retain the structure of the paragraphs. Ensure the re-written text's word count is near to the original text.
-- Output the answer without additional context, explanation, or extra wording, just the corrected text itself. Don't use any punctuation, especially no quotes or backticks, around the text.
+- Response with the rewritten text only, do not include additional context, explanation, or extra wording, just the re-written text itself.
 - Respond in the same language variety or dialect of the text.
-- Keep the suitable markdown compounds if present, such as images, URLs.
-- Your task is to rewrite the following text delimited by triple backticks in a different way while keeping the original meaning intact.
-- Return the rewritten text only as the response, do not include the triple backticks wrapper.
+- Keep the suitable markdown compounds if present, such as images, URLs, checkbox, and Obsidian backlinks [[xxx]] and specified 3 backtick boxes.
+- Remain headings if given.
 
-Text:
+## Input
 
-\`\`\`{{input}}\`\`\`
+\`\`\`
+{{input}}
+\`\`\`
 `;
 
 export const extraPrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] = [
@@ -79,7 +81,7 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 		## Tasks
 
 		- You are a real human that can read and write properly and fluently.
-		- Your task is to improve the following text.
+		- Improve writing of the text.
 		- Make the text clearer, easier to understand, and well put together by correcting grammar, spelling, choosing the most suitable punctuation marks, and selecting the best tone and style based on the topic and purpose of the text.
 		- Choose simple words and phrases to improve the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
 		- Do not use advanced or strange words that are not suitable for simple writings. You may use terminology or specialized words if it is necessary.
