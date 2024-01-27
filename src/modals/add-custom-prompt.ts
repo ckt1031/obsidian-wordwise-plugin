@@ -11,7 +11,12 @@ export default class AddCustomPromptModal extends Modal {
 	plugin: WordWisePlugin;
 
 	// Action sync function or async function
-	constructor(plugin: WordWisePlugin, isEdit: boolean, name?: string, data?: string) {
+	constructor(
+		plugin: WordWisePlugin,
+		isEdit: boolean,
+		name?: string,
+		data?: string,
+	) {
 		super(plugin.app);
 		this.name = '';
 		this.data = '';

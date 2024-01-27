@@ -8,7 +8,7 @@ import {
 
 const DEFAULT_SETTINGS: PluginSettings = {
 	apiProvider: APIProvider.OpenAI,
-	openAiApiKey: "sk-xxxxxx",
+	openAiApiKey: 'sk-xxxxxx',
 	temperature: 0.7,
 	customAiModel: '',
 	maxTokens: 1750,

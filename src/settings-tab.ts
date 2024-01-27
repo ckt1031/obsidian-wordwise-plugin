@@ -246,9 +246,7 @@ export class SettingTab extends PluginSettingTab {
 			new Setting(containerEl)
 				.setName('Temperature')
 				.setDesc(
-					SettingTab.createFragmentWithHTML(
-						'Temperature for the model, defaults to <b>0.5</b>, see <a href="https://platform.openai.com/docs/api-reference/completions/create">OpenAI Reference</a> for more info',
-					),
+					'Temperature for the model, defaults to <b>0.5</b> for best suitable results, higher value means more creative but less accurate, lower value means less creative but more accurate.',
 				)
 				.addSlider((slider) => {
 					slider.setDynamicTooltip();
@@ -279,7 +277,7 @@ export class SettingTab extends PluginSettingTab {
 				.setName('Presence Penalty')
 				.setDesc(
 					SettingTab.createFragmentWithHTML(
-						"Presence penalty for the model, increasing the model's likelihood to talk about new topics, defaults to <b>0.0</b>.",
+						"(OpenAI ONLY) Presence penalty for the model, increasing the model's likelihood to talk about new topics, defaults to <b>0.0</b>.",
 					),
 				)
 
@@ -297,7 +295,7 @@ export class SettingTab extends PluginSettingTab {
 				.setName('Frequency Penalty')
 				.setDesc(
 					SettingTab.createFragmentWithHTML(
-						"Frequency penalty for the model, decreasing the model's likelihood to repeat the same line verbatim, defaults to <b>0.0</b>.",
+						"(OpenAI ONLY) Frequency penalty for the model, decreasing the model's likelihood to repeat the same line verbatim, defaults to <b>0.0</b>.",
 					),
 				)
 				.addSlider((slider) => {
