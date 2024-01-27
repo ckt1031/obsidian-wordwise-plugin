@@ -35,18 +35,18 @@ export function getCommands(settings: PluginSettings) {
 export const basePrompt = `
 ## Base Instructions
 
-- You are instructed to change text in the ## Input area, text delimited by triple backticks, make sure to response without the triple backticks wrapper except the content inside.
+- You are instructed to change text in the ## Input area, text WRAPPED by ===.
 - Keep the meaning the same. If possible, retain the structure of the paragraphs. Ensure the re-written text's word count is near to the original text.
 - Response with the rewritten text only, do not include additional context, explanation, or extra wording, just the re-written text itself.
 - Respond in the same language variety or dialect of the text.
-- Keep the suitable markdown compounds if present, such as images, URLs, checkbox, and Obsidian backlinks [[xxx]] and specified 3 backtick boxes.
+- Keep the suitable markdown compounds if present, such as images, URLs, checkbox, and Obsidian backlinks [[xxx]] and specified triple backtick boxes (also maintain its language identifier, unless its content is code).
 - Remain headings if given.
 
 ## Input
 
-\`\`\`
+===CONTENT-START===
 {{input}}
-\`\`\`
+===CONTENT-END===
 `;
 
 export const extraPrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] = [

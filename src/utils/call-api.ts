@@ -1,20 +1,20 @@
-import type Anthropic from '@anthropic-ai/sdk';
+import type Anthropic from "@anthropic-ai/sdk";
 import type {
 	GenerateContentRequest,
 	GenerateContentResponse,
-} from '@google/generative-ai';
-import { RequestUrlParam, request } from 'obsidian';
-import type OpenAI from 'openai';
+} from "@google/generative-ai";
+import { RequestUrlParam, request } from "obsidian";
+import type OpenAI from "openai";
 import {
 	DEFAULT_ANTHROPIC_API_HOST,
 	DEFAULT_GOOGLE_AI_API_HOST,
 	DEFAULT_OPENAI_API_HOST,
-} from '../config';
-import { APIProvider, type CallAPIProps } from '../types';
-import { log } from './logging';
+} from "../config";
+import { APIProvider, type CallAPIProps } from "../types";
+import { log } from "./logging";
 
 export function getAPIHost(url: string, defaultHost: string): string {
-	const urlPrefix = url.startsWith('http') ? '' : 'http://';
+	const urlPrefix = url.startsWith("http") ? "" : "http://";
 	const host = url.length > 0 ? url : defaultHost;
 
 	return `${urlPrefix}${host}`;
@@ -28,14 +28,14 @@ async function handleRequest<T, U>({
 	body,
 	settings,
 	headers = {
-		'Content-Type': 'application/json',
+		"Content-Type": "application/json",
 	},
 }: {
 	url: string;
 	callModel: string;
 	body: T;
-	settings: CallAPIProps['settings'];
-	headers?: RequestUrlParam['headers'];
+	settings: CallAPIProps["settings"];
+	headers?: RequestUrlParam["headers"];
 }): Promise<U> {
 	log(
 		settings,
@@ -46,7 +46,7 @@ async function handleRequest<T, U>({
 
 	const response = await request({
 		url,
-		method: 'POST',
+		method: "POST",
 		headers,
 		body: JSON.stringify(body),
 	});
@@ -64,7 +64,7 @@ export async function callAPI({
 }: CallAPIProps): Promise<string | null | undefined> {
 	const apiProvider = settings.apiProvider;
 
-	let customAiModel = '';
+	let customAiModel = "";
 
 	if (settings.customAiModel.length > 0 && settings.advancedSettings) {
 		customAiModel = settings.customAiModel;
@@ -97,21 +97,27 @@ export async function callAPI({
 					}),
 					messages: [
 						{
-							role: 'user',
+							role: "user",
 							content: userMessages,
 						},
 					],
 				},
 				settings,
 				headers: {
-					'Content-Type': 'application/json',
+					"Content-Type": "application/json",
 					Authorization: `Bearer ${settings.openAiApiKey}`,
 				},
 			}).then(({ choices }) => choices[0].message.content);
 		}
 		case APIProvider.Anthropic: {
 			const callModel =
-				customAiModel.length > 0 ? customAiModel : settings.anthropicModel;
+				customAiModel.length > 0
+					? customAiModel
+					: settings.anthropicModel;
+
+			const extraPrompt = `
+			Please kindly remember no human conversation here, do not give extra comments outside, response only with modified text WITHOUT === WRAPPER, highly thanks.
+			`;
 
 			return handleRequest<
 				Anthropic.CompletionCreateParamsNonStreaming,
@@ -123,7 +129,7 @@ export async function callAPI({
 				)}/v1/complete`,
 				callModel,
 				body: {
-					prompt: `\n\nHuman: ${userMessages}\n\nAssistant:`,
+					prompt: `\n\nHuman: ${userMessages}\n\n${extraPrompt}\n\nAssistant:`,
 					model: callModel,
 					stream: false,
 					max_tokens_to_sample:
@@ -136,17 +142,22 @@ export async function callAPI({
 				},
 				settings,
 				headers: {
-					'Content-Type': 'application/json',
-					'anthropic-version': '2023-06-01',
-					'x-api-key': settings.anthropicApiKey,
+					"Content-Type": "application/json",
+					"anthropic-version": "2023-06-01",
+					"x-api-key": settings.anthropicApiKey,
 				},
 			}).then(({ completion }) => completion);
 		}
 		case APIProvider.GoogleGemini: {
 			const callModel =
-				customAiModel.length > 0 ? customAiModel : settings.googleAIBaseUrl;
+				customAiModel.length > 0
+					? customAiModel
+					: settings.googleAIBaseUrl;
 
-			return handleRequest<GenerateContentRequest, GenerateContentResponse>({
+			return handleRequest<
+				GenerateContentRequest,
+				GenerateContentResponse
+			>({
 				url: `${getAPIHost(
 					settings.googleAIBaseUrl,
 					DEFAULT_GOOGLE_AI_API_HOST,
@@ -157,7 +168,7 @@ export async function callAPI({
 				body: {
 					contents: [
 						{
-							role: 'user',
+							role: "user",
 							parts: [
 								{
 									text: userMessages,
