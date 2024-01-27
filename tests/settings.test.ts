@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 
-import { generateRandomString } from 'src/utils/random-string';
 import { APIProvider, type PluginSettings } from '../src/types';
 import {
 	deobfuscateConfig,
@@ -9,10 +8,7 @@ import {
 
 const DEFAULT_SETTINGS: PluginSettings = {
 	apiProvider: APIProvider.OpenAI,
-	// This API key is fake, random characters
-	openAiApiKey: `sk-${generateRandomString(20)}T3BlbkFJ${generateRandomString(
-		20,
-	)}`,
+	openAiApiKey: "sk-xxxxxx",
 	temperature: 0.7,
 	customAiModel: '',
 	maxTokens: 1750,

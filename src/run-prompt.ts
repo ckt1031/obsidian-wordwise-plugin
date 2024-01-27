@@ -9,7 +9,7 @@ import {
 } from './types';
 import { callAPI } from './utils/call-api';
 import { log } from './utils/logging';
-import { mustacheRender } from './utils/mustache';
+import Mustache from 'mustache';
 
 export async function runPrompt(
 	app: App,
@@ -47,7 +47,7 @@ export async function runPrompt(
 
 	new Notice(`Generating text with ${command}...`);
 
-	const prompt: string = mustacheRender(actionData.data, {
+	const prompt: string = Mustache.render(actionData.data, {
 		input,
 		instructions,
 	});
