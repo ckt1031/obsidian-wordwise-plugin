@@ -8,6 +8,7 @@ import AddCustomPromptModal from './modals/add-custom-prompt';
 import { APIProvider } from './types';
 import { callAPI } from './utils/call-api';
 import { log } from './utils/logging';
+import { wrapPasswordComponent } from './components/password';
 
 export class SettingTab extends PluginSettingTab {
 	plugin: WordWisePlugin;
@@ -55,15 +56,16 @@ export class SettingTab extends PluginSettingTab {
 			new Setting(containerEl)
 				.setName('OpenAI API Key')
 				.setDesc('API Key for the OpenAI API')
-				.addText((text) =>
+				.addText((text) => {
+					wrapPasswordComponent(text);
 					text
 						.setPlaceholder('Enter your API Key')
 						.setValue(plugin.settings.openAiApiKey)
 						.onChange(async (value) => {
 							plugin.settings.openAiApiKey = value;
 							await plugin.saveSettings();
-						}),
-				);
+						});
+				});
 
 			new Setting(containerEl)
 				.setName('OpenAI Endpoint Base URL')
@@ -105,15 +107,16 @@ export class SettingTab extends PluginSettingTab {
 			new Setting(containerEl)
 				.setName('Anthropic API Key')
 				.setDesc('API Key for the Anthropic API')
-				.addText((text) =>
+				.addText((text) => {
+					wrapPasswordComponent(text);
 					text
 						.setPlaceholder('Enter your API Key')
 						.setValue(plugin.settings.anthropicApiKey)
 						.onChange(async (value) => {
 							plugin.settings.anthropicApiKey = value;
 							await plugin.saveSettings();
-						}),
-				);
+						});
+				});
 
 			new Setting(containerEl)
 				.setName('Anthropic Endpoint Base URL')
@@ -155,15 +158,16 @@ export class SettingTab extends PluginSettingTab {
 			new Setting(containerEl)
 				.setName('Google AI API Key')
 				.setDesc('API Key for the Google AI API')
-				.addText((text) =>
+				.addText((text) => {
+					wrapPasswordComponent(text);
 					text
 						.setPlaceholder('Enter your API Key')
 						.setValue(plugin.settings.googleAIApiKey)
 						.onChange(async (value) => {
 							plugin.settings.googleAIApiKey = value;
 							await plugin.saveSettings();
-						}),
-				);
+						});
+				});
 
 			new Setting(containerEl)
 				.setName('Google AI Endpoint Base URL')
@@ -368,6 +372,8 @@ export class SettingTab extends PluginSettingTab {
 						await plugin.resetSettings();
 						new Notice('Resetting settings to default values');
 						await plugin.app.setting.close();
+						await plugin.app.setting.open();
+						await plugin.app.setting.openTabById(manifest.id);
 					}
 				});
 			});
