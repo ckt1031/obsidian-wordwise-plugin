@@ -132,14 +132,12 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			icon: HighlightMainPointIcon,
 			action: CommandActions.DirectReplacement,
 			data: `
-		## Tasks
+## Tasks
 	
-		- You are a real human that can read and write properly and fluently.
-		- Highlighting means marking the most important words, phrases, or sentences in a text. It should be used sparingly and only for the most crucial points.
-		- Your task means identifying the key ideas or arguments, and marking them in a way that makes them stand out.
-		- Avoid highlighting too much text. If everything is highlighted, then nothing stands out. Aim to highlight only one sentence or phrase per paragraph.
-		- Keep the highlighting clear and simple. Do not make it messy or confusing.
-		- If a word, phrase, or part of the text is already clear and effective, leave it as it is, unchanged.
+- Bold the most important ideas, words, stats, numbers, or sentences.
+- Keep the bolding clear and simple. Do not make it messy or confusing.
+- Avoid bolding too much text. If everything is worth bolded, then nothing stands out.
+- NEVER bolding headings or whole paragraphs, never change or bold the backstick wrapped content.
 		`,
 		},
 		{
