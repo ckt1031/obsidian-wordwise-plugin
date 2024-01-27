@@ -47,6 +47,7 @@ export class SettingTab extends PluginSettingTab {
 					await plugin.saveSettings();
 					await plugin.app.setting.close();
 					await plugin.app.setting.open();
+					await plugin.app.setting.openTabById(manifest.id);
 				});
 			});
 
@@ -237,6 +238,7 @@ export class SettingTab extends PluginSettingTab {
 						// Reload the settings tab
 						await plugin.app.setting.close();
 						await plugin.app.setting.open();
+						await plugin.app.setting.openTabById(manifest.id);
 					}),
 			);
 
