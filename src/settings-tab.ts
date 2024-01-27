@@ -135,7 +135,7 @@ export class SettingTab extends PluginSettingTab {
 				.setName('Anthropic Language Model')
 				.setDesc(
 					SettingTab.createFragmentWithHTML(
-						'Model to be used, defaults to <b>gpt3</b>, see <a href="https://docs.anthropic.com/claude/reference/getting-started-with-the-api">Anthropic API Reference</a> for more info',
+						'Model to be used, defaults to <b>claude-2.1</b>, see <a href="https://docs.anthropic.com/claude/reference/getting-started-with-the-api">Anthropic API Reference</a> for more info',
 					),
 				)
 				.addDropdown((dropDown) => {
