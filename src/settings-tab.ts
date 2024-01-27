@@ -3,16 +3,16 @@ import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
 import manifest from '../manifest.json';
 import { ANTHROPIC_MODELS, GOOGLE_AI_MODELS, OPENAI_MODELS } from './config';
-import type AiPlugin from './main';
+import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
 import { APIProvider } from './types';
 import { callAPI } from './utils/call-api';
 import { log } from './utils/logging';
 
 export class SettingTab extends PluginSettingTab {
-	plugin: AiPlugin;
+	plugin: WordWisePlugin;
 
-	constructor(app: App, plugin: AiPlugin) {
+	constructor(app: App, plugin: WordWisePlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}

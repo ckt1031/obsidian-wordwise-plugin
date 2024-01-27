@@ -15,7 +15,7 @@ import {
 import { log } from './utils/logging';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 
-export default class AiPlugin extends Plugin {
+export default class WordWisePlugin extends Plugin {
 	settings: PluginSettings;
 
 	async onload() {

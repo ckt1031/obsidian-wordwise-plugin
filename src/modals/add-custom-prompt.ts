@@ -2,16 +2,16 @@ import type { TextAreaComponent, TextComponent } from 'obsidian';
 import { Modal, Notice, Setting } from 'obsidian';
 
 import manifest from '../../manifest.json';
-import type AiPlugin from '../main';
+import type WordWisePlugin from '../main';
 
 export default class AddCustomPromptModal extends Modal {
 	name: string;
 	data: string;
 	isEdit: boolean;
-	plugin: AiPlugin;
+	plugin: WordWisePlugin;
 
 	// Action sync function or async function
-	constructor(plugin: AiPlugin, isEdit: boolean, name?: string, data?: string) {
+	constructor(plugin: WordWisePlugin, isEdit: boolean, name?: string, data?: string) {
 		super(plugin.app);
 		this.name = '';
 		this.data = '';
