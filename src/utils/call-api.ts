@@ -3,7 +3,7 @@ import type {
 	GenerateContentRequest,
 	GenerateContentResponse,
 } from '@google/generative-ai';
-import { request } from 'obsidian';
+import { RequestUrlParam, request } from 'obsidian';
 import type OpenAI from 'openai';
 import {
 	DEFAULT_ANTHROPIC_API_HOST,
@@ -11,7 +11,6 @@ import {
 	DEFAULT_OPENAI_API_HOST,
 } from '../config';
 import { APIProvider, type CallAPIProps } from '../types';
-// import { checkAPIKey } from './check-api-key';
 import { log } from './logging';
 
 export function getAPIHost(url: string, defaultHost: string): string {
@@ -21,191 +20,167 @@ export function getAPIHost(url: string, defaultHost: string): string {
 	return `${urlPrefix}${host}`;
 }
 
-export async function callGoogleAIAPI({
-	userMessages,
+// T and U are the types of the request and response, respectively
+// Return a function to handle the final json body
+async function handleRequest<T, U>({
+	url,
+	callModel,
+	body,
 	settings,
-}: CallAPIProps) {
-	let callModel = settings.googleAIModel;
-
-	if (settings.customAiModel.length > 0 && settings.advancedSettings) {
-		callModel = settings.customAiModel;
-	}
-
-	const url = `${getAPIHost(
-		settings.googleAIBaseUrl,
-		DEFAULT_GOOGLE_AI_API_HOST,
-	)}/v1beta/models/${callModel}:generateContent?key=${settings.googleAIApiKey}`;
-
-	const body: GenerateContentRequest = {
-		contents: [
-			{
-				role: 'user',
-				parts: [
-					{
-						text: userMessages,
-					},
-				],
-			},
-		],
-		...(settings.advancedSettings && {
-			generationConfig: {
-				temperature: settings.temperature,
-				maxOutputTokens: settings.maxTokens,
-			},
-		}),
-	};
-
+	headers = {
+		'Content-Type': 'application/json',
+	},
+}: {
+	url: string;
+	callModel: string;
+	body: T;
+	settings: CallAPIProps['settings'];
+	headers?: RequestUrlParam['headers'];
+}): Promise<U> {
 	log(
 		settings,
-		`Sending request to ${url} (${callModel}, Temp: ${settings.temperature}) with prompt:\n\n${userMessages}`,
+		`Sending request to ${url} (${callModel}) with body:\n\n${JSON.stringify(
+			body,
+		)}`,
 	);
 
 	const response = await request({
 		url,
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
+		headers,
 		body: JSON.stringify(body),
 	});
 
-	const json: GenerateContentResponse = JSON.parse(response);
+	const json: U = JSON.parse(response);
 
 	log(settings, `Received response: ${JSON.stringify(json)}`);
 
-	if (!json.candidates || json.candidates.length === 0) {
-		return null;
-	}
-
-	return json.candidates[0].content.parts[0].text;
-}
-
-export async function callAnthropicAPI({
-	userMessages,
-	settings,
-}: CallAPIProps) {
-	let callModel = settings.anthropicModel;
-	const url = `${getAPIHost(
-		settings.anthropicBaseUrl,
-		DEFAULT_ANTHROPIC_API_HOST,
-	)}/v1/complete`;
-
-	if (settings.customAiModel.length > 0 && settings.advancedSettings) {
-		callModel = settings.customAiModel;
-	}
-
-	const body: Anthropic.CompletionCreateParamsNonStreaming = {
-		prompt: `\n\nHuman: ${userMessages}\n\nAssistant:`,
-		model: callModel,
-		stream: false,
-		max_tokens_to_sample:
-			settings.advancedSettings && settings.maxTokens !== 0
-				? settings.maxTokens
-				: 2048,
-		...(settings.advancedSettings && {
-			temperature: settings.temperature,
-		}),
-	};
-
-	log(
-		settings,
-		`Sending request to ${url} (${callModel}, Temp: ${settings.temperature}) with prompt:\n\n${userMessages}`,
-	);
-
-	const response = await request({
-		url,
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'anthropic-version': '2023-06-01',
-			'x-api-key': settings.anthropicApiKey,
-		},
-		body: JSON.stringify(body),
-	});
-
-	const json: Anthropic.Completion = JSON.parse(response);
-
-	log(settings, `Received response: ${JSON.stringify(json)}`);
-
-	return json.completion;
-}
-
-export async function callOpenAIAPI({ userMessages, settings }: CallAPIProps) {
-	const url = `${getAPIHost(
-		settings.openAiBaseUrl,
-		DEFAULT_OPENAI_API_HOST,
-	)}/v1/chat/completions`;
-
-	let callModel = settings.openAiModel;
-
-	if (settings.customAiModel.length > 0 && settings.advancedSettings) {
-		callModel = settings.customAiModel;
-	}
-
-	const body: OpenAI.ChatCompletionCreateParams = {
-		stream: false,
-		model: callModel,
-		...(settings.advancedSettings && {
-			temperature: settings.temperature,
-			...(settings.maxTokens !== 0 && {
-				max_tokens: settings.maxTokens,
-			}),
-			presence_penalty: settings.presencePenalty,
-			frequency_penalty: settings.frequencyPenalty,
-		}),
-		messages: [
-			{
-				role: 'user',
-				content: userMessages,
-			},
-		],
-	};
-
-	log(
-		settings,
-		`Sending request to ${url} (${callModel}, Temp: ${settings.temperature}) with prompt:\n\n${userMessages}`,
-	);
-
-	const response = await request({
-		url,
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${settings.openAiApiKey}`,
-		},
-		body: JSON.stringify(body),
-	});
-
-	const json: OpenAI.ChatCompletion = JSON.parse(response);
-
-	log(settings, `Received response: ${JSON.stringify(json)}`);
-
-	return json.choices[0].message.content;
+	return json;
 }
 
 export async function callAPI({
 	settings,
 	userMessages,
 }: CallAPIProps): Promise<string | null | undefined> {
-	// checkAPIKey(settings);
 	const apiProvider = settings.apiProvider;
 
+	let customAiModel = '';
+
+	if (settings.customAiModel.length > 0 && settings.advancedSettings) {
+		customAiModel = settings.customAiModel;
+	}
+
 	switch (apiProvider) {
-		case APIProvider.OpenAI:
-			return await callOpenAIAPI({
+		case APIProvider.OpenAI: {
+			const callModel =
+				customAiModel.length > 0 ? customAiModel : settings.openAiModel;
+
+			return handleRequest<
+				OpenAI.ChatCompletionCreateParams,
+				OpenAI.ChatCompletion
+			>({
+				url: `${getAPIHost(
+					settings.openAiBaseUrl,
+					DEFAULT_OPENAI_API_HOST,
+				)}/v1/chat/completions`,
+				callModel,
+				body: {
+					stream: false,
+					model: callModel,
+					...(settings.advancedSettings && {
+						temperature: settings.temperature,
+						...(settings.maxTokens !== 0 && {
+							max_tokens: settings.maxTokens,
+						}),
+						presence_penalty: settings.presencePenalty,
+						frequency_penalty: settings.frequencyPenalty,
+					}),
+					messages: [
+						{
+							role: 'user',
+							content: userMessages,
+						},
+					],
+				},
 				settings,
-				userMessages,
-			});
-		case APIProvider.Anthropic:
-			return await callAnthropicAPI({
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${settings.openAiApiKey}`,
+				},
+			}).then(({ choices }) => choices[0].message.content);
+		}
+		case APIProvider.Anthropic: {
+			const callModel =
+				customAiModel.length > 0 ? customAiModel : settings.anthropicModel;
+
+			return handleRequest<
+				Anthropic.CompletionCreateParamsNonStreaming,
+				Anthropic.Completion
+			>({
+				url: `${getAPIHost(
+					settings.anthropicBaseUrl,
+					DEFAULT_ANTHROPIC_API_HOST,
+				)}/v1/complete`,
+				callModel,
+				body: {
+					prompt: `\n\nHuman: ${userMessages}\n\nAssistant:`,
+					model: callModel,
+					stream: false,
+					max_tokens_to_sample:
+						settings.advancedSettings && settings.maxTokens !== 0
+							? settings.maxTokens
+							: 2048,
+					...(settings.advancedSettings && {
+						temperature: settings.temperature,
+					}),
+				},
 				settings,
-				userMessages,
-			});
-		case APIProvider.GoogleGemini:
-			return await callGoogleAIAPI({
+				headers: {
+					'Content-Type': 'application/json',
+					'anthropic-version': '2023-06-01',
+					'x-api-key': settings.anthropicApiKey,
+				},
+			}).then(({ completion }) => completion);
+		}
+		case APIProvider.GoogleGemini: {
+			const callModel =
+				customAiModel.length > 0 ? customAiModel : settings.googleAIBaseUrl;
+
+			return handleRequest<GenerateContentRequest, GenerateContentResponse>({
+				url: `${getAPIHost(
+					settings.googleAIBaseUrl,
+					DEFAULT_GOOGLE_AI_API_HOST,
+				)}/v1beta/models/${callModel}:generateContent?key=${
+					settings.googleAIApiKey
+				}`,
+				callModel,
+				body: {
+					contents: [
+						{
+							role: 'user',
+							parts: [
+								{
+									text: userMessages,
+								},
+							],
+						},
+					],
+					...(settings.advancedSettings && {
+						generationConfig: {
+							temperature: settings.temperature,
+							maxOutputTokens: settings.maxTokens,
+						},
+					}),
+				},
 				settings,
-				userMessages,
+			}).then(({ candidates }) => {
+				if (!candidates || candidates.length === 0) {
+					return null;
+				}
+
+				return candidates[0].content.parts[0].text;
 			});
+		}
 		default:
 			throw new Error(`Unknown API Provider: ${apiProvider}`);
 	}
