@@ -47,6 +47,12 @@ export async function callGoogleAIAPI({
 				],
 			},
 		],
+		...(settings.advancedSettings && {
+			generationConfig: {
+				temperature: settings.temperature,
+				maxOutputTokens: settings.maxTokens,
+			},
+		}),
 	};
 
 	log(
