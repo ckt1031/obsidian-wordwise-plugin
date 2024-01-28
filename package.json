@@ -27,7 +27,7 @@
     "@types/mustache": "^4.2.5",
     "@types/node": "20.11.8",
     "builtin-modules": "3.3.0",
-    "esbuild": "0.19.12",
+    "esbuild": "0.20.0",
     "obsidian": "1.4.11",
     "tslib": "2.6.2",
     "typescript": "5.3.3",
