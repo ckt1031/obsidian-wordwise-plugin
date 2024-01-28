@@ -7,13 +7,13 @@
   "author": "ckt1031",
   "main": "main.js",
   "scripts": {
-    "build": "node esbuild.config.mjs production",
-    "dev": "node esbuild.config.mjs",
+    "build": "bun esbuild.config.ts production",
+    "dev": "bun esbuild.config.ts",
     "format": "biome format . --write",
     "lint": "tsc --noEmit --skipLibCheck && biome check .",
     "lint:fix": "tsc --noEmit --skipLibCheck && biome check --apply .",
     "test": "vitest run",
-    "version": "node version-bump.mjs && git add manifest.json versions.json"
+    "version": "bun version-bump.ts && biome format manifest.json versions.json --write && git add manifest.json versions.json"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.12.4",

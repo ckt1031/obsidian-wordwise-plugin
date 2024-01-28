@@ -3,7 +3,7 @@ import { Modal, Notice, Setting } from 'obsidian';
 
 export default class AskForInstructionModal extends Modal {
 	instruction: string;
-	app: App;
+	declare app: App;
 	resolve: (value: string | PromiseLike<string>) => void;
 	reject: (reason?: unknown) => void;
 	promise: Promise<string>;

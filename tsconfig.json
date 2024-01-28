@@ -9,12 +9,12 @@
 		"isolatedModules": true,
 		"lib": ["DOM", "es2021"],
 		"module": "ESNext",
-		"moduleResolution": "Bundler",
+		"target": "ESNext",
+		"moduleResolution": "Node",
 		"noEmit": true,
 		"noImplicitAny": true,
 		"resolveJsonModule": true,
-		"strictNullChecks": true,
-		"target": "ES6"
+		"strictNullChecks": true
 	},
 	"include": ["**/*.ts", "*.mjs", "src/custom.d.ts"],
 	"exclude": ["node_modules", "**/*.spec.ts"]
