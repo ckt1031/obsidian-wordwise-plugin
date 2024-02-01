@@ -25,7 +25,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.5.3",
     "@types/mustache": "^4.2.5",
-    "@types/node": "20.11.14",
+    "@types/node": "20.11.15",
     "builtin-modules": "3.3.0",
     "esbuild": "0.20.0",
     "obsidian": "1.4.11",
