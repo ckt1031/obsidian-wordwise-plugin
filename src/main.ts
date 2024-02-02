@@ -1,11 +1,11 @@
-import { Notice, Plugin, addIcon } from 'obsidian';
+import { Plugin, addIcon } from 'obsidian';
 
 import { safeParseAsync } from 'valibot';
 import manifest from '../manifest.json';
 import { DEFAULT_SETTINGS } from './config';
 import AiIcon from './icons/ai.svg';
 import { getCommands } from './prompts';
-import { runPrompt } from './run-prompt';
+import { runCommand } from './run-command';
 import { SettingTab } from './settings-tab';
 import {
 	type ObfuscatedPluginSettings,
@@ -23,27 +23,19 @@ export default class WordWisePlugin extends Plugin {
 
 		addIcon('openai', AiIcon);
 
-		for (const prompt of getCommands(this.settings)) {
+		for (const command of getCommands(this.settings)) {
 			// slugify and remove spaces
-			const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
+			const iconName = command.name.toLowerCase().replaceAll(/\s/g, '-');
 
 			// Add icon if it exists
-			if (prompt.icon) addIcon(iconName, prompt.icon);
+			if (command.icon) addIcon(iconName, command.icon);
 
 			this.addCommand({
-				id: prompt.name,
-				name: prompt.name,
-				icon: prompt.icon ? iconName : AiIcon,
-				editorCallback: async (editor) => {
-					try {
-						await runPrompt(this.app, editor, this.settings, prompt.name);
-					} catch (error) {
-						if (error instanceof Error) {
-							log(this.settings, error.message);
-						}
-						new Notice('Error generating text.');
-					}
-				},
+				id: command.name,
+				name: command.name,
+				icon: command.icon ? iconName : AiIcon,
+				editorCallback: (editor) =>
+					runCommand(this.app, editor, this.settings, command.name),
 			});
 		}
 
@@ -54,31 +46,21 @@ export default class WordWisePlugin extends Plugin {
 
 					const subMenu = item.setSubmenu();
 
-					for (const prompt of getCommands(this.settings)) {
+					for (const command of getCommands(this.settings)) {
 						// slugify and remove spaces
-						const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
+						const iconName = command.name.toLowerCase().replaceAll(/\s/g, '-');
 
 						// Add icon if it exists
-						if (prompt.icon) addIcon(iconName, prompt.icon);
+						if (command.icon) addIcon(iconName, command.icon);
+
+						// Add command to sub-menu
 						subMenu.addItem((item) => {
 							item
-								.setTitle(prompt.name)
-								.setIcon(prompt.icon ? iconName : AiIcon)
-								.onClick(async () => {
-									try {
-										await runPrompt(
-											this.app,
-											editor,
-											this.settings,
-											prompt.name,
-										);
-									} catch (error) {
-										if (error instanceof Error) {
-											log(this.settings, error.message);
-										}
-										new Notice('Error generating text.');
-									}
-								});
+								.setTitle(command.name)
+								.setIcon(command.icon ? iconName : AiIcon)
+								.onClick(() =>
+									runCommand(this.app, editor, this.settings, command.name),
+								);
 						});
 					}
 				});
@@ -110,7 +92,7 @@ export default class WordWisePlugin extends Plugin {
 
 		if (!success) {
 			this.settings = DEFAULT_SETTINGS;
-			log(this.settings, 'Failed to parse settings, using defaults.');
+			log(this.settings, 'Failed to parse settings, using default settings.');
 			return;
 		}
 

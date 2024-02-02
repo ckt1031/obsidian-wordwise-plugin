@@ -57,7 +57,6 @@ export const extraPrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] = [
 		data: `
 		## Tasks
 
-		- You are a real human that can read and write properly and fluently.
 		- Follow the instructions below to make changes to the text.
 		- You must obey the custom instructions, and you should ignore conflicting instructions from the base instructions.
 		- You should not make any changes to the text that are not specified in the instructions.
@@ -68,9 +67,7 @@ export const extraPrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] = [
 		`,
 	},
 ];
-// Type Prompt replace name with type string
 
-/// {{input}} as the text content to be rewritten
 export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 	[
 		{
@@ -80,7 +77,6 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			data: `
 		## Tasks
 
-		- You are a real human that can read and write properly and fluently.
 		- Improve writing of the text.
 		- Make the text clearer, easier to understand, and well put together by correcting grammar, spelling, choosing the most suitable punctuation marks, and selecting the best tone and style based on the topic and purpose of the text.
 		- Choose simple words and phrases to improve the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
@@ -106,7 +102,6 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			data: `
 		## Tasks
 
-    - You are a real human that can read and write properly and fluently.
     - Your task is to write a shorter version of the following text delimited by triple backticks.
     - Your task means making the text shorter, and keeping the text clear, easy to understand, and well put together.
     - Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
@@ -119,8 +114,8 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			data: `
 		## Tasks
 
-		- You are a real human that can read and write properly and fluently. Your task is to write a longer version of the following text delimited by triple backticks.
-		- Your task means making the text longer, and keeping the text clear, easy to understand, and well put together.
+		- Write a longer version of the following text delimited by triple backticks.
+		- Making the text longer, and keeping the text clear, easy to understand, and well put together.
 		- Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
 		- Keep the meaning the same if possible. Ensure the rewritten text's word count is more than twice the original text but no more than 4 times the original text.
 		- Output the answer without additional context, explanation, or extra wording, just the lengthened text itself. Don't use any punctuation, especially no quotes or backticks, around the text.
@@ -132,12 +127,12 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			icon: HighlightMainPointIcon,
 			action: CommandActions.DirectReplacement,
 			data: `
-## Tasks
+			## Tasks
 	
-- Bold the most important ideas, words, stats, numbers, or sentences.
-- Keep the bolding clear and simple. Do not make it messy or confusing.
-- Avoid bolding too much text. If everything is worth bolded, then nothing stands out.
-- NEVER bolding headings or whole paragraphs, never change or bold the backstick wrapped content.
+			- Bold the most important ideas, words, stats, numbers, or sentences.
+			- Keep the bolding clear and simple. Do not make it messy or confusing.
+			- Avoid bolding too much text. If everything is worth bolded, then nothing stands out.
+			- NEVER bolding headings or whole paragraphs, never change or bold the backstick wrapped content.
 		`,
 		},
 		{
@@ -147,7 +142,6 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			data: `
 		## Tasks
 	
-		- You are a real human that can read and write properly and fluently.
 		- Aim to reformulate the sentences, changing the structure and using synonyms where appropriate, without distorting the meaning of the text.
 		- Avoid using the same phrases or terminology as the original text unless necessary. The paraphrased text should be distinct yet convey the same information.
 		- Ensure that the paraphrased version is clear, concise, and maintains the tone appropriate to the context of the original text.
@@ -163,7 +157,6 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			data: `
 		## Tasks
 		
-		- You are a real human that can read and write properly and fluently.
 		- Your task is to simplify the following text delimited by triple backticks.
 		- Make the text clearer and easier to understand by using simple words and phrases. Avoid ones that are too hard or confusing.
 		- Keep sentences short and divide long statements into smaller ones. Aim for sentences that are 15 to 20 words long.
