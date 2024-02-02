@@ -1,11 +1,11 @@
 import { APIProvider, type PluginSettings } from './types';
 
 // Ref: https://platform.openai.com/docs/models/overview
-// Updated on 2024-01-26
+// Updated on 2024-02-02
 export const OPENAI_MODELS = [
 	'gpt-3.5-turbo',
 	'gpt-3.5-turbo-1106',
-	// 'gpt-3.5-turbo-0125', // This model will be released soon
+	'gpt-3.5-turbo-0125',
 	'gpt-3.5-turbo-16k',
 	'gpt-4',
 	'gpt-4-0613',
@@ -17,8 +17,13 @@ export const OPENAI_MODELS = [
 ];
 
 // Ref: https://docs.anthropic.com/claude/reference/selecting-a-model
-// Updated on 2024-01-26
-export const ANTHROPIC_MODELS = ['claude-2.1', 'claude-instant-1.2'];
+// Updated on 2024-02-02
+export const ANTHROPIC_MODELS = [
+	'claude-2.0',
+	'claude-2.1',
+	'claude-instant-1.1',
+	'claude-instant-1.2',
+];
 
 // Ref: https://ai.google.dev/models/gemini
 // Updated on 2024-01-26
