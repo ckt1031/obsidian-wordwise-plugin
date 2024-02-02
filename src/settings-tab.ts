@@ -62,7 +62,7 @@ export class SettingTab extends PluginSettingTab {
 				defaultModel: 'gpt-3.5-turbo',
 			},
 			[APIProvider.Anthropic]: {
-				apiKey:'anthropicApiKey' as const,
+				apiKey: 'anthropicApiKey' as const,
 				baseUrl: 'anthropicBaseUrl' as const,
 				model: 'anthropicModel' as const,
 				defaultHost: 'https://api.anthropic.com',
@@ -125,8 +125,8 @@ export class SettingTab extends PluginSettingTab {
 						for (const model of provider === APIProvider.OpenAI
 							? OPENAI_MODELS
 							: provider === APIProvider.Anthropic
-							? ANTHROPIC_MODELS
-							: GOOGLE_AI_MODELS) {
+							  ? ANTHROPIC_MODELS
+							  : GOOGLE_AI_MODELS) {
 							dropDown.addOption(model, model);
 						}
 						dropDown.setValue(plugin.settings[config.model]);
