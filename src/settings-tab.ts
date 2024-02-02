@@ -52,157 +52,91 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
-		if (plugin.settings.apiProvider === APIProvider.OpenAI) {
-			new Setting(containerEl)
-				.setName('OpenAI API Key')
-				.setDesc('API Key for the OpenAI API')
-				.addText((text) => {
-					wrapPasswordComponent(text);
-					text
-						.setPlaceholder('Enter your API Key')
-						.setValue(plugin.settings.openAiApiKey)
-						.onChange(async (value) => {
-							plugin.settings.openAiApiKey = value;
+		const apiConfiguration = {
+			[APIProvider.OpenAI]: {
+				apiKey: 'openAiApiKey' as const,
+				baseUrl: 'openAiBaseUrl' as const,
+				model: 'openAiModel' as const,
+				defaultHost: 'https://api.openai.com',
+				docs: 'https://platform.openai.com/docs/introduction',
+				defaultModel: 'gpt-3.5-turbo',
+			},
+			[APIProvider.Anthropic]: {
+				apiKey:'anthropicApiKey' as const,
+				baseUrl: 'anthropicBaseUrl' as const,
+				model: 'anthropicModel' as const,
+				defaultHost: 'https://api.anthropic.com',
+				docs: 'https://docs.anthropic.com/claude/reference/getting-started-with-the-api',
+				defaultModel: 'claude-2.1',
+			},
+			[APIProvider.GoogleGemini]: {
+				apiKey: 'googleAIApiKey' as const,
+				baseUrl: 'googleAIBaseUrl' as const,
+				model: 'googleAIModel' as const,
+				defaultHost: 'https://generativelanguage.googleapis.com',
+				docs: 'https://ai.google.dev/models/gemini',
+				defaultModel: 'gemini-pro',
+			},
+		};
+
+		for (const [provider, config] of Object.entries(apiConfiguration)) {
+			if (plugin.settings.apiProvider === provider) {
+				new Setting(containerEl)
+					.setName(`${provider} API Key`)
+					.setDesc(`API Key for the ${provider} API`)
+					.addText((text) => {
+						wrapPasswordComponent(text);
+						text
+							.setPlaceholder(`Enter your ${provider} API Key`)
+							.setValue(plugin.settings[config.apiKey])
+							.onChange(async (value) => {
+								// Update the API Key
+								plugin.settings[config.apiKey] = value;
+								await plugin.saveSettings();
+							});
+					});
+
+				new Setting(containerEl)
+					.setName(`${provider} Endpoint Base URL`)
+					.setDesc(
+						SettingTab.createFragmentWithHTML(
+							`Base URL for the ${provider} API, defaults to <code>${config.defaultHost}</code>.<br/><b>DO NOT include / trailing slash and paths</b>.`,
+						),
+					)
+					.addText((text) =>
+						text
+							.setPlaceholder(config.defaultHost)
+							.setValue(plugin.settings[config.baseUrl])
+							.onChange(async (value) => {
+								// Update the Base URL
+								plugin.settings[config.baseUrl] = value;
+								await plugin.saveSettings();
+							}),
+					);
+
+				new Setting(containerEl)
+					.setName(`${provider} Language Model`)
+					.setDesc(
+						SettingTab.createFragmentWithHTML(
+							`Model to be used, defaults to <b>${config.defaultModel}</b>, see <a href="${config.docs}">${provider} Models</a> for more info`,
+						),
+					)
+					.addDropdown((dropDown) => {
+						for (const model of provider === APIProvider.OpenAI
+							? OPENAI_MODELS
+							: provider === APIProvider.Anthropic
+							? ANTHROPIC_MODELS
+							: GOOGLE_AI_MODELS) {
+							dropDown.addOption(model, model);
+						}
+						dropDown.setValue(plugin.settings[config.model]);
+						dropDown.onChange(async (value) => {
+							// Update the Model
+							plugin.settings[config.model] = value;
 							await plugin.saveSettings();
 						});
-				});
-
-			new Setting(containerEl)
-				.setName('OpenAI Endpoint Base URL')
-				.setDesc(
-					SettingTab.createFragmentWithHTML(
-						'Base URL for the OpenAI API, defaults to <code>https://api.openai.com</code>.<br/><b>DO NOT include / trailing slash and /v1 suffix</b>.',
-					),
-				)
-				.addText((text) =>
-					text
-						.setPlaceholder('https://api.openai.com')
-						.setValue(plugin.settings.openAiBaseUrl)
-						.onChange(async (value) => {
-							plugin.settings.openAiBaseUrl = value;
-							await plugin.saveSettings();
-						}),
-				);
-
-			new Setting(containerEl)
-				.setName('OpenAI Language Model')
-				.setDesc(
-					SettingTab.createFragmentWithHTML(
-						'Model to be used, defaults to <b>gpt-3.5-turbo</b>, see <a href="https://platform.openai.com/docs/models">OpenAI Models</a> for more info',
-					),
-				)
-				.addDropdown((dropDown) => {
-					for (const model of OPENAI_MODELS) {
-						dropDown.addOption(model, model);
-					}
-					dropDown.setValue(plugin.settings.openAiModel);
-					dropDown.onChange(async (value) => {
-						plugin.settings.openAiModel = value;
-						await plugin.saveSettings();
 					});
-				});
-		}
-
-		if (plugin.settings.apiProvider === APIProvider.Anthropic) {
-			new Setting(containerEl)
-				.setName('Anthropic API Key')
-				.setDesc('API Key for the Anthropic API')
-				.addText((text) => {
-					wrapPasswordComponent(text);
-					text
-						.setPlaceholder('Enter your API Key')
-						.setValue(plugin.settings.anthropicApiKey)
-						.onChange(async (value) => {
-							plugin.settings.anthropicApiKey = value;
-							await plugin.saveSettings();
-						});
-				});
-
-			new Setting(containerEl)
-				.setName('Anthropic Endpoint Base URL')
-				.setDesc(
-					SettingTab.createFragmentWithHTML(
-						'Base URL for the Anthropic API, defaults to <code>https://api.anthropic.com</code>.<br/><b>DO NOT include / trailing slash and /v1 suffix</b>.',
-					),
-				)
-				.addText((text) =>
-					text
-						.setPlaceholder('https://api.anthropic.com')
-						.setValue(plugin.settings.anthropicBaseUrl)
-						.onChange(async (value) => {
-							plugin.settings.anthropicBaseUrl = value;
-							await plugin.saveSettings();
-						}),
-				);
-
-			new Setting(containerEl)
-				.setName('Anthropic Language Model')
-				.setDesc(
-					SettingTab.createFragmentWithHTML(
-						'Model to be used, defaults to <b>claude-2.1</b>, see <a href="https://docs.anthropic.com/claude/reference/getting-started-with-the-api">Anthropic API Reference</a> for more info',
-					),
-				)
-				.addDropdown((dropDown) => {
-					for (const model of ANTHROPIC_MODELS) {
-						dropDown.addOption(model, model);
-					}
-					dropDown.setValue(plugin.settings.anthropicModel);
-					dropDown.onChange(async (value) => {
-						plugin.settings.anthropicModel = value;
-						await plugin.saveSettings();
-					});
-				});
-		}
-
-		if (plugin.settings.apiProvider === APIProvider.GoogleGemini) {
-			new Setting(containerEl)
-				.setName('Google AI API Key')
-				.setDesc('API Key for the Google AI API')
-				.addText((text) => {
-					wrapPasswordComponent(text);
-					text
-						.setPlaceholder('Enter your API Key')
-						.setValue(plugin.settings.googleAIApiKey)
-						.onChange(async (value) => {
-							plugin.settings.googleAIApiKey = value;
-							await plugin.saveSettings();
-						});
-				});
-
-			new Setting(containerEl)
-				.setName('Google AI Endpoint Base URL')
-				.setDesc(
-					SettingTab.createFragmentWithHTML(
-						'Base URL for the Google AI API, defaults to <code>https://generativelanguage.googleapis.com</code>.<br/><b>DO NOT include / trailing slash</b>.',
-					),
-				)
-				.addText((text) =>
-					text
-						.setPlaceholder('https://generativelanguage.googleapis.com')
-						.setValue(plugin.settings.googleAIBaseUrl)
-						.onChange(async (value) => {
-							plugin.settings.googleAIBaseUrl = value;
-							await plugin.saveSettings();
-						}),
-				);
-
-			new Setting(containerEl)
-				.setName('Google AI Language Model')
-				.setDesc(
-					SettingTab.createFragmentWithHTML(
-						'Model to be used, defaults to <b>gemini-pro</b>, see <a href="https://ai.google.dev/models/gemini">Google AI Models</a> for more info',
-					),
-				)
-				.addDropdown((dropDown) => {
-					for (const model of GOOGLE_AI_MODELS) {
-						dropDown.addOption(model, model);
-					}
-					dropDown.setValue(plugin.settings.googleAIModel);
-					dropDown.onChange(async (value) => {
-						plugin.settings.googleAIModel = value;
-						await plugin.saveSettings();
-					});
-				});
+			}
 		}
 
 		new Setting(containerEl)

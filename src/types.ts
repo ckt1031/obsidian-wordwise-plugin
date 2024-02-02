@@ -11,9 +11,9 @@ import {
 } from 'valibot';
 
 export enum APIProvider {
-	OpenAI = 'openai',
-	GoogleGemini = 'google-ai-gemini',
-	Anthropic = 'anthropic',
+	OpenAI = 'OpenAI',
+	GoogleGemini = 'Google Gemini',
+	Anthropic = 'Anthropic',
 }
 
 export enum CommandNames {
