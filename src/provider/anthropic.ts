@@ -1,31 +1,49 @@
-import { ChatAnthropic } from '@langchain/anthropic';
-import { HumanMessage } from '@langchain/core/messages';
-import { DEFAULT_ANTHROPIC_API_HOST } from '../config';
-import { AIProviderProps } from '../types';
-import { getAPIHost } from '../utils/get-url-hsot';
-import { handleInvoke } from '../utils/handle-invoke-response';
+import { DEFAULT_ANTHROPIC_API_HOST } from "../config";
+import { AIProviderProps } from "../types";
+import { getAPIHost } from "../utils/get-url-hsot";
+import type Anthropic from "@anthropic-ai/sdk";
+import { request } from "obsidian";
 
 export async function handleAnthropicAI({
 	settings,
 	userMessage,
-	customAiModel = '',
+	customAiModel = "",
 }: AIProviderProps) {
 	const modelName =
-		customAiModel.length > 0 ? customAiModel : settings.anthropicApiKey;
+		customAiModel.length > 0 ? customAiModel : settings.anthropicModel;
 
-	const chat = new ChatAnthropic({
-		modelName: modelName,
-		anthropicApiKey: settings.openAiApiKey,
-		anthropicApiUrl: getAPIHost(
-			settings.openAiBaseUrl,
+	const extraPrompt = `
+			Please kindly remember no human conversation here, do not give extra comments outside, response only with modified text WITHOUT === WRAPPER, highly thanks.
+			`;
+
+	const body: Anthropic.CompletionCreateParamsNonStreaming = {
+		prompt: `\n\nHuman: ${userMessage}\n\n${extraPrompt}\n\nAssistant:`,
+		model: modelName,
+		stream: false,
+		max_tokens_to_sample:
+			settings.advancedSettings && settings.maxTokens !== 0
+				? settings.maxTokens
+				: 2048,
+		...(settings.advancedSettings && {
+			temperature: settings.temperature,
+		}),
+	};
+
+	const response = await request({
+		url: `${getAPIHost(
+			settings.anthropicBaseUrl,
 			DEFAULT_ANTHROPIC_API_HOST,
-		),
-		// Advanced settings
-		temperature: settings.advancedSettings ? settings.temperature : 0.5,
-		maxTokens: settings.advancedSettings ? settings.maxTokens : 2000,
+		)}/v1/complete`,
+		method: "POST",
+		headers: {
+			'Content-Type': 'application/json',
+			'anthropic-version': '2023-06-01',
+			'x-api-key': settings.anthropicApiKey,
+		},
+		body: JSON.stringify(body),
 	});
 
-	const { content } = await chat.invoke([new HumanMessage(userMessage)]);
+	const json: Anthropic.Completion = JSON.parse(response);
 
-	return handleInvoke(content);
+	return json.completion;
 }

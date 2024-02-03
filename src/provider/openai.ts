@@ -17,7 +17,10 @@ export async function handleOpenAI({
 		modelName: modelName,
 		openAIApiKey: settings.openAiApiKey,
 		configuration: {
-			baseURL: getAPIHost(settings.openAiBaseUrl, DEFAULT_OPENAI_API_HOST),
+			baseURL: `${getAPIHost(
+				settings.openAiBaseUrl,
+				DEFAULT_OPENAI_API_HOST,
+			)}/v1`,
 		},
 		// Advanced settings
 		temperature: settings.advancedSettings ? settings.temperature : 0.5,

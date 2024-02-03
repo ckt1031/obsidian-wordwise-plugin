@@ -107,23 +107,26 @@ export class SettingTab extends PluginSettingTab {
 							});
 					});
 
-				new Setting(containerEl)
-					.setName(`${provider} Endpoint Base URL`)
-					.setDesc(
-						SettingTab.createFragmentWithHTML(
-							`Base URL for the ${provider} API, defaults to <code>${config.defaultHost}</code>.<br/><b>DO NOT include / trailing slash and paths</b>.`,
-						),
-					)
-					.addText((text) =>
-						text
-							.setPlaceholder(config.defaultHost)
-							.setValue(plugin.settings[config.baseUrl])
-							.onChange(async (value) => {
-								// Update the Base URL
-								plugin.settings[config.baseUrl] = value;
-								await plugin.saveSettings();
-							}),
-					);
+				// Dont show this for Google AI
+				if (provider !== APIProvider.GoogleGemini) {
+					new Setting(containerEl)
+						.setName(`${provider} Endpoint Base URL`)
+						.setDesc(
+							SettingTab.createFragmentWithHTML(
+								`Base URL for the ${provider} API, defaults to <code>${config.defaultHost}</code>.<br/><b>DO NOT include / trailing slash and paths</b>.`,
+							),
+						)
+						.addText((text) =>
+							text
+								.setPlaceholder(config.defaultHost)
+								.setValue(plugin.settings[config.baseUrl])
+								.onChange(async (value) => {
+									// Update the Base URL
+									plugin.settings[config.baseUrl] = value;
+									await plugin.saveSettings();
+								}),
+						);
+				}
 
 				new Setting(containerEl)
 					.setName(`${provider} Language Model`)

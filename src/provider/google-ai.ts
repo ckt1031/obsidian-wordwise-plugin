@@ -9,11 +9,11 @@ export async function handleGoogleGenAI({
 	customAiModel = '',
 }: AIProviderProps) {
 	const modelName =
-		customAiModel.length > 0 ? customAiModel : settings.openAiModel;
+		customAiModel.length > 0 ? customAiModel : settings.googleAIModel;
 
 	const chat = new ChatGoogleGenerativeAI({
 		modelName,
-		apiKey: settings.openAiApiKey,
+		apiKey: settings.googleAIApiKey,
 		streaming: false,
 		// Advanced settings
 		temperature: settings.advancedSettings ? settings.temperature : 0.5,

@@ -16,6 +16,7 @@
     "version": "bun version-bump.ts && biome format manifest.json versions.json --write && git add manifest.json versions.json"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.13.0",
     "@langchain/anthropic": "^0.0.10",
     "@langchain/core": "^0.1.22",
     "@langchain/google-genai": "^0.0.9",
