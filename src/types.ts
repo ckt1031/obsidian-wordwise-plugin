@@ -8,6 +8,7 @@ import {
 	optional,
 	string,
 	union,
+	date,
 } from 'valibot';
 
 export enum APIProvider {
@@ -56,6 +57,8 @@ export const CustomPromptSchema = object({
 });
 
 export const PluginSettingsSchema = object({
+	dataSchemeDate: date(),
+
 	apiProvider: enum_(APIProvider),
 
 	openAiApiKey: string(),
@@ -102,5 +105,9 @@ export interface OpenAiKeyCredit {
 
 export interface CallAPIProps {
 	settings: PluginSettings;
-	userMessages: string;
+	userMessage: string;
+}
+
+export interface AIProviderProps extends CallAPIProps {
+	customAiModel: string;
 }
