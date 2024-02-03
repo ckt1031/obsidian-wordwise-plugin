@@ -3,12 +3,25 @@ import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
 import manifest from '../manifest.json';
 import { wrapPasswordComponent } from './components/password';
-import { ANTHROPIC_MODELS, GOOGLE_AI_MODELS, OPENAI_MODELS } from './config';
+import {
+	ANTHROPIC_MODELS,
+	DEFAULT_ANTHROPIC_API_HOST,
+	DEFAULT_GOOGLE_AI_API_HOST,
+	DEFAULT_OPENAI_API_HOST,
+	GOOGLE_AI_MODELS,
+	OPENAI_MODELS,
+} from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
 import { APIProvider } from './types';
 import { callAPI } from './utils/call-api';
 import { log } from './utils/logging';
+
+async function restartSettingsTab(plugin: WordWisePlugin) {
+	await plugin.app.setting.close();
+	await plugin.app.setting.open();
+	await plugin.app.setting.openTabById(manifest.id);
+}
 
 export class SettingTab extends PluginSettingTab {
 	plugin: WordWisePlugin;
@@ -46,9 +59,7 @@ export class SettingTab extends PluginSettingTab {
 				dropDown.onChange(async (value) => {
 					plugin.settings.apiProvider = value as APIProvider;
 					await plugin.saveSettings();
-					await plugin.app.setting.close();
-					await plugin.app.setting.open();
-					await plugin.app.setting.openTabById(manifest.id);
+					restartSettingsTab(plugin);
 				});
 			});
 
@@ -57,7 +68,7 @@ export class SettingTab extends PluginSettingTab {
 				apiKey: 'openAiApiKey' as const,
 				baseUrl: 'openAiBaseUrl' as const,
 				model: 'openAiModel' as const,
-				defaultHost: 'https://api.openai.com',
+				defaultHost: DEFAULT_OPENAI_API_HOST,
 				docs: 'https://platform.openai.com/docs/introduction',
 				defaultModel: 'gpt-3.5-turbo',
 			},
@@ -65,7 +76,7 @@ export class SettingTab extends PluginSettingTab {
 				apiKey: 'anthropicApiKey' as const,
 				baseUrl: 'anthropicBaseUrl' as const,
 				model: 'anthropicModel' as const,
-				defaultHost: 'https://api.anthropic.com',
+				defaultHost: DEFAULT_ANTHROPIC_API_HOST,
 				docs: 'https://docs.anthropic.com/claude/reference/getting-started-with-the-api',
 				defaultModel: 'claude-2.1',
 			},
@@ -73,7 +84,7 @@ export class SettingTab extends PluginSettingTab {
 				apiKey: 'googleAIApiKey' as const,
 				baseUrl: 'googleAIBaseUrl' as const,
 				model: 'googleAIModel' as const,
-				defaultHost: 'https://generativelanguage.googleapis.com',
+				defaultHost: DEFAULT_GOOGLE_AI_API_HOST,
 				docs: 'https://ai.google.dev/models/gemini',
 				defaultModel: 'gemini-pro',
 			},
@@ -149,7 +160,7 @@ export class SettingTab extends PluginSettingTab {
 
 						const result = await callAPI({
 							settings: plugin.settings,
-							userMessages: 'Say word hello only.',
+							userMessage: 'Say word hello only.',
 						});
 
 						if (result && result.length > 0) {
@@ -173,10 +184,7 @@ export class SettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						plugin.settings.advancedSettings = value;
 						await plugin.saveSettings();
-						// Reload the settings tab
-						await plugin.app.setting.close();
-						await plugin.app.setting.open();
-						await plugin.app.setting.openTabById(manifest.id);
+						restartSettingsTab(plugin);
 					}),
 			);
 
@@ -305,9 +313,7 @@ export class SettingTab extends PluginSettingTab {
 						// This has already been clicked once, so reset the settings
 						await plugin.resetSettings();
 						new Notice('Resetting settings to default values');
-						await plugin.app.setting.close();
-						await plugin.app.setting.open();
-						await plugin.app.setting.openTabById(manifest.id);
+						restartSettingsTab(plugin);
 					}
 				});
 			});

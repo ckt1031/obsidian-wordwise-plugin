@@ -48,14 +48,14 @@ export async function runCommand(
 
 		new Notice(`Generating text with ${command}...`);
 
-		const userMessages: string = Mustache.render(actionData.data, {
+		const userMessage: string = Mustache.render(actionData.data, {
 			input,
 			instructions,
 		});
 
 		const result = await callAPI({
 			settings,
-			userMessages,
+			userMessage,
 		});
 
 		if (!result) {
