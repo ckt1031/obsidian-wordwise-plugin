@@ -57,7 +57,7 @@ export const CustomPromptSchema = object({
 });
 
 export const PluginSettingsSchema = object({
-	dataSchemeDate: date(),
+	dataSchemeDate: string(),
 
 	apiProvider: enum_(APIProvider),
 

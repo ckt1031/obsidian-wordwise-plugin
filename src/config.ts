@@ -35,7 +35,7 @@ export const DEFAULT_GOOGLE_AI_API_HOST =
 	'https://generativelanguage.googleapis.com';
 
 export const DEFAULT_SETTINGS: PluginSettings = {
-	dataSchemeDate: new Date('2024-02-03'),
+	dataSchemeDate: new Date('2024-02-03').toISOString(),
 
 	apiProvider: APIProvider.OpenAI,
 

@@ -7,7 +7,7 @@ import {
 } from '../src/utils/obfuscate-config';
 
 const DEFAULT_SETTINGS: PluginSettings = {
-	dataSchemeDate: new Date('2024-01-01'),
+	dataSchemeDate: new Date('2024-01-01').toISOString(),
 
 	apiProvider: APIProvider.OpenAI,
 	openAiApiKey: 'sk-xxxxxx',
