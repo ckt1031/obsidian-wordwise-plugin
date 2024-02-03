@@ -1,13 +1,13 @@
-import { DEFAULT_ANTHROPIC_API_HOST } from "../config";
-import { AIProviderProps } from "../types";
-import { getAPIHost } from "../utils/get-url-hsot";
-import type Anthropic from "@anthropic-ai/sdk";
-import { request } from "obsidian";
+import type Anthropic from '@anthropic-ai/sdk';
+import { request } from 'obsidian';
+import { DEFAULT_ANTHROPIC_API_HOST } from '../config';
+import { AIProviderProps } from '../types';
+import { getAPIHost } from '../utils/get-url-hsot';
 
 export async function handleAnthropicAI({
 	settings,
 	userMessage,
-	customAiModel = "",
+	customAiModel = '',
 }: AIProviderProps) {
 	const modelName =
 		customAiModel.length > 0 ? customAiModel : settings.anthropicModel;
@@ -34,7 +34,7 @@ export async function handleAnthropicAI({
 			settings.anthropicBaseUrl,
 			DEFAULT_ANTHROPIC_API_HOST,
 		)}/v1/complete`,
-		method: "POST",
+		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 			'anthropic-version': '2023-06-01',
