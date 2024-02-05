@@ -1,9 +1,13 @@
-import { HumanMessage } from '@langchain/core/messages';
-import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
+import type {
+	GenerateContentRequest,
+	GenerateContentResponse,
+} from '@google/generative-ai';
+import { request } from 'obsidian';
+import { DEFAULT_GOOGLE_AI_API_HOST } from 'src/config';
+import { getAPIHost } from 'src/utils/get-url-hsot';
 import { AIProviderProps } from '../types';
-import { handleInvoke } from '../utils/handle-invoke-response';
 
-export async function handleGoogleGenAI({
+export async function handleTextGoogleGenAI({
 	settings,
 	userMessage,
 	customAiModel = '',
@@ -11,16 +15,42 @@ export async function handleGoogleGenAI({
 	const modelName =
 		customAiModel.length > 0 ? customAiModel : settings.googleAIModel;
 
-	const chat = new ChatGoogleGenerativeAI({
-		modelName,
-		apiKey: settings.googleAIApiKey,
-		streaming: false,
-		// Advanced settings
-		temperature: settings.advancedSettings ? settings.temperature : 0.5,
-		maxOutputTokens: settings.advancedSettings ? settings.maxTokens : 2000,
+	const body: GenerateContentRequest = {
+		contents: [
+			{
+				role: 'user',
+				parts: [
+					{
+						text: userMessage,
+					},
+				],
+			},
+		],
+		generationConfig: {
+			temperature: settings.advancedSettings ? settings.temperature : 0.5,
+			maxOutputTokens: settings.advancedSettings ? settings.maxTokens : 2000,
+		},
+	};
+
+	const url = `${getAPIHost(
+		settings.googleAIBaseUrl,
+		DEFAULT_GOOGLE_AI_API_HOST,
+	)}/v1beta/models/${modelName}:generateContent?key=${settings.googleAIApiKey}`;
+
+	const response = await request({
+		url,
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(body),
 	});
 
-	const { content } = await chat.invoke([new HumanMessage(userMessage)]);
+	const { candidates }: GenerateContentResponse = JSON.parse(response);
 
-	return handleInvoke(content);
+	if (!candidates || candidates.length === 0) {
+		throw new Error('No response from Google AI');
+	}
+
+	return candidates[0].content.parts[0].text;
 }

@@ -1,6 +1,6 @@
-import { handleAnthropicAI } from '../provider/anthropic';
-import { handleGoogleGenAI } from '../provider/google-ai';
-import { handleOpenAI } from '../provider/openai';
+import { handleTextAnthropicAI } from '../provider/anthropic';
+import { handleTextGoogleGenAI } from '../provider/google-ai';
+import { handleTextOpenAI } from '../provider/openai';
 import { APIProvider, type CallAPIProps } from '../types';
 import { log } from './logging';
 
@@ -23,13 +23,13 @@ export async function callAPI({
 
 	switch (apiProvider) {
 		case APIProvider.OpenAI: {
-			return handleOpenAI({ settings, userMessage, customAiModel });
+			return handleTextOpenAI({ settings, userMessage, customAiModel });
 		}
 		case APIProvider.Anthropic: {
-			return handleAnthropicAI({ settings, userMessage, customAiModel });
+			return handleTextAnthropicAI({ settings, userMessage, customAiModel });
 		}
 		case APIProvider.GoogleGemini: {
-			return handleGoogleGenAI({ settings, userMessage, customAiModel });
+			return handleTextGoogleGenAI({ settings, userMessage, customAiModel });
 		}
 		default:
 			throw new Error(`Unknown API Provider: ${apiProvider}`);
