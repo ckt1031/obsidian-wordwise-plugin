@@ -4,6 +4,7 @@ import { safeParseAsync } from 'valibot';
 import manifest from '../manifest.json';
 import { DEFAULT_SETTINGS } from './config';
 import AiIcon from './icons/ai.svg';
+import { migrate20240205 } from './migration';
 import { getCommands } from './prompts';
 import { runCommand } from './run-command';
 import { SettingTab } from './settings-tab';
@@ -96,11 +97,11 @@ export default class WordWisePlugin extends Plugin {
 			return;
 		}
 
-		this.settings = Object.assign(
-			{},
-			DEFAULT_SETTINGS,
-			deobfuscateConfig(localData),
-		);
+		const parsedData = deobfuscateConfig(localData);
+
+		const newMigratedData = await migrate20240205(parsedData);
+
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, newMigratedData);
 	}
 
 	async saveSettings() {

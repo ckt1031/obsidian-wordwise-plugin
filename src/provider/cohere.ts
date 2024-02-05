@@ -2,7 +2,7 @@ import { DEFAULT_COHERE_AI_API_HOST } from '@/config';
 import { AIProviderProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-hsot';
 import { convertKeysToSnakeCase } from '@/utils/keys-to-snakecase';
-import type { GenerateRequest, SingleGeneration } from 'cohere-ai/api';
+import type { GenerateRequest, Generation } from 'cohere-ai/api';
 import { request } from 'obsidian';
 
 export async function handleTextCohere({
@@ -39,7 +39,7 @@ export async function handleTextCohere({
 		body: JSON.stringify(convertKeysToSnakeCase(body)),
 	});
 
-	const { text }: SingleGeneration = JSON.parse(response);
+	const { generations }: Generation = JSON.parse(response);
 
-	return text;
+	return generations[0].text;
 }
