@@ -8,7 +8,7 @@ export async function callAPI({
 	settings,
 	userMessage,
 }: CallAPIProps): Promise<string | null | undefined> {
-	const apiProvider = settings.apiProvider;
+	const apiProvider = settings.aiProvider;
 
 	let customAiModel = '';
 

@@ -12,8 +12,10 @@ export async function handleTextGoogleGenAI({
 	userMessage,
 	customAiModel = '',
 }: AIProviderProps) {
+	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
+
 	const modelName =
-		customAiModel.length > 0 ? customAiModel : settings.googleAIModel;
+		customAiModel.length > 0 ? customAiModel : providerSettings.model;
 
 	const body: GenerateContentRequest = {
 		contents: [
@@ -33,9 +35,9 @@ export async function handleTextGoogleGenAI({
 	};
 
 	const url = `${getAPIHost(
-		settings.googleAIBaseUrl,
+		providerSettings.baseUrl,
 		DEFAULT_GOOGLE_AI_API_HOST,
-	)}/v1beta/models/${modelName}:generateContent?key=${settings.googleAIApiKey}`;
+	)}/v1beta/models/${modelName}:generateContent?key=${providerSettings.apiKey}`;
 
 	const response = await request({
 		url,

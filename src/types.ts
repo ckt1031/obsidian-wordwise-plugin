@@ -2,7 +2,6 @@ import {
 	type Output,
 	array,
 	boolean,
-	date,
 	enum_,
 	number,
 	object,
@@ -59,19 +58,24 @@ export const CustomPromptSchema = object({
 export const PluginSettingsSchema = object({
 	dataSchemeDate: string(),
 
-	apiProvider: enum_(APIProvider),
-
-	openAiApiKey: string(),
-	openAiBaseUrl: string(),
-	openAiModel: string(),
-
-	anthropicApiKey: string(),
-	anthropicBaseUrl: string(),
-	anthropicModel: string(),
-
-	googleAIApiKey: string(),
-	googleAIBaseUrl: string(),
-	googleAIModel: string(),
+	aiProvider: enum_(APIProvider),
+	aiProviderConfig: object({
+		[APIProvider.OpenAI]: object({
+			apiKey: string(),
+			baseUrl: string(),
+			model: string(),
+		}),
+		[APIProvider.GoogleGemini]: object({
+			apiKey: string(),
+			baseUrl: string(),
+			model: string(),
+		}),
+		[APIProvider.Anthropic]: object({
+			apiKey: string(),
+			baseUrl: string(),
+			model: string(),
+		}),
+	}),
 
 	advancedSettings: boolean(),
 	customAiModel: string(),

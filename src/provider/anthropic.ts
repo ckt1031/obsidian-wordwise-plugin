@@ -12,8 +12,10 @@ export async function handleTextAnthropicAI({
 	userMessage,
 	customAiModel = '',
 }: AIProviderProps) {
+	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
+
 	const modelName =
-		customAiModel.length > 0 ? customAiModel : settings.anthropicModel;
+		customAiModel.length > 0 ? customAiModel : providerSettings.model;
 
 	const extraPrompt = `
 			Please kindly remember no human conversation here, do not give extra comments outside, response only with modified text WITHOUT === WRAPPER, highly thanks.
@@ -31,7 +33,7 @@ export async function handleTextAnthropicAI({
 	};
 
 	const url = `${getAPIHost(
-		settings.anthropicBaseUrl,
+		providerSettings.baseUrl,
 		DEFAULT_ANTHROPIC_API_HOST,
 	)}/v1/messages`;
 
@@ -42,7 +44,7 @@ export async function handleTextAnthropicAI({
 			'Content-Type': 'application/json',
 			'anthropic-version': '2023-06-01',
 			'anthropic-beta': 'messages-2023-12-15',
-			'x-api-key': settings.anthropicApiKey,
+			'x-api-key': providerSettings.apiKey,
 		},
 		body: JSON.stringify(body),
 	});

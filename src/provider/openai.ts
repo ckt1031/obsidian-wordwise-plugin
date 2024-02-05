@@ -12,8 +12,10 @@ export async function handleTextOpenAI({
 	userMessage,
 	customAiModel = '',
 }: AIProviderProps) {
+	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
+
 	const modelName =
-		customAiModel.length > 0 ? customAiModel : settings.openAiModel;
+		customAiModel.length > 0 ? customAiModel : providerSettings.model;
 
 	const body: ChatCompletionCreateParams = {
 		stream: false,
@@ -35,7 +37,7 @@ export async function handleTextOpenAI({
 	};
 
 	const url = `${getAPIHost(
-		settings.openAiBaseUrl,
+		providerSettings.baseUrl,
 		DEFAULT_OPENAI_API_HOST,
 	)}/v1/chat/completions`;
 
@@ -44,7 +46,7 @@ export async function handleTextOpenAI({
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			Authorization: `Bearer ${settings.openAiApiKey}`,
+			Authorization: `Bearer ${providerSettings.apiKey}`,
 		},
 		body: JSON.stringify(body),
 	});

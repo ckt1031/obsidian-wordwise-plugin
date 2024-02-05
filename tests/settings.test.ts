@@ -6,24 +6,34 @@ import { deobfuscateConfig, obfuscateConfig } from '@/utils/obfuscate-config';
 const DEFAULT_SETTINGS: PluginSettings = {
 	dataSchemeDate: new Date('2024-01-01').toISOString(),
 
-	apiProvider: APIProvider.OpenAI,
-	openAiApiKey: 'sk-xxxxxx',
+	aiProvider: APIProvider.OpenAI,
+
+	aiProviderConfig: {
+		[APIProvider.OpenAI]: {
+			apiKey: 'sk-xxx',
+			baseUrl: 'https://api.example.com',
+			model: 'openai',
+		},
+		[APIProvider.GoogleGemini]: {
+			apiKey: 'g-xxxx',
+			baseUrl: 'https://googleapis.com',
+			model: 'gemini',
+		},
+		[APIProvider.Anthropic]: {
+			apiKey: 'an-xxx',
+			baseUrl: 'https://test.example.com',
+			model: 'claude',
+		},
+	},
+
 	temperature: 0.7,
 	customAiModel: '',
 	maxTokens: 1750,
 	frequencyPenalty: 1,
 	presencePenalty: -1,
-	openAiBaseUrl: 'https://api.example.com',
-	openAiModel: 'gpt-250-agi',
 	debugMode: false,
 	advancedSettings: false,
 	customPrompts: [],
-	anthropicApiKey: '123',
-	anthropicBaseUrl: 'https://test.anthropic.com',
-	anthropicModel: 'claude-9999',
-	googleAIApiKey: '333',
-	googleAIBaseUrl: 'https://generativeworld.googleapis.com',
-	googleAIModel: 'gemini-10000',
 };
 
 describe('obfuscateConfig and deobfuscateConfig', () => {

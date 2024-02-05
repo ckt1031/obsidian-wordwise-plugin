@@ -37,19 +37,24 @@ export const DEFAULT_GOOGLE_AI_API_HOST =
 export const DEFAULT_SETTINGS: PluginSettings = {
 	dataSchemeDate: new Date('2024-02-03').toISOString(),
 
-	apiProvider: APIProvider.OpenAI,
-
-	openAiApiKey: '',
-	openAiBaseUrl: DEFAULT_OPENAI_API_HOST,
-	openAiModel: 'gpt-3.5-turbo',
-
-	anthropicApiKey: '',
-	anthropicBaseUrl: DEFAULT_ANTHROPIC_API_HOST,
-	anthropicModel: 'claude-2.1',
-
-	googleAIApiKey: '',
-	googleAIBaseUrl: DEFAULT_GOOGLE_AI_API_HOST,
-	googleAIModel: 'gemini-pro',
+	aiProvider: APIProvider.OpenAI,
+	aiProviderConfig: {
+		[APIProvider.OpenAI]: {
+			apiKey: '',
+			baseUrl: DEFAULT_OPENAI_API_HOST,
+			model: 'gpt-3.5-turbo',
+		},
+		[APIProvider.GoogleGemini]: {
+			apiKey: '',
+			baseUrl: DEFAULT_GOOGLE_AI_API_HOST,
+			model: 'gemini-pro',
+		},
+		[APIProvider.Anthropic]: {
+			apiKey: '',
+			baseUrl: DEFAULT_ANTHROPIC_API_HOST,
+			model: 'claude-2.1',
+		},
+	},
 
 	customAiModel: '',
 	maxTokens: 2000,

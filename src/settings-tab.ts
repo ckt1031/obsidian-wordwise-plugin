@@ -55,9 +55,9 @@ export class SettingTab extends PluginSettingTab {
 					dropDown.addOption(provider, provider);
 				}
 
-				dropDown.setValue(plugin.settings.apiProvider);
+				dropDown.setValue(plugin.settings.aiProvider);
 				dropDown.onChange(async (value) => {
-					plugin.settings.apiProvider = value as APIProvider;
+					plugin.settings.aiProvider = value as APIProvider;
 					await plugin.saveSettings();
 					restartSettingsTab(plugin);
 				});
@@ -91,7 +91,7 @@ export class SettingTab extends PluginSettingTab {
 		};
 
 		for (const [provider, config] of Object.entries(apiConfiguration)) {
-			if (plugin.settings.apiProvider === provider) {
+			if (plugin.settings.aiProvider === provider) {
 				new Setting(containerEl)
 					.setName(`${provider} API Key`)
 					.setDesc(`API Key for the ${provider} API`)
@@ -99,10 +99,10 @@ export class SettingTab extends PluginSettingTab {
 						wrapPasswordComponent(text);
 						text
 							.setPlaceholder(`Enter your ${provider} API Key`)
-							.setValue(plugin.settings[config.apiKey])
+							.setValue(plugin.settings.aiProviderConfig[provider].apiKey)
 							.onChange(async (value) => {
 								// Update the API Key
-								plugin.settings[config.apiKey] = value;
+								plugin.settings.aiProviderConfig[provider].apiKey = value;
 								await plugin.saveSettings();
 							});
 					});
@@ -119,10 +119,10 @@ export class SettingTab extends PluginSettingTab {
 						.addText((text) =>
 							text
 								.setPlaceholder(config.defaultHost)
-								.setValue(plugin.settings[config.baseUrl])
+								.setValue(plugin.settings.aiProviderConfig[provider].baseUrl)
 								.onChange(async (value) => {
 									// Update the Base URL
-									plugin.settings[config.baseUrl] = value;
+									plugin.settings.aiProviderConfig[provider].baseUrl = value;
 									await plugin.saveSettings();
 								}),
 						);
@@ -143,10 +143,10 @@ export class SettingTab extends PluginSettingTab {
 							  : GOOGLE_AI_MODELS) {
 							dropDown.addOption(model, model);
 						}
-						dropDown.setValue(plugin.settings[config.model]);
+						dropDown.setValue(plugin.settings.aiProviderConfig[provider].model);
 						dropDown.onChange(async (value) => {
 							// Update the Model
-							plugin.settings[config.model] = value;
+							plugin.settings.aiProviderConfig[provider].model = value;
 							await plugin.saveSettings();
 						});
 					});
