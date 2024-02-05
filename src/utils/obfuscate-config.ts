@@ -1,3 +1,4 @@
+import { DEFAULT_SETTINGS } from '@/config';
 import type { ObfuscatedPluginSettings, PluginSettings } from '@/types';
 
 const SECRET_KEY = 'RSUH6NwtuGcUS252ssX2U4dCeCi48Yg2ekqnrKatZkmQRetZpxMUxqE';
@@ -45,3 +46,31 @@ const obfuscateConfig = (
 };
 
 export { deobfuscateConfig, obfuscateConfig };
+
+if (import.meta.vitest) {
+	const { describe, it, expect } = import.meta.vitest;
+	describe('obfuscateConfig and deobfuscateConfig', () => {
+		it('should obfuscate and deobfuscate the config correctly', () => {
+			const obfuscatedConfig = obfuscateConfig(DEFAULT_SETTINGS);
+
+			// Expect not to be equal to the default settings
+			expect(obfuscatedConfig).not.toEqual(DEFAULT_SETTINGS);
+
+			// Expect not to be undefined or null
+			expect(obfuscatedConfig).not.toBeUndefined();
+			expect(obfuscatedConfig).not.toBeNull();
+
+			if (!obfuscatedConfig) return;
+
+			const deobfuscatedConfig = deobfuscateConfig(obfuscatedConfig);
+
+			expect(deobfuscatedConfig).toEqual(DEFAULT_SETTINGS);
+		});
+
+		it('should return null for empty or undefined input', () => {
+			expect(obfuscateConfig(undefined)).toBeUndefined();
+			// @ts-expect-error
+			expect(deobfuscateConfig({})).toBeNull();
+		});
+	});
+}

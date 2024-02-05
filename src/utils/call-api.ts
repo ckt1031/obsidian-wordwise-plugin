@@ -1,4 +1,5 @@
 import { handleTextAnthropicAI } from '@/provider/anthropic';
+import { handleTextCohere } from '@/provider/cohere';
 import { handleTextGoogleGenAI } from '@/provider/google-ai';
 import { handleTextOpenAI } from '@/provider/openai';
 import { APIProvider, type CallAPIProps } from '@/types';
@@ -30,6 +31,9 @@ export async function callAPI({
 		}
 		case APIProvider.GoogleGemini: {
 			return handleTextGoogleGenAI({ settings, userMessage, customAiModel });
+		}
+		case APIProvider.Cohere: {
+			return handleTextCohere({ settings, userMessage, customAiModel });
 		}
 		default:
 			throw new Error(`Unknown API Provider: ${apiProvider}`);

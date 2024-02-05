@@ -3,14 +3,7 @@ import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
 import manifest from '../manifest.json';
 import { wrapPasswordComponent } from './components/password';
-import {
-	ANTHROPIC_MODELS,
-	DEFAULT_ANTHROPIC_API_HOST,
-	DEFAULT_GOOGLE_AI_API_HOST,
-	DEFAULT_OPENAI_API_HOST,
-	GOOGLE_AI_MODELS,
-	OPENAI_MODELS,
-} from './config';
+import { settingTabProviderConfiguations } from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
 import { APIProvider } from './types';
@@ -63,34 +56,9 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
-		const apiConfiguration = {
-			[APIProvider.OpenAI]: {
-				apiKey: 'openAiApiKey' as const,
-				baseUrl: 'openAiBaseUrl' as const,
-				model: 'openAiModel' as const,
-				defaultHost: DEFAULT_OPENAI_API_HOST,
-				docs: 'https://platform.openai.com/docs/introduction',
-				defaultModel: 'gpt-3.5-turbo',
-			},
-			[APIProvider.Anthropic]: {
-				apiKey: 'anthropicApiKey' as const,
-				baseUrl: 'anthropicBaseUrl' as const,
-				model: 'anthropicModel' as const,
-				defaultHost: DEFAULT_ANTHROPIC_API_HOST,
-				docs: 'https://docs.anthropic.com/claude/reference/getting-started-with-the-api',
-				defaultModel: 'claude-2.1',
-			},
-			[APIProvider.GoogleGemini]: {
-				apiKey: 'googleAIApiKey' as const,
-				baseUrl: 'googleAIBaseUrl' as const,
-				model: 'googleAIModel' as const,
-				defaultHost: DEFAULT_GOOGLE_AI_API_HOST,
-				docs: 'https://ai.google.dev/models/gemini',
-				defaultModel: 'gemini-pro',
-			},
-		};
-
-		for (const [provider, config] of Object.entries(apiConfiguration)) {
+		for (const [provider, config] of Object.entries(
+			settingTabProviderConfiguations,
+		)) {
 			if (plugin.settings.aiProvider === provider) {
 				new Setting(containerEl)
 					.setName(`${provider} API Key`)
@@ -136,11 +104,7 @@ export class SettingTab extends PluginSettingTab {
 						),
 					)
 					.addDropdown((dropDown) => {
-						for (const model of provider === APIProvider.OpenAI
-							? OPENAI_MODELS
-							: provider === APIProvider.Anthropic
-							  ? ANTHROPIC_MODELS
-							  : GOOGLE_AI_MODELS) {
+						for (const model of config.models) {
 							dropDown.addOption(model, model);
 						}
 						dropDown.setValue(plugin.settings.aiProviderConfig[provider].model);

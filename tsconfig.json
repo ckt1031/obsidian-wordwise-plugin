@@ -18,6 +18,9 @@
 		"noImplicitAny": true,
 		"resolveJsonModule": true,
 		"strictNullChecks": true,
+		"types": [
+			"vitest/importMeta"
+		],
 		"paths": {
 			"@/*": [
 				"src/*"

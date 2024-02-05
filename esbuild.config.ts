@@ -21,6 +21,9 @@ const context = await esbuild.context({
 	loader: {
 		'.svg': 'text',
 	},
+	define: {
+		'import.meta.vitest': 'undefined',
+	},
 });
 
 if (prod) {

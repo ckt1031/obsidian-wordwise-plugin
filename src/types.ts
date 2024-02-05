@@ -14,6 +14,7 @@ export enum APIProvider {
 	OpenAI = 'OpenAI',
 	GoogleGemini = 'Google Gemini',
 	Anthropic = 'Anthropic',
+	Cohere = 'Cohere',
 }
 
 export enum CommandNames {
@@ -71,6 +72,11 @@ export const PluginSettingsSchema = object({
 			model: string(),
 		}),
 		[APIProvider.Anthropic]: object({
+			apiKey: string(),
+			baseUrl: string(),
+			model: string(),
+		}),
+		[APIProvider.Cohere]: object({
 			apiKey: string(),
 			baseUrl: string(),
 			model: string(),
