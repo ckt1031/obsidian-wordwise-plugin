@@ -1,4 +1,4 @@
-import type { ObfuscatedPluginSettings, PluginSettings } from '../types';
+import type { ObfuscatedPluginSettings, PluginSettings } from '@/types';
 
 const SECRET_KEY = 'RSUH6NwtuGcUS252ssX2U4dCeCi48Yg2ekqnrKatZkmQRetZpxMUxqE';
 

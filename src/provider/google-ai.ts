@@ -1,11 +1,11 @@
+import { DEFAULT_GOOGLE_AI_API_HOST } from '@/config';
+import { AIProviderProps } from '@/types';
+import { getAPIHost } from '@/utils/get-url-hsot';
 import type {
 	GenerateContentRequest,
 	GenerateContentResponse,
 } from '@google/generative-ai';
 import { request } from 'obsidian';
-import { DEFAULT_GOOGLE_AI_API_HOST } from 'src/config';
-import { getAPIHost } from 'src/utils/get-url-hsot';
-import { AIProviderProps } from '../types';
 
 export async function handleTextGoogleGenAI({
 	settings,

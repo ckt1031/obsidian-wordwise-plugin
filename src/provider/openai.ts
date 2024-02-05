@@ -1,11 +1,11 @@
+import { DEFAULT_OPENAI_API_HOST } from '@/config';
+import { AIProviderProps } from '@/types';
+import { getAPIHost } from '@/utils/get-url-hsot';
 import { request } from 'obsidian';
 import type {
 	ChatCompletion,
 	ChatCompletionCreateParams,
 } from 'openai/resources/chat/completions';
-import { DEFAULT_OPENAI_API_HOST } from '../config';
-import { AIProviderProps } from '../types';
-import { getAPIHost } from '../utils/get-url-hsot';
 
 export async function handleTextOpenAI({
 	settings,

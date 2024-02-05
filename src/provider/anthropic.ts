@@ -1,11 +1,11 @@
+import { DEFAULT_ANTHROPIC_API_HOST } from '@/config';
+import { AIProviderProps } from '@/types';
+import { getAPIHost } from '@/utils/get-url-hsot';
 import type {
 	Message,
 	MessageCreateParams,
 } from '@anthropic-ai/sdk/resources/beta/messages';
 import { request } from 'obsidian';
-import { DEFAULT_ANTHROPIC_API_HOST } from '../config';
-import { AIProviderProps } from '../types';
-import { getAPIHost } from '../utils/get-url-hsot';
 
 export async function handleTextAnthropicAI({
 	settings,

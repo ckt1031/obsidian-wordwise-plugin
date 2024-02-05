@@ -1,10 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { APIProvider, type PluginSettings } from '../src/types';
-import {
-	deobfuscateConfig,
-	obfuscateConfig,
-} from '../src/utils/obfuscate-config';
+import { APIProvider, type PluginSettings } from '@/types';
+import { deobfuscateConfig, obfuscateConfig } from '@/utils/obfuscate-config';
 
 const DEFAULT_SETTINGS: PluginSettings = {
 	dataSchemeDate: new Date('2024-01-01').toISOString(),

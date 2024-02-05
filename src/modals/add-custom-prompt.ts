@@ -1,8 +1,8 @@
 import type { TextAreaComponent, TextComponent } from 'obsidian';
 import { Modal, Notice, Setting } from 'obsidian';
 
+import type WordWisePlugin from '@/main';
 import manifest from '../../manifest.json';
-import type WordWisePlugin from '../main';
 
 export default class AddCustomPromptModal extends Modal {
 	name: string;

@@ -1,7 +1,7 @@
-import { handleTextAnthropicAI } from '../provider/anthropic';
-import { handleTextGoogleGenAI } from '../provider/google-ai';
-import { handleTextOpenAI } from '../provider/openai';
-import { APIProvider, type CallAPIProps } from '../types';
+import { handleTextAnthropicAI } from '@/provider/anthropic';
+import { handleTextGoogleGenAI } from '@/provider/google-ai';
+import { handleTextOpenAI } from '@/provider/openai';
+import { APIProvider, type CallAPIProps } from '@/types';
 import { log } from './logging';
 
 export async function callAPI({
