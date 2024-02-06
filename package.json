@@ -21,7 +21,7 @@
     "cohere-ai": "7.7.5",
     "mustache": "4.2.0",
     "openai": "4.26.1",
-    "valibot": "0.27.1"
+    "valibot": "0.28.0"
   },
   "devDependencies": {
     "@biomejs/biome": "1.5.3",
