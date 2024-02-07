@@ -1,11 +1,11 @@
-import { PluginSettings } from "@/types";
-import CryptoJS from "crypto-js";
-import manifest from "../../manifest.json";
-import QRCode from "qrcode";
-import { QR_CODE_ENCRYPT_KEY } from "@/config";
+import { QR_CODE_ENCRYPT_KEY } from '@/config';
+import { PluginSettings } from '@/types';
+import CryptoJS from 'crypto-js';
+import QRCode from 'qrcode';
+import manifest from '../../manifest.json';
 
 export interface ProcessQrCodeResultType {
-	status: "error" | "ok";
+	status: 'error' | 'ok';
 	message: string;
 	result?: PluginSettings;
 }
@@ -27,10 +27,12 @@ const decryptBrowser = (encrypted: string, key: string) => {
 
 export const exportQrCodeUri = async (
 	settings: PluginSettings,
-	currentVaultName: string
+	currentVaultName: string,
 ) => {
 	const vault = encodeURIComponent(currentVaultName);
-  const data = encodeURIComponent(encryptBrowser(JSON.stringify(settings), QR_CODE_ENCRYPT_KEY));
+	const data = encodeURIComponent(
+		encryptBrowser(JSON.stringify(settings), QR_CODE_ENCRYPT_KEY),
+	);
 	const rawUri = `obsidian://${manifest.id}?func=import&version=${manifest.version}&vault=${vault}&data=${data}`;
 	const imgUri = await QRCode.toDataURL(rawUri);
 	return {
@@ -41,49 +43,49 @@ export const exportQrCodeUri = async (
 
 export const importQrCodeUri = (
 	inputParams: unknown,
-	currentVaultName: string
+	currentVaultName: string,
 ): ProcessQrCodeResultType => {
 	const params = inputParams as UriParams;
-	
+
 	if (
 		params.func === undefined ||
-		params.func !== "import" ||
+		params.func !== 'import' ||
 		params.vault === undefined ||
 		params.data === undefined
 	) {
 		return {
-			status: "error",
+			status: 'error',
 			message: `The uri is not for exporting/importing settings: ${JSON.stringify(
-				inputParams
+				inputParams,
 			)}`,
 		};
 	}
 
 	if (params.vault !== currentVaultName) {
 		return {
-			status: "error",
+			status: 'error',
 			message: `The target vault is ${
 				params.vault
 			} but you are currently in ${currentVaultName}: ${JSON.stringify(
-				inputParams
+				inputParams,
 			)}`,
 		};
 	}
 
 	let settings = {} as PluginSettings;
 	try {
-		settings = JSON.parse(decryptBrowser(decodeURIComponent(params.data), QR_CODE_ENCRYPT_KEY));
+		settings = JSON.parse(
+			decryptBrowser(decodeURIComponent(params.data), QR_CODE_ENCRYPT_KEY),
+		);
 	} catch (e) {
 		return {
-			status: "error",
-			message: `Errors while parsing settings: ${JSON.stringify(
-				inputParams
-			)}`,
+			status: 'error',
+			message: `Errors while parsing settings: ${JSON.stringify(inputParams)}`,
 		};
 	}
 	return {
-		status: "ok",
-		message: "OK",
+		status: 'ok',
+		message: 'OK',
 		result: settings,
 	};
 };

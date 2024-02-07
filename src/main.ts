@@ -72,24 +72,22 @@ export default class WordWisePlugin extends Plugin {
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SettingTab(this.app, this));
 
-		this.registerObsidianProtocolHandler(
-			manifest.id,
-			async (inputParams) => {
-				const parsed = importQrCodeUri(
-					inputParams,
-					this.app.vault.getName()
+		this.registerObsidianProtocolHandler(manifest.id, async (inputParams) => {
+			const parsed = importQrCodeUri(inputParams, this.app.vault.getName());
+			if (parsed.status === 'error') {
+				new Notice(parsed.message);
+			} else {
+				this.settings = Object.assign(
+					{},
+					this.settings,
+					await this.handleData(parsed.result),
 				);
-				if (parsed.status === "error") {
-					new Notice(parsed.message);
-				} else {
-					this.settings = Object.assign({}, this.settings, await this.handleData(parsed.result));
-					this.saveSettings();
-					new Notice(
-						"Settings imported. Please check the settings tab to verify."
-					);
-				}
+				this.saveSettings();
+				new Notice(
+					'Settings imported. Please check the settings tab to verify.',
+				);
 			}
-		);
+		});
 
 		log(this.settings, 'Loaded plugin.');
 	}
@@ -118,7 +116,11 @@ export default class WordWisePlugin extends Plugin {
 		}
 		const parsedData = deobfuscateConfig(localData);
 
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.handleData(parsedData));
+		this.settings = Object.assign(
+			{},
+			DEFAULT_SETTINGS,
+			await this.handleData(parsedData),
+		);
 	}
 
 	async handleData(data: unknown) {
