@@ -1,14 +1,15 @@
-import type { App, ButtonComponent } from 'obsidian';
-import { Notice, PluginSettingTab, Setting } from 'obsidian';
+import type { App, ButtonComponent } from "obsidian";
+import { Notice, PluginSettingTab, Setting } from "obsidian";
 
-import manifest from '../manifest.json';
-import { wrapPasswordComponent } from './components/password';
-import { settingTabProviderConfiguations } from './config';
-import type WordWisePlugin from './main';
-import AddCustomPromptModal from './modals/add-custom-prompt';
-import { APIProvider } from './types';
-import { callAPI } from './utils/call-api';
-import { log } from './utils/logging';
+import manifest from "../manifest.json";
+import { wrapPasswordComponent } from "./components/password";
+import { settingTabProviderConfiguations } from "./config";
+import type WordWisePlugin from "./main";
+import AddCustomPromptModal from "./modals/add-custom-prompt";
+import { APIProvider } from "./types";
+import { callAPI } from "./utils/call-api";
+import { log } from "./utils/logging";
+import { ExportSettingsQrCodeModal } from "./components/qr-code";
 
 async function restartSettingsTab(plugin: WordWisePlugin) {
 	await plugin.app.setting.close();
@@ -35,12 +36,12 @@ export class SettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h1', { text: manifest.name });
+		containerEl.createEl("h1", { text: manifest.name });
 
 		new Setting(containerEl)
-			.setName('API Provider')
+			.setName("API Provider")
 			.setDesc(
-				'API Provider to be used, available options are OpenAI, Anthropic and Google AI',
+				"API Provider to be used, available options are OpenAI, Anthropic and Google AI",
 			)
 			.addDropdown((dropDown) => {
 				// Add all the API Providers, use value as option value
@@ -65,36 +66,42 @@ export class SettingTab extends PluginSettingTab {
 					.setDesc(`API Key for the ${provider} API`)
 					.addText((text) => {
 						wrapPasswordComponent(text);
-						text
-							.setPlaceholder(`Enter your ${provider} API Key`)
-							.setValue(plugin.settings.aiProviderConfig[provider].apiKey)
+						text.setPlaceholder(`Enter your ${provider} API Key`)
+							.setValue(
+								plugin.settings.aiProviderConfig[provider]
+									.apiKey,
+							)
 							.onChange(async (value) => {
 								// Update the API Key
-								plugin.settings.aiProviderConfig[provider].apiKey = value;
+								plugin.settings.aiProviderConfig[
+									provider
+								].apiKey = value;
 								await plugin.saveSettings();
 							});
 					});
 
-				// Dont show this for Google AI
-				if (provider !== APIProvider.GoogleGemini) {
-					new Setting(containerEl)
-						.setName(`${provider} Endpoint Base URL`)
-						.setDesc(
-							SettingTab.createFragmentWithHTML(
-								`Base URL for the ${provider} API, defaults to <code>${config.defaultHost}</code>.<br/><b>DO NOT include / trailing slash and paths</b>.`,
-							),
-						)
-						.addText((text) =>
-							text
-								.setPlaceholder(config.defaultHost)
-								.setValue(plugin.settings.aiProviderConfig[provider].baseUrl)
-								.onChange(async (value) => {
-									// Update the Base URL
-									plugin.settings.aiProviderConfig[provider].baseUrl = value;
-									await plugin.saveSettings();
-								}),
-						);
-				}
+				new Setting(containerEl)
+					.setName(`${provider} Endpoint Base URL`)
+					.setDesc(
+						SettingTab.createFragmentWithHTML(
+							`Base URL for the ${provider} API, defaults to <code>${config.defaultHost}</code>.<br/><b>DO NOT include / trailing slash and paths</b>.`,
+						),
+					)
+					.addText((text) =>
+						text
+							.setPlaceholder(config.defaultHost)
+							.setValue(
+								plugin.settings.aiProviderConfig[provider]
+									.baseUrl,
+							)
+							.onChange(async (value) => {
+								// Update the Base URL
+								plugin.settings.aiProviderConfig[
+									provider
+								].baseUrl = value;
+								await plugin.saveSettings();
+							}),
+					);
 
 				new Setting(containerEl)
 					.setName(`${provider} Language Model`)
@@ -107,10 +114,13 @@ export class SettingTab extends PluginSettingTab {
 						for (const model of config.models) {
 							dropDown.addOption(model, model);
 						}
-						dropDown.setValue(plugin.settings.aiProviderConfig[provider].model);
+						dropDown.setValue(
+							plugin.settings.aiProviderConfig[provider].model,
+						);
 						dropDown.onChange(async (value) => {
 							// Update the Model
-							plugin.settings.aiProviderConfig[provider].model = value;
+							plugin.settings.aiProviderConfig[provider].model =
+								value;
 							await plugin.saveSettings();
 						});
 					});
@@ -118,32 +128,33 @@ export class SettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName('Check API Availability')
-			.setDesc('Test if your API Key is valid and working.')
+			.setName("Check API Availability")
+			.setDesc("Test if your API Key is valid and working.")
 			.addButton((button) =>
-				button.setButtonText('Check').onClick(async () => {
+				button.setButtonText("Check").onClick(async () => {
 					try {
-						new Notice('Checking API Status...');
+						new Notice("Checking API Status...");
 
 						const result = await callAPI({
 							settings: plugin.settings,
-							userMessage: 'Say word hello only.',
+							userMessage: "Say word hello only.",
 						});
 
 						if (result && result.length > 0) {
-							new Notice('API Key is valid and working!');
+							new Notice("API Key is valid and working!");
 						}
 					} catch (error) {
-						if (error instanceof Error) log(plugin.settings, error.message);
-						new Notice('API is not working properly.');
+						if (error instanceof Error)
+							log(plugin.settings, error.message);
+						new Notice("API is not working properly.");
 					}
 				}),
 			);
 
 		new Setting(containerEl)
-			.setName('Advanced Mode')
+			.setName("Advanced Mode")
 			.setDesc(
-				'Configure advanced model settings, enable this in order to send extra parameters to the API',
+				"Configure advanced model settings, enable this in order to send extra parameters to the API",
 			)
 			.addToggle((toggle) =>
 				toggle
@@ -157,9 +168,9 @@ export class SettingTab extends PluginSettingTab {
 
 		if (plugin.settings.advancedSettings) {
 			new Setting(containerEl)
-				.setName('Temperature')
+				.setName("Temperature")
 				.setDesc(
-					'Temperature for the model, defaults to <b>0.5</b> for best suitable results, higher value means more creative but less accurate, lower value means less creative but more accurate.',
+					"Temperature for the model, defaults to <b>0.5</b> for best suitable results, higher value means more creative but less accurate, lower value means less creative but more accurate.",
 				)
 				.addSlider((slider) => {
 					slider.setDynamicTooltip();
@@ -172,13 +183,13 @@ export class SettingTab extends PluginSettingTab {
 				});
 
 			new Setting(containerEl)
-				.setName('Custom Model ID')
+				.setName("Custom Model ID")
 				.setDesc(
-					'Enter custom model ID for your own API, if this is empty, it will follow the selected menu above.',
+					"Enter custom model ID for your own API, if this is empty, it will follow the selected menu above.",
 				)
 				.addText((text) =>
 					text
-						.setPlaceholder('Enter the model name')
+						.setPlaceholder("Enter the model name")
 						.setValue(plugin.settings.customAiModel)
 						.onChange(async (value) => {
 							plugin.settings.customAiModel = value;
@@ -187,7 +198,7 @@ export class SettingTab extends PluginSettingTab {
 				);
 
 			new Setting(containerEl)
-				.setName('Presence Penalty')
+				.setName("Presence Penalty")
 				.setDesc(
 					SettingTab.createFragmentWithHTML(
 						"(OpenAI ONLY) Presence penalty for the model, increasing the model's likelihood to talk about new topics, defaults to <b>0.0</b>.",
@@ -205,7 +216,7 @@ export class SettingTab extends PluginSettingTab {
 				});
 
 			new Setting(containerEl)
-				.setName('Frequency Penalty')
+				.setName("Frequency Penalty")
 				.setDesc(
 					SettingTab.createFragmentWithHTML(
 						"(OpenAI ONLY) Frequency penalty for the model, decreasing the model's likelihood to repeat the same line verbatim, defaults to <b>0.0</b>.",
@@ -222,10 +233,10 @@ export class SettingTab extends PluginSettingTab {
 				});
 
 			new Setting(containerEl)
-				.setName('Max Tokens')
+				.setName("Max Tokens")
 				.setDesc(
 					SettingTab.createFragmentWithHTML(
-						'Maximum number of tokens to generate (0 means not specifying in API)',
+						"Maximum number of tokens to generate (0 means not specifying in API)",
 					),
 				)
 				.addText((text) =>
@@ -237,7 +248,8 @@ export class SettingTab extends PluginSettingTab {
 								!Number.isNaN(Number.parseInt(value)) &&
 								Number.parseInt(value) >= 0
 							) {
-								plugin.settings.maxTokens = Number.parseInt(value);
+								plugin.settings.maxTokens =
+									Number.parseInt(value);
 								await plugin.saveSettings();
 							}
 						}),
@@ -245,55 +257,73 @@ export class SettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName('Debug Mode')
+			.setName("Debug Mode")
 			.setDesc(
-				'Enable debug mode, which will log more information to the console',
+				"Enable debug mode, which will log more information to the console",
 			)
 			.addToggle((toggle) =>
-				toggle.setValue(plugin.settings.debugMode).onChange(async (value) => {
-					plugin.settings.debugMode = value;
-					await plugin.saveSettings();
-				}),
+				toggle
+					.setValue(plugin.settings.debugMode)
+					.onChange(async (value) => {
+						plugin.settings.debugMode = value;
+						await plugin.saveSettings();
+					}),
 			);
 
 		new Setting(containerEl)
-			.setName('Reset Settings')
-			.setDesc('This will reset all settings to their default values')
+			.setName("Export settings")
+			.setDesc("Export settings as a QR code.")
 			.addButton((button) => {
-				button.setTooltip('Irrevisible action, please be careful!');
-				button.setButtonText('Reset').onClick(async () => {
-					if (button.buttonEl.textContent === 'Reset') {
+				button.setButtonText("Export").onClick(async () => {
+					new ExportSettingsQrCodeModal(
+						this.app,
+						this.plugin.settings,
+					).open();
+				});
+			});
+
+		new Setting(containerEl)
+			.setName("Reset Settings")
+			.setDesc("This will reset all settings to their default values")
+			.addButton((button) => {
+				button.setTooltip("Irrevisible action, please be careful!");
+				button.setButtonText("Reset").onClick(async () => {
+					if (button.buttonEl.textContent === "Reset") {
 						// Are you sure? (seconds), give 5 seconds, loop 5 times
 						for (let i = 0; i < 5; i++) {
-							button.setButtonText(`Are you sure to reset? (${5 - i})`);
+							button.setButtonText(
+								`Are you sure to reset? (${5 - i})`,
+							);
 							button.setDisabled(true);
-							await new Promise((resolve) => setTimeout(resolve, 1000));
+							await new Promise((resolve) =>
+								setTimeout(resolve, 1000),
+							);
 						}
 
 						button.setDisabled(false);
-						button.setButtonText('Are you sure to reset?');
+						button.setButtonText("Are you sure to reset?");
 
 						setTimeout(() => {
-							button.setButtonText('Reset');
+							button.setButtonText("Reset");
 						}, 5000);
 					} else {
 						// This has already been clicked once, so reset the settings
 						await plugin.resetSettings();
-						new Notice('Resetting settings to default values');
+						new Notice("Resetting settings to default values");
 						restartSettingsTab(plugin);
 					}
 				});
 			});
 
-		containerEl.createEl('h2', { text: 'Custom Prompts' });
+		containerEl.createEl("h2", { text: "Custom Prompts" });
 
 		new Setting(containerEl)
 			.setDesc(
 				"Here is a list of all the custom prompts you've created. You can edit or delete them here, or add a new one below.",
 			)
 			.addButton((cb: ButtonComponent) => {
-				cb.setTooltip('Add a new custom prompt');
-				cb.setButtonText('Add');
+				cb.setTooltip("Add a new custom prompt");
+				cb.setButtonText("Add");
 				cb.onClick(async () => {
 					await plugin.app.setting.close();
 					new AddCustomPromptModal(plugin, false).open();
@@ -304,8 +334,8 @@ export class SettingTab extends PluginSettingTab {
 			new Setting(containerEl)
 				.setName(prompts.name)
 				.addButton((button) => {
-					button.setIcon('pencil');
-					button.setTooltip('Edit this prompt');
+					button.setIcon("pencil");
+					button.setTooltip("Edit this prompt");
 					button.onClick(async () => {
 						const prompt = plugin.settings.customPrompts.find(
 							(x) => x.name === prompts.name,
@@ -323,22 +353,26 @@ export class SettingTab extends PluginSettingTab {
 					});
 				})
 				.addButton((button) => {
-					button.setIcon('cross');
-					button.setTooltip('Delete this prompt');
+					button.setIcon("cross");
+					button.setTooltip("Delete this prompt");
 					button.onClick(async () => {
-						if (button.buttonEl.textContent === '') {
+						if (button.buttonEl.textContent === "") {
 							// Are you sure? (seconds), give 5 seconds, loop 5 times
 							for (let i = 0; i < 5; i++) {
-								button.setButtonText(`Are you sure to delete? (${5 - i})`);
+								button.setButtonText(
+									`Are you sure to delete? (${5 - i})`,
+								);
 								button.setDisabled(true);
-								await new Promise((resolve) => setTimeout(resolve, 1000));
+								await new Promise((resolve) =>
+									setTimeout(resolve, 1000),
+								);
 							}
 
 							button.setDisabled(false);
-							button.setButtonText('Are you sure to delete?');
+							button.setButtonText("Are you sure to delete?");
 
 							setTimeout(() => {
-								button.setIcon('cross');
+								button.setIcon("cross");
 							}, 5000);
 						} else {
 							if (button.buttonEl.parentElement?.parentElement) {

@@ -34,6 +34,9 @@ export const COHERE_MODELS = [
 	'command-light-nightly',
 ];
 
+// This key can be exposed here as the aim is only to prevent direct exposure of data through sharing.
+export const QR_CODE_ENCRYPT_KEY = "DsH24E4xr8AfeZz24n6BCdew6f63";
+
 // Ref: https://ai.google.dev/models/gemini
 // Updated on 2024-01-26
 export const GOOGLE_AI_MODELS = ['gemini-pro'];

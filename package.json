@@ -19,14 +19,18 @@
     "@anthropic-ai/sdk": "0.13.0",
     "@google/generative-ai": "0.2.0",
     "cohere-ai": "7.7.5",
+    "crypto-js": "4.2.0",
     "mustache": "4.2.0",
     "openai": "4.26.1",
+    "qrcode": "1.5.3",
     "valibot": "0.28.1"
   },
   "devDependencies": {
     "@biomejs/biome": "1.5.3",
+    "@types/crypto-js": "4.2.2",
     "@types/mustache": "4.2.5",
     "@types/node": "20.11.16",
+    "@types/qrcode": "1.5.5",
     "builtin-modules": "3.3.0",
     "esbuild": "0.20.0",
     "obsidian": "1.4.11",

@@ -1,4 +1,4 @@
-import { Plugin, addIcon } from 'obsidian';
+import { Notice, Plugin, addIcon } from 'obsidian';
 
 import { safeParseAsync } from 'valibot';
 import manifest from '../manifest.json';
@@ -15,6 +15,7 @@ import {
 } from './types';
 import { log } from './utils/logging';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
+import { importQrCodeUri } from './utils/settings-sharing';
 
 export default class WordWisePlugin extends Plugin {
 	settings: PluginSettings;
@@ -71,6 +72,25 @@ export default class WordWisePlugin extends Plugin {
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SettingTab(this.app, this));
 
+		this.registerObsidianProtocolHandler(
+			manifest.id,
+			async (inputParams) => {
+				const parsed = importQrCodeUri(
+					inputParams,
+					this.app.vault.getName()
+				);
+				if (parsed.status === "error") {
+					new Notice(parsed.message);
+				} else {
+					this.settings = Object.assign({}, this.settings, await this.handleData(parsed.result));
+					this.saveSettings();
+					new Notice(
+						"Settings imported. Please check the settings tab to verify."
+					);
+				}
+			}
+		);
+
 		log(this.settings, 'Loaded plugin.');
 	}
 
@@ -96,12 +116,15 @@ export default class WordWisePlugin extends Plugin {
 			log(this.settings, 'Failed to parse settings, using default settings.');
 			return;
 		}
-
 		const parsedData = deobfuscateConfig(localData);
 
-		const newMigratedData = await migrate20240205(parsedData);
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.handleData(parsedData));
+	}
 
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, newMigratedData);
+	async handleData(data: unknown) {
+		const newMigratedData = await migrate20240205(data);
+
+		return newMigratedData;
 	}
 
 	async saveSettings() {
