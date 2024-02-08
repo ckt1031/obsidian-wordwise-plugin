@@ -16,7 +16,7 @@
     "version": "bun version-bump.ts && biome format manifest.json versions.json --write && git add manifest.json versions.json"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "0.13.0",
+    "@anthropic-ai/sdk": "0.13.1",
     "@google/generative-ai": "0.2.0",
     "cohere-ai": "7.7.5",
     "crypto-js": "4.2.0",
