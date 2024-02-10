@@ -25,12 +25,6 @@ export class SettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
-	private static createFragmentWithHTML = (html: string) =>
-		createFragment((documentFragment) => {
-			const div = documentFragment.createDiv();
-			div.innerHTML = html;
-		});
-
 	display(): void {
 		const { containerEl, plugin } = this;
 
@@ -79,9 +73,7 @@ export class SettingTab extends PluginSettingTab {
 				new Setting(containerEl)
 					.setName(`${provider} Endpoint Base URL`)
 					.setDesc(
-						SettingTab.createFragmentWithHTML(
-							`Base URL for the ${provider} API, defaults to <code>${config.defaultHost}</code>.<br/><b>DO NOT include / trailing slash and paths</b>.`,
-						),
+						`Base URL for the ${provider} API, defaults to ${config.defaultHost}, DO NOT include / trailing slash and paths.`,
 					)
 					.addText((text) =>
 						text
@@ -97,9 +89,7 @@ export class SettingTab extends PluginSettingTab {
 				new Setting(containerEl)
 					.setName(`${provider} Language Model`)
 					.setDesc(
-						SettingTab.createFragmentWithHTML(
-							`Model to be used, defaults to <b>${config.defaultModel}</b>, see <a href="${config.docs}">${provider} Models</a> for more info`,
-						),
+						`Model to be used, defaults to ${config.defaultModel}, see ${provider} Models for more info`,
 					)
 					.addDropdown((dropDown) => {
 						for (const model of config.models) {
@@ -157,7 +147,7 @@ export class SettingTab extends PluginSettingTab {
 			new Setting(containerEl)
 				.setName('Temperature')
 				.setDesc(
-					'Temperature for the model, defaults to <b>0.5</b> for best suitable results, higher value means more creative but less accurate, lower value means less creative but more accurate.',
+					'Temperature for the model, defaults to 0.5 for best suitable results, higher value means more creative but less accurate, lower value means less creative but more accurate.',
 				)
 				.addSlider((slider) => {
 					slider.setDynamicTooltip();
@@ -187,9 +177,7 @@ export class SettingTab extends PluginSettingTab {
 			new Setting(containerEl)
 				.setName('Presence Penalty')
 				.setDesc(
-					SettingTab.createFragmentWithHTML(
-						"(OpenAI ONLY) Presence penalty for the model, increasing the model's likelihood to talk about new topics, defaults to <b>0.0</b>.",
-					),
+					"Increasing the model's likelihood to talk about new topics, defaults to 0.0.",
 				)
 
 				.addSlider((slider) => {
@@ -205,9 +193,7 @@ export class SettingTab extends PluginSettingTab {
 			new Setting(containerEl)
 				.setName('Frequency Penalty')
 				.setDesc(
-					SettingTab.createFragmentWithHTML(
-						"(OpenAI ONLY) Frequency penalty for the model, decreasing the model's likelihood to repeat the same line verbatim, defaults to <b>0.0</b>.",
-					),
+					"Decreasing the model's likelihood to repeat the same line verbatim, defaults to 0.0.",
 				)
 				.addSlider((slider) => {
 					slider.setDynamicTooltip();
@@ -222,9 +208,7 @@ export class SettingTab extends PluginSettingTab {
 			new Setting(containerEl)
 				.setName('Max Tokens')
 				.setDesc(
-					SettingTab.createFragmentWithHTML(
-						'Maximum number of tokens to generate (0 means not specifying in API)',
-					),
+					'Maximum number of tokens to generate (0 means not specifying in API)',
 				)
 				.addText((text) =>
 					text
