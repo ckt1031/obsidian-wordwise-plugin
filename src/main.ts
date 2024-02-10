@@ -32,8 +32,8 @@ export default class WordWisePlugin extends Plugin {
 			// Add icon if it exists
 			if (command.icon) addIcon(iconName, command.icon);
 
+			// @ts-expect-error
 			this.addCommand({
-				id: command.name,
 				name: command.name,
 				icon: command.icon ? iconName : AiIcon,
 				editorCallback: (editor) =>
