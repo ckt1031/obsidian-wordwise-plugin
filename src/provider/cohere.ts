@@ -1,5 +1,5 @@
 import { DEFAULT_COHERE_AI_API_HOST } from '@/config';
-import { AIProviderProps } from '@/types';
+import type { AIProviderProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-hsot';
 import { convertKeysToSnakeCase } from '@/utils/keys-to-snakecase';
 import type { GenerateRequest, Generation } from 'cohere-ai/api';

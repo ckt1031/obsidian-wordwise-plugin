@@ -1,5 +1,5 @@
 import { DEFAULT_OPENAI_API_HOST } from '@/config';
-import { AIProviderProps } from '@/types';
+import type { AIProviderProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-hsot';
 import { request } from 'obsidian';
 import type {
