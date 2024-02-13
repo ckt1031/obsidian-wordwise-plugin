@@ -21,7 +21,7 @@
     "cohere-ai": "7.7.5",
     "crypto-js": "4.2.0",
     "mustache": "4.2.0",
-    "openai": "4.27.1",
+    "openai": "4.28.0",
     "qrcode": "1.5.3",
     "valibot": "0.28.1"
   },
