@@ -23,6 +23,7 @@
     "mustache": "4.2.0",
     "openai": "4.28.0",
     "qrcode": "1.5.3",
+    "slugify": "^1.6.6",
     "valibot": "0.28.1"
   },
   "devDependencies": {

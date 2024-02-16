@@ -16,6 +16,7 @@ import {
 import { log } from './utils/logging';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 import { importQrCodeUri } from './utils/settings-sharing';
+import slugify from 'slugify';
 
 export default class WordWisePlugin extends Plugin {
 	settings: PluginSettings;
@@ -32,8 +33,8 @@ export default class WordWisePlugin extends Plugin {
 			// Add icon if it exists
 			if (command.icon) addIcon(iconName, command.icon);
 
-			// @ts-expect-error
 			this.addCommand({
+				id: slugify(command.name),
 				name: command.name,
 				icon: command.icon ? iconName : AiIcon,
 				editorCallback: (editor) =>
