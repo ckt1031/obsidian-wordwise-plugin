@@ -273,7 +273,7 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
-		containerEl.createEl('h2', { text: 'Custom Prompts' });
+		new Setting(containerEl).setName('Custom Prompts').setHeading();
 
 		new Setting(containerEl)
 			.setDesc(
