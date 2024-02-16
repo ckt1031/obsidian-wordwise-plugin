@@ -2,10 +2,6 @@
 
 Welcome to the **Obsidian WordWise**, a community-driven initiative designed to enhance your Obsidian experience. This plugin aims to simplify your workflow, boost productivity, and provide a seamless user experience by integrating **AI-powered prompts, integrated tools and commands**.
 
-Inspired by the [Notion AI](https://www.notion.so/product/ai), this plugin is built with the intention to bring similar capabilities to the **Obsidian platform**.
-
-**Note: This is NOT an official plugin from any AI-related company. It is a community plugin which DOES NOT provide any AI services, you should provide your own key in order to access the plugin.**
-
 ## Installation
 
 ### BRAT Installation
