@@ -16,14 +16,14 @@
     "version": "bun version-bump.ts && biome format manifest.json versions.json --write && git add manifest.json versions.json"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "0.13.1",
-    "@google/generative-ai": "0.2.0",
+    "@anthropic-ai/sdk": "0.14.0",
+    "@google/generative-ai": "0.2.1",
     "cohere-ai": "7.7.5",
     "crypto-js": "4.2.0",
     "mustache": "4.2.0",
     "openai": "4.28.0",
     "qrcode": "1.5.3",
-    "slugify": "^1.6.6",
+    "slugify": "1.6.6",
     "valibot": "0.28.1"
   },
   "devDependencies": {

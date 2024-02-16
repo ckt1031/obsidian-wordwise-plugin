@@ -4,7 +4,7 @@ import { getAPIHost } from '@/utils/get-url-hsot';
 import type {
 	Message,
 	MessageCreateParams,
-} from '@anthropic-ai/sdk/resources/beta/messages';
+} from '@anthropic-ai/sdk/resources/messages';
 import { request } from 'obsidian';
 
 export async function handleTextAnthropicAI({
