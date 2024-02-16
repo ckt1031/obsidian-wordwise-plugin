@@ -30,7 +30,7 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('API Provider')
+			.setName('API provider')
 			.setDesc(
 				'API Provider to be used, available options are OpenAI, Anthropic and Google AI',
 			)
@@ -53,7 +53,7 @@ export class SettingTab extends PluginSettingTab {
 		)) {
 			if (plugin.settings.aiProvider === provider) {
 				new Setting(containerEl)
-					.setName(`${provider} API Key`)
+					.setName(`${provider} api key`)
 					.setDesc(`API Key for the ${provider} API`)
 					.addText((text) => {
 						wrapPasswordComponent(text);
@@ -68,7 +68,7 @@ export class SettingTab extends PluginSettingTab {
 					});
 
 				new Setting(containerEl)
-					.setName(`${provider} Endpoint Base URL`)
+					.setName(`${provider} endpoint base url`)
 					.setDesc(
 						`Base URL for the ${provider} API, defaults to ${config.defaultHost}, DO NOT include / trailing slash and paths.`,
 					)
@@ -84,7 +84,7 @@ export class SettingTab extends PluginSettingTab {
 					);
 
 				new Setting(containerEl)
-					.setName(`${provider} Language Model`)
+					.setName(`${provider} language model`)
 					.setDesc(
 						`Model to be used, defaults to ${config.defaultModel}, see ${provider} Models for more info`,
 					)
@@ -103,7 +103,7 @@ export class SettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName('Check API Availability')
+			.setName('Check api availability')
 			.setDesc('Test if your API Key is valid and working.')
 			.addButton((button) =>
 				button.setButtonText('Check').onClick(async () => {
@@ -126,7 +126,7 @@ export class SettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('Advanced Mode')
+			.setName('Advanced mode')
 			.setDesc(
 				'Configure advanced model settings, enable this in order to send extra parameters to the API',
 			)
@@ -157,7 +157,7 @@ export class SettingTab extends PluginSettingTab {
 				});
 
 			new Setting(containerEl)
-				.setName('Custom Model ID')
+				.setName('Custom model id')
 				.setDesc(
 					'Enter custom model ID for your own API, if this is empty, it will follow the selected menu above.',
 				)
@@ -172,7 +172,7 @@ export class SettingTab extends PluginSettingTab {
 				);
 
 			new Setting(containerEl)
-				.setName('Presence Penalty')
+				.setName('Presence penalty')
 				.setDesc(
 					"Increasing the model's likelihood to talk about new topics, defaults to 0.0.",
 				)
@@ -188,7 +188,7 @@ export class SettingTab extends PluginSettingTab {
 				});
 
 			new Setting(containerEl)
-				.setName('Frequency Penalty')
+				.setName('Frequency penalty')
 				.setDesc(
 					"Decreasing the model's likelihood to repeat the same line verbatim, defaults to 0.0.",
 				)
@@ -203,7 +203,7 @@ export class SettingTab extends PluginSettingTab {
 				});
 
 			new Setting(containerEl)
-				.setName('Max Tokens')
+				.setName('Max tokens')
 				.setDesc(
 					'Maximum number of tokens to generate (0 means not specifying in API)',
 				)
@@ -224,7 +224,7 @@ export class SettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName('Debug Mode')
+			.setName('Debug mode')
 			.setDesc(
 				'Enable debug mode, which will log more information to the console',
 			)
@@ -245,7 +245,7 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName('Reset Settings')
+			.setName('Reset settings')
 			.setDesc('This will reset all settings to their default values')
 			.addButton((button) => {
 				button.setTooltip('Irrevisible action, please be careful!');
