@@ -255,7 +255,7 @@ export class SettingTab extends PluginSettingTab {
 						for (let i = 0; i < 5; i++) {
 							button.setButtonText(`Are you sure to reset? (${5 - i})`);
 							button.setDisabled(true);
-							await new Promise((resolve) => setTimeout(resolve, 1000));
+							sleep(1000);
 						}
 
 						button.setDisabled(false);
@@ -319,7 +319,7 @@ export class SettingTab extends PluginSettingTab {
 							for (let i = 0; i < 5; i++) {
 								button.setButtonText(`Are you sure to delete? (${5 - i})`);
 								button.setDisabled(true);
-								await new Promise((resolve) => setTimeout(resolve, 1000));
+								sleep(1000);
 							}
 
 							button.setDisabled(false);
