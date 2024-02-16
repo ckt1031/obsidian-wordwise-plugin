@@ -1,6 +1,6 @@
 import { DEFAULT_ANTHROPIC_API_HOST } from '@/config';
 import type { AIProviderProps } from '@/types';
-import { getAPIHost } from '@/utils/get-url-hsot';
+import { getAPIHost } from '@/utils/get-url-host';
 import type {
 	Message,
 	MessageCreateParams,
