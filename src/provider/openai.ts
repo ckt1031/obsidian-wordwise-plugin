@@ -8,10 +8,12 @@ import type {
 } from 'openai/resources/chat/completions';
 
 export async function handleTextOpenAI({
-	settings,
+	plugin,
 	userMessage,
 	customAiModel = '',
 }: AIProviderProps) {
+	const { settings } = plugin;
+
 	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 
 	const modelName =

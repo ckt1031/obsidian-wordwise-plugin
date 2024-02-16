@@ -2,7 +2,6 @@ import type { TextAreaComponent, TextComponent } from 'obsidian';
 import { Modal, Notice, Setting } from 'obsidian';
 
 import type WordWisePlugin from '@/main';
-import manifest from '../../manifest.json';
 
 export default class AddCustomPromptModal extends Modal {
 	name: string;
@@ -111,6 +110,6 @@ export default class AddCustomPromptModal extends Modal {
 		const { contentEl, plugin } = this;
 		contentEl.empty();
 		await plugin.app.setting.open();
-		await plugin.app.setting.openTabById(manifest.id);
+		await plugin.app.setting.openTabById(plugin.manifest.id);
 	}
 }

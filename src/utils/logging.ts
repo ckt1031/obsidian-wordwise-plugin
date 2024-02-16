@@ -1,6 +1,5 @@
-import type { PluginSettings } from '@/types';
-import manifest from '../../manifest.json';
+import WordWisePlugin from '@/main';
 
-export function log(settings: PluginSettings, message: string) {
-	if (settings?.debugMode) console.log(`${manifest.name}:`, message);
+export function log(plugin: WordWisePlugin, message: string) {
+	if (plugin.settings?.debugMode) console.log(plugin.manifest.name, message);
 }

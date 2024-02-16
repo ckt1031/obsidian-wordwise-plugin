@@ -1,6 +1,7 @@
 import { App, type Editor, Notice } from 'obsidian';
 
 import Mustache from 'mustache';
+import WordWisePlugin from './main';
 import AskForInstructionModal from './modals/ask-for-instruction';
 import { getCommands } from './prompts';
 import {
@@ -14,7 +15,7 @@ import { log } from './utils/logging';
 export async function runCommand(
 	app: App,
 	editor: Editor,
-	settings: PluginSettings,
+	plugin: WordWisePlugin,
 	command: CommandNames | string,
 ) {
 	try {
@@ -25,9 +26,11 @@ export async function runCommand(
 			return;
 		}
 
-		log(settings, `Running command: ${command}`);
+		log(plugin, `Running command: ${command}`);
 
-		const actionData = getCommands(settings).find((p) => p.name === command);
+		const actionData = getCommands(plugin.settings).find(
+			(p) => p.name === command,
+		);
 
 		if (!actionData) {
 			throw new Error(`Could not find command data with name ${command}`);
@@ -54,7 +57,7 @@ export async function runCommand(
 		});
 
 		const result = await callAPI({
-			settings,
+			plugin,
 			userMessage,
 		});
 
@@ -65,7 +68,7 @@ export async function runCommand(
 
 		editor.replaceSelection(result);
 
-		log(settings, `Replaced selection with result: ${result}`);
+		log(plugin, `Replaced selection with result: ${result}`);
 
 		new Notice('Text generated.');
 	} catch (error) {

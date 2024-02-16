@@ -1,7 +1,6 @@
 import type { App, ButtonComponent } from 'obsidian';
 import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
-import manifest from '../manifest.json';
 import { wrapPasswordComponent } from './components/password';
 import { ExportSettingsQrCodeModal } from './components/qr-code';
 import { settingTabProviderConfiguations } from './config';
@@ -14,7 +13,7 @@ import { log } from './utils/logging';
 async function restartSettingsTab(plugin: WordWisePlugin) {
 	await plugin.app.setting.close();
 	await plugin.app.setting.open();
-	await plugin.app.setting.openTabById(manifest.id);
+	await plugin.app.setting.openTabById(plugin.manifest.id);
 }
 
 export class SettingTab extends PluginSettingTab {
@@ -29,8 +28,6 @@ export class SettingTab extends PluginSettingTab {
 		const { containerEl, plugin } = this;
 
 		containerEl.empty();
-
-		containerEl.createEl('h1', { text: manifest.name });
 
 		new Setting(containerEl)
 			.setName('API Provider')
@@ -114,7 +111,7 @@ export class SettingTab extends PluginSettingTab {
 						new Notice('Checking API Status...');
 
 						const result = await callAPI({
-							settings: plugin.settings,
+							plugin,
 							userMessage: 'Say word hello only.',
 						});
 
@@ -122,7 +119,7 @@ export class SettingTab extends PluginSettingTab {
 							new Notice('API Key is valid and working!');
 						}
 					} catch (error) {
-						if (error instanceof Error) log(plugin.settings, error.message);
+						if (error instanceof Error) log(plugin, error.message);
 						new Notice('API is not working properly.');
 					}
 				}),
@@ -243,7 +240,7 @@ export class SettingTab extends PluginSettingTab {
 			.setDesc('Export settings as a QR code.')
 			.addButton((button) => {
 				button.setButtonText('Export').onClick(async () => {
-					new ExportSettingsQrCodeModal(this.app, this.plugin.settings).open();
+					new ExportSettingsQrCodeModal(this.app, this.plugin).open();
 				});
 			});
 

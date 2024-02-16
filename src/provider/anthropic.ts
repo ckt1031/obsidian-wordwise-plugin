@@ -8,10 +8,12 @@ import type {
 import { request } from 'obsidian';
 
 export async function handleTextAnthropicAI({
-	settings,
+	plugin,
 	userMessage,
 	customAiModel = '',
 }: AIProviderProps) {
+	const { settings } = plugin;
+
 	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 
 	const modelName =

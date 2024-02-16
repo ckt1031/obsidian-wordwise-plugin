@@ -6,9 +6,11 @@ import { APIProvider, type CallAPIProps } from '@/types';
 import { log } from './logging';
 
 export async function callAPI({
-	settings,
+	plugin,
 	userMessage,
 }: CallAPIProps): Promise<string | null | undefined> {
+	const { settings } = plugin;
+
 	const apiProvider = settings.aiProvider;
 
 	let customAiModel = '';
@@ -18,22 +20,22 @@ export async function callAPI({
 	}
 
 	log(
-		settings,
+		plugin,
 		`Sending request to ${apiProvider} with prompt:\n\n${userMessage}`,
 	);
 
 	switch (apiProvider) {
 		case APIProvider.OpenAI: {
-			return handleTextOpenAI({ settings, userMessage, customAiModel });
+			return handleTextOpenAI({ plugin, userMessage, customAiModel });
 		}
 		case APIProvider.Anthropic: {
-			return handleTextAnthropicAI({ settings, userMessage, customAiModel });
+			return handleTextAnthropicAI({ plugin, userMessage, customAiModel });
 		}
 		case APIProvider.GoogleGemini: {
-			return handleTextGoogleGenAI({ settings, userMessage, customAiModel });
+			return handleTextGoogleGenAI({ plugin, userMessage, customAiModel });
 		}
 		case APIProvider.Cohere: {
-			return handleTextCohere({ settings, userMessage, customAiModel });
+			return handleTextCohere({ plugin, userMessage, customAiModel });
 		}
 		default:
 			throw new Error(`Unknown API Provider: ${apiProvider}`);

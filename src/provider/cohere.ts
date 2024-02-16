@@ -6,10 +6,12 @@ import type { GenerateRequest, Generation } from 'cohere-ai/api';
 import { request } from 'obsidian';
 
 export async function handleTextCohere({
-	settings,
+	plugin,
 	userMessage,
 	customAiModel = '',
 }: AIProviderProps) {
+	const { settings } = plugin;
+
 	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 
 	const modelName =

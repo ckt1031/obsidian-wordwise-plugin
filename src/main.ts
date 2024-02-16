@@ -1,7 +1,7 @@
 import { Notice, Plugin, addIcon } from 'obsidian';
 
+import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
-import manifest from '../manifest.json';
 import { DEFAULT_SETTINGS } from './config';
 import AiIcon from './icons/ai.svg';
 import { migrate20240205 } from './migration';
@@ -16,7 +16,6 @@ import {
 import { log } from './utils/logging';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 import { importQrCodeUri } from './utils/settings-sharing';
-import slugify from 'slugify';
 
 export default class WordWisePlugin extends Plugin {
 	settings: PluginSettings;
@@ -38,14 +37,14 @@ export default class WordWisePlugin extends Plugin {
 				name: command.name,
 				icon: command.icon ? iconName : AiIcon,
 				editorCallback: (editor) =>
-					runCommand(this.app, editor, this.settings, command.name),
+					runCommand(this.app, editor, this, command.name),
 			});
 		}
 
 		this.registerEvent(
 			this.app.workspace.on('editor-menu', (menu, editor) => {
 				menu.addItem((item) => {
-					item.setTitle(`${manifest.name} Commands`).setIcon('brain-cog');
+					item.setTitle(`${this.manifest.name} Commands`).setIcon('brain-cog');
 
 					const subMenu = item.setSubmenu();
 
@@ -62,7 +61,7 @@ export default class WordWisePlugin extends Plugin {
 								.setTitle(command.name)
 								.setIcon(command.icon ? iconName : AiIcon)
 								.onClick(() =>
-									runCommand(this.app, editor, this.settings, command.name),
+									runCommand(this.app, editor, this, command.name),
 								);
 						});
 					}
@@ -73,24 +72,27 @@ export default class WordWisePlugin extends Plugin {
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SettingTab(this.app, this));
 
-		this.registerObsidianProtocolHandler(manifest.id, async (inputParams) => {
-			const parsed = importQrCodeUri(inputParams, this.app.vault.getName());
-			if (parsed.status === 'error') {
-				new Notice(parsed.message);
-			} else {
-				this.settings = Object.assign(
-					{},
-					this.settings,
-					await this.handleData(parsed.result),
-				);
-				this.saveSettings();
-				new Notice(
-					'Settings imported. Please check the settings tab to verify.',
-				);
-			}
-		});
+		this.registerObsidianProtocolHandler(
+			this.manifest.id,
+			async (inputParams) => {
+				const parsed = importQrCodeUri(inputParams, this.app.vault.getName());
+				if (parsed.status === 'error') {
+					new Notice(parsed.message);
+				} else {
+					this.settings = Object.assign(
+						{},
+						this.settings,
+						await this.handleData(parsed.result),
+					);
+					this.saveSettings();
+					new Notice(
+						'Settings imported. Please check the settings tab to verify.',
+					);
+				}
+			},
+		);
 
-		log(this.settings, 'Loaded plugin.');
+		log(this, 'Loaded plugin.');
 	}
 
 	onunload() {
@@ -112,7 +114,7 @@ export default class WordWisePlugin extends Plugin {
 
 		if (!success) {
 			this.settings = DEFAULT_SETTINGS;
-			log(this.settings, 'Failed to parse settings, using default settings.');
+			log(this, 'Failed to parse settings, using default settings.');
 			return;
 		}
 		const parsedData = deobfuscateConfig(localData);

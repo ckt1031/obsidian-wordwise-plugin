@@ -1,11 +1,12 @@
+import WordWisePlugin from '@/main';
 import { PluginSettings } from '@/types';
 import { exportQrCodeUri } from '@/utils/settings-sharing';
 import { App, Modal, Notice } from 'obsidian';
 
 export class ExportSettingsQrCodeModal extends Modal {
-	plugin: PluginSettings;
+	plugin: WordWisePlugin;
 
-	constructor(app: App, plugin: PluginSettings) {
+	constructor(app: App, plugin: WordWisePlugin) {
 		super(app);
 		this.plugin = plugin;
 	}

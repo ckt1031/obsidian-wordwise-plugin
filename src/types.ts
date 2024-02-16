@@ -9,6 +9,7 @@ import {
 	string,
 	union,
 } from 'valibot';
+import WordWisePlugin from './main';
 
 export enum APIProvider {
 	OpenAI = 'OpenAI',
@@ -114,7 +115,7 @@ export interface OpenAiKeyCredit {
 }
 
 export interface CallAPIProps {
-	settings: PluginSettings;
+	plugin: WordWisePlugin;
 	userMessage: string;
 }
 
