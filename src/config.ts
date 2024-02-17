@@ -1,5 +1,15 @@
 import { APIProvider, type PluginSettings } from './types';
 
+// Ref: https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models
+// Updated on 2024-02-17
+export const AZURE_OPENAI_MODELS = [
+	"gpt-4",
+	"gpt-4-32k",
+	"gpt-4-vision",
+	"gpt-35-turbo",
+	"gpt-35-turbo-16k",
+];
+
 // Ref: https://platform.openai.com/docs/models/overview
 // Updated on 2024-02-02
 export const OPENAI_MODELS = [
@@ -57,6 +67,12 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 			baseUrl: DEFAULT_OPENAI_API_HOST,
 			model: 'gpt-3.5-turbo',
 		},
+		[APIProvider.AzureOpenAI]: {
+			apiKey: '',
+			baseUrl: '',
+			model: 'gpt-35-turbo',
+			apiVersion: '2023-05-15',
+		},
 		[APIProvider.GoogleGemini]: {
 			apiKey: '',
 			baseUrl: DEFAULT_GOOGLE_AI_API_HOST,
@@ -90,6 +106,12 @@ export const settingTabProviderConfiguations = {
 		docs: 'https://platform.openai.com/docs/introduction',
 		defaultModel: 'gpt-3.5-turbo',
 		models: OPENAI_MODELS,
+	},
+	[APIProvider.AzureOpenAI]: {
+		defaultHost: '',
+		docs: 'https://learn.microsoft.com/en-us/azure/ai-services/openai/reference',
+		defaultModel: 'gpt-35-turbo',
+		models: AZURE_OPENAI_MODELS,
 	},
 	[APIProvider.Anthropic]: {
 		defaultHost: DEFAULT_ANTHROPIC_API_HOST,

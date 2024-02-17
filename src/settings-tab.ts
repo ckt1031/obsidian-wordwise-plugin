@@ -83,6 +83,34 @@ export class SettingTab extends PluginSettingTab {
 							}),
 					);
 
+				if (provider === APIProvider.AzureOpenAI) {
+					// API Version
+					new Setting(containerEl)
+						.setName(`${provider} api version`)
+						.setDesc(
+							`API Version for the ${provider} API`,
+						)
+						.addText((text) =>
+							text
+								.setPlaceholder('2023-05-15')
+								.setValue(
+									plugin.settings.aiProviderConfig[provider].apiVersion,
+								)
+								.onChange(async (value) => {
+									// Validate the API Version YYYY-MM-DD
+									const dateRegex = /\d{4}-\d{2}-\d{2}/;
+									if (!dateRegex.test(value)) {
+										new Notice('Invalid API Version, please enter in YYYY-MM-DD format');
+										return;
+									}
+									
+									// Update the API Version
+									plugin.settings.aiProviderConfig[provider].apiVersion = value;
+									await plugin.saveSettings();
+								}),
+						);
+				}
+
 				new Setting(containerEl)
 					.setName(`${provider} language model`)
 					.setDesc(
@@ -170,22 +198,6 @@ export class SettingTab extends PluginSettingTab {
 							await plugin.saveSettings();
 						}),
 				);
-
-			// new Setting(containerEl)
-			// 	.setName('Presence penalty')
-			// 	.setDesc(
-			// 		"Increasing the model's likelihood to talk about new topics, defaults to 0.0.",
-			// 	)
-
-			// 	.addSlider((slider) => {
-			// 		slider.setDynamicTooltip();
-			// 		slider.setLimits(-2.0, 2.0, 0.1);
-			// 		slider.setValue(plugin.settings.presencePenalty);
-			// 		slider.onChange(async (value) => {
-			// 			plugin.settings.presencePenalty = value;
-			// 			await plugin.saveSettings();
-			// 		});
-			// 	});
 
 			new Setting(containerEl)
 				.setName('Frequency penalty')

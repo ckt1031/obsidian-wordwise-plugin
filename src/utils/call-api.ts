@@ -28,6 +28,9 @@ export async function callAPI({
 		case APIProvider.OpenAI: {
 			return handleTextOpenAI({ plugin, userMessage, customAiModel });
 		}
+		case APIProvider.AzureOpenAI: {
+			return handleTextOpenAI({ plugin, userMessage, customAiModel });
+		}
 		case APIProvider.Anthropic: {
 			return handleTextAnthropicAI({ plugin, userMessage, customAiModel });
 		}

@@ -13,6 +13,7 @@ import WordWisePlugin from './main';
 
 export enum APIProvider {
 	OpenAI = 'OpenAI',
+	AzureOpenAI = 'Azure OpenAI',
 	GoogleGemini = 'Google Gemini',
 	Anthropic = 'Anthropic',
 	Cohere = 'Cohere',
@@ -66,6 +67,12 @@ export const PluginSettingsSchema = object({
 			apiKey: string(),
 			baseUrl: string(),
 			model: string(),
+		}),
+		[APIProvider.AzureOpenAI]: object({
+			apiKey: string(),
+			baseUrl: string(),
+			model: string(),
+			apiVersion: string(),
 		}),
 		[APIProvider.GoogleGemini]: object({
 			apiKey: string(),
