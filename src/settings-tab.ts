@@ -171,21 +171,21 @@ export class SettingTab extends PluginSettingTab {
 						}),
 				);
 
-			new Setting(containerEl)
-				.setName('Presence penalty')
-				.setDesc(
-					"Increasing the model's likelihood to talk about new topics, defaults to 0.0.",
-				)
+			// new Setting(containerEl)
+			// 	.setName('Presence penalty')
+			// 	.setDesc(
+			// 		"Increasing the model's likelihood to talk about new topics, defaults to 0.0.",
+			// 	)
 
-				.addSlider((slider) => {
-					slider.setDynamicTooltip();
-					slider.setLimits(-2.0, 2.0, 0.1);
-					slider.setValue(plugin.settings.presencePenalty);
-					slider.onChange(async (value) => {
-						plugin.settings.presencePenalty = value;
-						await plugin.saveSettings();
-					});
-				});
+			// 	.addSlider((slider) => {
+			// 		slider.setDynamicTooltip();
+			// 		slider.setLimits(-2.0, 2.0, 0.1);
+			// 		slider.setValue(plugin.settings.presencePenalty);
+			// 		slider.onChange(async (value) => {
+			// 			plugin.settings.presencePenalty = value;
+			// 			await plugin.saveSettings();
+			// 		});
+			// 	});
 
 			new Setting(containerEl)
 				.setName('Frequency penalty')

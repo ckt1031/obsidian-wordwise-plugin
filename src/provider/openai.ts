@@ -24,9 +24,9 @@ export async function handleTextOpenAI({
 		model: modelName,
 		temperature: settings.advancedSettings ? settings.temperature : 0.5,
 		max_tokens: settings.advancedSettings ? settings.maxTokens : 2000,
-		presence_penalty: settings.advancedSettings
-			? settings.presencePenalty
-			: 0.0,
+		// presence_penalty: settings.advancedSettings
+		// 	? settings.presencePenalty
+		// 	: 0.0,
 		frequency_penalty: settings.advancedSettings
 			? settings.frequencyPenalty
 			: 0.0,

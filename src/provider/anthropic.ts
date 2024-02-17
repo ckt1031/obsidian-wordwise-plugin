@@ -20,8 +20,8 @@ export async function handleTextAnthropicAI({
 		customAiModel.length > 0 ? customAiModel : providerSettings.model;
 
 	const extraPrompt = `
-			Please kindly remember no human conversation here, do not give extra comments outside, response only with modified text WITHOUT === WRAPPER, highly thanks.
-			`;
+Please kindly remember no human conversation here, do not give extra comments outside, response only with modified text WITHOUT === WRAPPER, highly thanks.
+`;
 
 	const body: MessageCreateParams = {
 		messages: [{ role: 'user', content: `${extraPrompt}\n\n${userMessage}` }],
