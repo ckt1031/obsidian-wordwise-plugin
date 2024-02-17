@@ -3,11 +3,11 @@ import { APIProvider, type PluginSettings } from './types';
 // Ref: https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models
 // Updated on 2024-02-17
 export const AZURE_OPENAI_MODELS = [
-	"gpt-4",
-	"gpt-4-32k",
-	"gpt-4-vision",
-	"gpt-35-turbo",
-	"gpt-35-turbo-16k",
+	'gpt-4',
+	'gpt-4-32k',
+	'gpt-4-vision',
+	'gpt-35-turbo',
+	'gpt-35-turbo-16k',
 ];
 
 // Ref: https://platform.openai.com/docs/models/overview

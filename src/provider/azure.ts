@@ -1,4 +1,4 @@
-import { APIProvider, type AIProviderProps } from '@/types';
+import { type AIProviderProps, APIProvider } from '@/types';
 import { request } from 'obsidian';
 import type {
 	ChatCompletion,

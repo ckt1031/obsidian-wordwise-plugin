@@ -87,23 +87,21 @@ export class SettingTab extends PluginSettingTab {
 					// API Version
 					new Setting(containerEl)
 						.setName(`${provider} api version`)
-						.setDesc(
-							`API Version for the ${provider} API`,
-						)
+						.setDesc(`API Version for the ${provider} API`)
 						.addText((text) =>
 							text
 								.setPlaceholder('2023-05-15')
-								.setValue(
-									plugin.settings.aiProviderConfig[provider].apiVersion,
-								)
+								.setValue(plugin.settings.aiProviderConfig[provider].apiVersion)
 								.onChange(async (value) => {
 									// Validate the API Version YYYY-MM-DD
 									const dateRegex = /\d{4}-\d{2}-\d{2}/;
 									if (!dateRegex.test(value)) {
-										new Notice('Invalid API Version, please enter in YYYY-MM-DD format');
+										new Notice(
+											'Invalid API Version, please enter in YYYY-MM-DD format',
+										);
 										return;
 									}
-									
+
 									// Update the API Version
 									plugin.settings.aiProviderConfig[provider].apiVersion = value;
 									await plugin.saveSettings();
