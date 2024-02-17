@@ -35,12 +35,18 @@ export function getCommands(settings: PluginSettings) {
 export const basePrompt = `
 ## Base Instructions
 
-- You are instructed to change text in the ## Input area, text WRAPPED by ===.
+- Remain headings if given.
+- Change text in the ##Input area, text WRAPPED by ===.
 - Keep the meaning the same. If possible, retain the structure of the paragraphs. Ensure the re-written text's word count is near to the original text.
 - Response with the rewritten text only, do not include additional context, explanation, or extra wording, just the re-written text itself.
 - Respond in the same language variety or dialect of the text.
 - Keep the suitable markdown compounds if present, such as images, URLs, checkbox, and Obsidian backlinks [[xxx]] and specified triple backtick boxes (also maintain its language identifier, unless its content is code).
-- Remain headings if given.
+
+## Special Reminder
+
+- Do not change location names that does have related languages, such as strange name that you don't know, then don't change them.
+- Preserve code block content if necessary.
+- Do not change URLs or make it encoded because this is markdown.
 
 ## Input
 
@@ -55,15 +61,15 @@ export const extraPrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] = [
 		icon: CustomInstructions,
 		action: CommandActions.CustomInstructions,
 		data: `
-		## Tasks
+## Tasks
 
-		- Follow the instructions below to make changes to the text.
-		- You must obey the custom instructions, and you should ignore conflicting instructions from the base instructions.
-		- You should not make any changes to the text that are not specified in the instructions.
+- Follow the instructions below to make changes to the text.
+- You must obey the custom instructions, and you should ignore conflicting instructions from the base instructions.
+- You should not make any changes to the text that are not specified in the instructions.
 
-		Custom Instructions:
+## Custom Instructions
 
-    \`\`\`{{instructions}}\`\`\`
+\`\`\`{{instructions}}\`\`\`
 		`,
 	},
 ];
@@ -75,96 +81,99 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			icon: ImproveWritingIcon,
 			action: CommandActions.DirectReplacement,
 			data: `
-		## Tasks
+## Tasks
 
-		- Improve writing of the text.
-		- Make the text clearer, easier to understand, and well put together by correcting grammar, spelling, choosing the most suitable punctuation marks, and selecting the best tone and style based on the topic and purpose of the text.
-		- Choose simple words and phrases to improve the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
-		- Do not use advanced or strange words that are not suitable for simple writings. You may use terminology or specialized words if it is necessary.
-		- Keep everything fluent and highly readable. If a word, phrase, or part of the text is already clear and effective, leave it as it is, unchanged.`,
+- Improve writing of the text.
+- Remain the tone.
+- Reduce duplicated ideas and wordings, keep writing simple and concise.
+- Make the text clearer, easier to understand, and well put together by correcting grammar, spelling, choosing the most suitable punctuation marks, and selecting the best tone and style based on the topic and purpose of the text.
+- Choose simple words and phrases to improve the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
+- Do not use advanced or strange words that are not suitable for simple writings. You may use terminology or specialized words if it is necessary.
+- Keep everything fluent and highly readable. If a word, phrase, or part of the text is already clear and effective, leave it as it is, unchanged.
+`,
 		},
 		{
 			name: CommandNames.FixGrammar,
 			icon: FixGrammarIcon,
 			action: CommandActions.DirectReplacement,
 			data: `
-		## Tasks
+## Tasks
 
-		- You are a highly proficient writer that can read and write properly and fluently. Your task is to proofread and correct the spelling and grammar mistakes of the following text delimited by triple backticks.
-		- Make as few changes as possible. Only correct any spelling or grammar mistakes if the original text has spelling or grammar mistakes. Do not make any writing improvements.
-		- If the original text has no spelling or grammar mistakes, simply repeat the original text.
-    `,
+- Proofread and correct the spelling and grammar mistakes of the following text delimited by triple backticks.
+- Make as few changes as possible. Only correct any spelling or grammar mistakes if the original text has spelling or grammar mistakes. Do not make any writing improvements.
+- If the original text has no spelling or grammar mistakes, simply repeat the original text.
+`,
 		},
 		{
 			name: CommandNames.MakeShorter,
 			icon: MakeShorterIcon,
 			action: CommandActions.DirectReplacement,
 			data: `
-		## Tasks
+## Tasks
 
-    - Your task is to write a shorter version of the following text delimited by triple backticks.
-    - Your task means making the text shorter, and keeping the text clear, easy to understand, and well put together.
-    - Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
-    `,
+- Write a shorter version from input text.
+- Make the text shorter, and keeping the text clear, easy to understand, and well put together.
+- Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
+`,
 		},
 		{
 			name: CommandNames.MakeLonger,
 			icon: MakeLongerIcon,
 			action: CommandActions.DirectReplacement,
 			data: `
-		## Tasks
+## Tasks
 
-		- Write a longer version of the following text delimited by triple backticks.
-		- Making the text longer, and keeping the text clear, easy to understand, and well put together.
-		- Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
-		- Keep the meaning the same if possible. Ensure the rewritten text's word count is more than twice the original text but no more than 4 times the original text.
-		- Output the answer without additional context, explanation, or extra wording, just the lengthened text itself. Don't use any punctuation, especially no quotes or backticks, around the text.
-		- Respond in the same language variety or dialect of the text.
-		`,
+- Write a longer version.
+- Making the text longer, and keeping the text clear, easy to understand, and well put together.
+- Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
+- Keep the meaning the same if possible. Ensure the rewritten text's word count is more than twice the original text but no more than 4 times the original text.
+- Output the answer without additional context, explanation, or extra wording, just the lengthened text itself. Don't use any punctuation, especially no quotes or backticks, around the text.
+- Respond in the same language variety or dialect of the text.
+`,
 		},
 		{
 			name: CommandNames.HighlightMainPoint,
 			icon: HighlightMainPointIcon,
 			action: CommandActions.DirectReplacement,
 			data: `
-			## Tasks
-	
-			- Bold the most important ideas, words, stats, numbers, or sentences.
-			- Keep the bolding clear and simple. Do not make it messy or confusing.
-			- Avoid bolding too much text. If everything is worth bolded, then nothing stands out.
-			- NEVER bolding headings or whole paragraphs, never change or bold the backstick wrapped content.
-		`,
+## Tasks
+
+- Bold the most **important ideas, words, stats, numbers, or sentences**.
+- Keep the bolding clear and simple. Do not make it messy or confusing.
+- **Avoid bolding too much text**. If everything is worth bolded, then nothing stands out.
+- NEVER bolding headings or whole paragraphs, never change or bold the backstick wrapped content.
+`,
 		},
 		{
 			name: CommandNames.Paraphrase,
 			icon: ParaphraseIcon,
 			action: CommandActions.DirectReplacement,
 			data: `
-		## Tasks
-	
-		- Aim to reformulate the sentences, changing the structure and using synonyms where appropriate, without distorting the meaning of the text.
-		- Avoid using the same phrases or terminology as the original text unless necessary. The paraphrased text should be distinct yet convey the same information.
-		- Ensure that the paraphrased version is clear, concise, and maintains the tone appropriate to the context of the original text.
-		- Do not add new information or your own opinion, but focus on reflecting the ideas presented in the source material.
-		- If the text is technical or contains specialized language, strive to simplify the content without losing the intended message.
-		- If a word, phrase, or part of the text is already clear and effective, you may leave it as it is, unchanged.
-		`,
+## Tasks
+
+- Aim to reformulate the sentences, changing the structure and using synonyms where appropriate, without distorting the meaning of the text.
+- Avoid using the same phrases or terminology as the original text unless necessary. The paraphrased text should be distinct yet convey the same information.
+- Ensure that the paraphrased version is clear, concise, and maintains the tone appropriate to the context of the original text.
+- Do not add new information or your own opinion, but focus on reflecting the ideas presented in the source material.
+- If the text is technical or contains specialized language, strive to simplify the content without losing the intended message.
+- If a word, phrase, or part of the text is already clear and effective, you may leave it as it is, unchanged.
+`,
 		},
 		{
 			name: CommandNames.SimplifyText,
 			icon: SimplifyIcon,
 			action: CommandActions.DirectReplacement,
 			data: `
-		## Tasks
-		
-		- Your task is to simplify the following text delimited by triple backticks.
-		- Make the text clearer and easier to understand by using simple words and phrases. Avoid ones that are too hard or confusing.
-		- Keep sentences short and divide long statements into smaller ones. Aim for sentences that are 15 to 20 words long.
-		- Write in an active voice and use strong verbs to make your writing more direct and engaging.
-		- Remove unnecessary words, phrases, or clauses that do not contribute to the meaning of the text.
-		- Ensure that the simplified text retains the original meaning and context.
-		- Do not add new information or your own opinion, but focus on reflecting the ideas presented in the source material.
-		- If a word, phrase, or part of the text is already clear and effective, leave it as it is, unchanged.
-		`,
+## Tasks
+
+- Simplify the following.
+- Make the text clearer and easier to understand by using simple words and phrases. Avoid ones that are too hard or confusing.
+- Keep sentences short and divide long statements into smaller ones. Aim for sentences that are 15 to 20 words long.
+- Write in an active voice and use strong verbs to make your writing more direct and engaging.
+- Remove unnecessary words, phrases, or clauses that do not contribute to the meaning of the text.
+- Ensure that the simplified text retains the original meaning and context.
+- Do not add new information or your own opinion, but focus on reflecting the ideas presented in the source material.
+- If a word, phrase, or part of the text is already clear and effective, leave it as it is, unchanged.
+`,
 		},
 	];
