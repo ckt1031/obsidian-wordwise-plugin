@@ -45,7 +45,6 @@ Please kindly remember no human conversation here, do not give extra comments ou
 		headers: {
 			'Content-Type': 'application/json',
 			'anthropic-version': '2023-06-01',
-			'anthropic-beta': 'messages-2023-12-15',
 			'x-api-key': providerSettings.apiKey,
 		},
 		body: JSON.stringify(body),
