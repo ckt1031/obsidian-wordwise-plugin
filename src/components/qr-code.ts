@@ -1,5 +1,4 @@
 import WordWisePlugin from '@/main';
-import { PluginSettings } from '@/types';
 import { exportQrCodeUri } from '@/utils/settings-sharing';
 import { App, Modal, Notice } from 'obsidian';
 

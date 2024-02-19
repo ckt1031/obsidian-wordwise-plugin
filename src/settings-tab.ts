@@ -26,6 +26,7 @@ export class SettingTab extends PluginSettingTab {
 
 	display(): void {
 		const { containerEl, plugin } = this;
+		const { settings } = plugin;
 
 		containerEl.empty();
 
@@ -40,9 +41,9 @@ export class SettingTab extends PluginSettingTab {
 					dropDown.addOption(provider, provider);
 				}
 
-				dropDown.setValue(plugin.settings.aiProvider);
+				dropDown.setValue(settings.aiProvider);
 				dropDown.onChange(async (value) => {
-					plugin.settings.aiProvider = value as APIProvider;
+					settings.aiProvider = value as APIProvider;
 					await plugin.saveSettings();
 					restartSettingsTab(plugin);
 				});
@@ -51,7 +52,7 @@ export class SettingTab extends PluginSettingTab {
 		for (const [provider, config] of Object.entries(
 			settingTabProviderConfiguations,
 		)) {
-			if (plugin.settings.aiProvider === provider) {
+			if (settings.aiProvider === provider) {
 				new Setting(containerEl)
 					.setName(`${provider} api key`)
 					.setDesc(`API Key for the ${provider} API`)
@@ -59,10 +60,10 @@ export class SettingTab extends PluginSettingTab {
 						wrapPasswordComponent(text);
 						text
 							.setPlaceholder(`Enter your ${provider} API Key`)
-							.setValue(plugin.settings.aiProviderConfig[provider].apiKey)
+							.setValue(settings.aiProviderConfig[provider].apiKey)
 							.onChange(async (value) => {
 								// Update the API Key
-								plugin.settings.aiProviderConfig[provider].apiKey = value;
+								settings.aiProviderConfig[provider].apiKey = value;
 								await plugin.saveSettings();
 							});
 					});
@@ -75,10 +76,10 @@ export class SettingTab extends PluginSettingTab {
 					.addText((text) =>
 						text
 							.setPlaceholder(config.defaultHost)
-							.setValue(plugin.settings.aiProviderConfig[provider].baseUrl)
+							.setValue(settings.aiProviderConfig[provider].baseUrl)
 							.onChange(async (value) => {
 								// Update the Base URL
-								plugin.settings.aiProviderConfig[provider].baseUrl = value;
+								settings.aiProviderConfig[provider].baseUrl = value;
 								await plugin.saveSettings();
 							}),
 					);
@@ -91,10 +92,10 @@ export class SettingTab extends PluginSettingTab {
 						.addText((text) =>
 							text
 								.setPlaceholder('2023-05-15')
-								.setValue(plugin.settings.aiProviderConfig[provider].apiVersion)
+								.setValue(settings.aiProviderConfig[provider].apiVersion)
 								.onChange(async (value) => {
 									// Update the API Version
-									plugin.settings.aiProviderConfig[provider].apiVersion = value;
+									settings.aiProviderConfig[provider].apiVersion = value;
 									await plugin.saveSettings();
 								}),
 						);
@@ -109,10 +110,10 @@ export class SettingTab extends PluginSettingTab {
 						for (const model of config.models) {
 							dropDown.addOption(model, model);
 						}
-						dropDown.setValue(plugin.settings.aiProviderConfig[provider].model);
+						dropDown.setValue(settings.aiProviderConfig[provider].model);
 						dropDown.onChange(async (value) => {
 							// Update the Model
-							plugin.settings.aiProviderConfig[provider].model = value;
+							settings.aiProviderConfig[provider].model = value;
 							await plugin.saveSettings();
 						});
 					});
@@ -133,10 +134,18 @@ export class SettingTab extends PluginSettingTab {
 						});
 
 						if (result && result.length > 0) {
-							new Notice('API Key is valid and working!');
+							const provider = settings.aiProvider;
+							const providerSettings = settings.aiProviderConfig[provider];
+							const model =
+								settings.customAiModel.length > 0
+									? settings.customAiModel
+									: providerSettings;
+							new Notice(
+								`${provider} API is working properly with model ${model}`,
+							);
 						}
 					} catch (error) {
-						if (error instanceof Error) log(plugin, error.message);
+						if (error instanceof Error) log(plugin, error);
 						new Notice('API is not working properly.');
 					}
 				}),
@@ -148,16 +157,14 @@ export class SettingTab extends PluginSettingTab {
 				'Configure advanced model settings, enable this in order to send extra parameters to the API',
 			)
 			.addToggle((toggle) =>
-				toggle
-					.setValue(plugin.settings.advancedSettings)
-					.onChange(async (value) => {
-						plugin.settings.advancedSettings = value;
-						await plugin.saveSettings();
-						restartSettingsTab(plugin);
-					}),
+				toggle.setValue(settings.advancedSettings).onChange(async (value) => {
+					settings.advancedSettings = value;
+					await plugin.saveSettings();
+					restartSettingsTab(plugin);
+				}),
 			);
 
-		if (plugin.settings.advancedSettings) {
+		if (settings.advancedSettings) {
 			new Setting(containerEl)
 				.setName('Temperature')
 				.setDesc(
@@ -166,9 +173,9 @@ export class SettingTab extends PluginSettingTab {
 				.addSlider((slider) => {
 					slider.setDynamicTooltip();
 					slider.setLimits(0.0, 1.0, 0.1);
-					slider.setValue(plugin.settings.temperature);
+					slider.setValue(settings.temperature);
 					slider.onChange(async (value) => {
-						plugin.settings.temperature = value;
+						settings.temperature = value;
 						await plugin.saveSettings();
 					});
 				});
@@ -181,9 +188,9 @@ export class SettingTab extends PluginSettingTab {
 				.addText((text) =>
 					text
 						.setPlaceholder('Enter the model name')
-						.setValue(plugin.settings.customAiModel)
+						.setValue(settings.customAiModel)
 						.onChange(async (value) => {
-							plugin.settings.customAiModel = value;
+							settings.customAiModel = value;
 							await plugin.saveSettings();
 						}),
 				);
@@ -196,9 +203,9 @@ export class SettingTab extends PluginSettingTab {
 				.addSlider((slider) => {
 					slider.setDynamicTooltip();
 					slider.setLimits(-2.0, 2.0, 0.1);
-					slider.setValue(plugin.settings.frequencyPenalty);
+					slider.setValue(settings.frequencyPenalty);
 					slider.onChange(async (value) => {
-						plugin.settings.frequencyPenalty = value;
+						settings.frequencyPenalty = value;
 						await plugin.saveSettings();
 					});
 				});
@@ -210,14 +217,14 @@ export class SettingTab extends PluginSettingTab {
 				)
 				.addText((text) =>
 					text
-						.setValue(plugin.settings.maxTokens.toString())
+						.setValue(settings.maxTokens.toString())
 						.onChange(async (value) => {
 							// Should be a number and not negative or zero
 							if (
 								!Number.isNaN(Number.parseInt(value)) &&
 								Number.parseInt(value) >= 0
 							) {
-								plugin.settings.maxTokens = Number.parseInt(value);
+								settings.maxTokens = Number.parseInt(value);
 								await plugin.saveSettings();
 							}
 						}),
@@ -230,8 +237,8 @@ export class SettingTab extends PluginSettingTab {
 				'Enable debug mode, which will log more information to the console',
 			)
 			.addToggle((toggle) =>
-				toggle.setValue(plugin.settings.debugMode).onChange(async (value) => {
-					plugin.settings.debugMode = value;
+				toggle.setValue(settings.debugMode).onChange(async (value) => {
+					settings.debugMode = value;
 					await plugin.saveSettings();
 				}),
 			);
@@ -289,14 +296,14 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
-		for (const prompts of plugin.settings.customPrompts) {
+		for (const prompts of settings.customPrompts) {
 			new Setting(containerEl)
 				.setName(prompts.name)
 				.addButton((button) => {
 					button.setIcon('pencil');
 					button.setTooltip('Edit this prompt');
 					button.onClick(async () => {
-						const prompt = plugin.settings.customPrompts.find(
+						const prompt = settings.customPrompts.find(
 							(x) => x.name === prompts.name,
 						);
 
@@ -333,10 +340,9 @@ export class SettingTab extends PluginSettingTab {
 							if (button.buttonEl.parentElement?.parentElement) {
 								button.buttonEl.parentElement.parentElement.remove();
 							}
-							plugin.settings.customPrompts =
-								plugin.settings.customPrompts.filter(
-									(p) => p.name !== prompts.name,
-								);
+							settings.customPrompts = settings.customPrompts.filter(
+								(p) => p.name !== prompts.name,
+							);
 							await plugin.saveSettings();
 						}
 					});

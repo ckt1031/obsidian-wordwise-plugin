@@ -69,7 +69,7 @@ export async function runCommand(
 		new Notice('Text generated.');
 	} catch (error) {
 		if (error instanceof Error) {
-			log(this.settings, error.message);
+			log(plugin, error);
 			new Notice(
 				error.message.length > 100
 					? 'Error generating text, see console for details'
