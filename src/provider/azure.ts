@@ -1,5 +1,5 @@
 import { type AIProviderProps, APIProvider } from '@/types';
-import { request } from 'obsidian';
+import { Notice, request } from 'obsidian';
 import type {
 	ChatCompletion,
 	ChatCompletionCreateParams,
@@ -26,7 +26,13 @@ export async function handleTextAzureOpenAI({
 		throw new Error('Base URL is not set');
 	}
 
-	const url = `${providerSettings.baseUrl}/openai/deployments/${providerSettings.model}/chat/completions?api-version=${providerSettings.apiVersion}`;
+	// Validate the API Version YYYY-MM-DD
+	if (!/\d{4}-\d{2}-\d{2}/.test(providerSettings.apiVersion)) {
+		new Notice('Invalid API Version, please enter in YYYY-MM-DD format');
+		return;
+	}
+
+	const url = `${providerSettings.baseUrl}/openai/deployments/${modelName}/chat/completions?api-version=${providerSettings.apiVersion}`;
 
 	const body: Omit<ChatCompletionCreateParams, 'model'> = {
 		stream: false,
