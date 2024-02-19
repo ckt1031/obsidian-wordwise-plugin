@@ -139,7 +139,7 @@ export class SettingTab extends PluginSettingTab {
 							const model =
 								settings.customAiModel.length > 0
 									? settings.customAiModel
-									: providerSettings;
+									: providerSettings.model;
 							new Notice(
 								`${provider} API is working properly with model ${model}`,
 							);
