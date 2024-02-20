@@ -4,7 +4,12 @@ Welcome to the **Obsidian WordWise**, a community-driven initiative designed to 
 
 ## Installation
 
-### BRAT Installation
+### Community Plugins
+
+1. Open Obsidian and go to Settings > Community Plugins.
+2. Install [here](https://obsidian.md/plugins?id=wordwise)
+
+### BRAT Installation (Beta)
 
 1. Install the [BRAT](https://github.com/TfTHacker/obsidian42-brat)
 2. Enter the plugin url `https://github.com/ckt1031/obsidian-wordwise-plugin` in the BRAT settings
@@ -29,6 +34,7 @@ The plugin provides the following commands:
 - **Highlight Main Point**: Highlight the only main idea in your text.
 - **Paraphrase**: Rewrite your text in a different way while keeping the same meaning, perfect for avoiding repetition or enhancing understanding.
 - **Simplify Text**: Simplify your text to make it easier to read.
+- **Custom Instructions**: Provide custom instructions to the AI to generate specific content.
 
 ## License
 
