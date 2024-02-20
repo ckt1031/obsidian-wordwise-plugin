@@ -36,7 +36,7 @@ Please kindly remember no human conversation here, do not give extra comments ou
 
 	const url = `${getAPIHost(
 		providerSettings.baseUrl,
-		DEFAULT_HOST[settings.aiProvider]
+		DEFAULT_HOST[settings.aiProvider],
 	)}/v1/messages`;
 
 	const response = await request({

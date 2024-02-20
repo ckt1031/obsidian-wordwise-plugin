@@ -40,7 +40,7 @@ export async function handleTextOpenAI({
 
 	const url = `${getAPIHost(
 		providerSettings.baseUrl,
-		DEFAULT_HOST[settings.aiProvider]
+		DEFAULT_HOST[settings.aiProvider],
 	)}/v1/chat/completions`;
 
 	const response = await request({

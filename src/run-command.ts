@@ -54,19 +54,27 @@ export async function runCommand(
 			instructions,
 		});
 
+		const startTime = Date.now(); // Capture start time
+
 		const result = await callAPI({
 			plugin,
 			userMessage,
 		});
 
 		if (!result) {
-			new Notice('No result from AI service.');
+			new Notice(`No result from ${plugin.settings.aiProvider}`);
 			return;
 		}
 
 		editor.replaceSelection(result);
 
-		log(plugin, `Replaced selection with result: ${result}`);
+		const endTime = Date.now(); // Capture end time
+		const timeUsed = ((endTime - startTime) / 1000).toFixed(2); // Calculate time used in seconds
+
+		log(
+			plugin,
+			`Replaced selection with result: ${result} (Time taken: ${timeUsed}s)`,
+		);
 
 		new Notice('Text generated.');
 	} catch (error) {

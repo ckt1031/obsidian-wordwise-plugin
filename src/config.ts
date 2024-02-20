@@ -1,76 +1,76 @@
-import { type PluginSettings } from "./types";
+import { type PluginSettings } from './types';
 
 // Ref: https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models
 // Updated on 2024-02-17
 export const AZURE_OPENAI_MODELS = [
-	"gpt-4",
-	"gpt-4-32k",
-	"gpt-4-vision",
-	"gpt-35-turbo",
-	"gpt-35-turbo-16k",
+	'gpt-4',
+	'gpt-4-32k',
+	'gpt-4-vision',
+	'gpt-35-turbo',
+	'gpt-35-turbo-16k',
 ];
 
 // Ref: https://platform.openai.com/docs/models/overview
 // Updated on 2024-02-19
 export const OPENAI_MODELS = [
-	"gpt-3.5-turbo",
-	"gpt-3.5-turbo-1106",
-	"gpt-3.5-turbo-0125",
-	"gpt-3.5-turbo-16k",
-	"gpt-4",
-	"gpt-4-0613",
-	"gpt-4-32k",
-	"gpt-4-32k-0613",
-	"gpt-4-turbo-preview",
-	"gpt-4-vision-preview",
-	"gpt-4-1106-preview",
-	"gpt-4-0125-preview",
+	'gpt-3.5-turbo',
+	'gpt-3.5-turbo-1106',
+	'gpt-3.5-turbo-0125',
+	'gpt-3.5-turbo-16k',
+	'gpt-4',
+	'gpt-4-0613',
+	'gpt-4-32k',
+	'gpt-4-32k-0613',
+	'gpt-4-turbo-preview',
+	'gpt-4-vision-preview',
+	'gpt-4-1106-preview',
+	'gpt-4-0125-preview',
 ];
 
 // Ref: https://docs.anthropic.com/claude/reference/selecting-a-model
 // Updated on 2024-02-02
 export const ANTHROPIC_MODELS = [
-	"claude-2.0",
-	"claude-2.1",
-	"claude-instant-1.1",
-	"claude-instant-1.2",
+	'claude-2.0',
+	'claude-2.1',
+	'claude-instant-1.1',
+	'claude-instant-1.2',
 ];
 
 // Ref: https://docs.cohere.com/reference/generate
 // Updated on 2024-02-05
 export const COHERE_MODELS = [
-	"command",
-	"command-nightly",
-	"command-light",
-	"command-light-nightly",
+	'command',
+	'command-nightly',
+	'command-light',
+	'command-light-nightly',
 ];
 
 // This key can be exposed here as the aim is only to prevent direct exposure of data through sharing.
-export const QR_CODE_ENCRYPT_KEY = "DsH24E4xr8AfeZz24n6BCdew6f63";
+export const QR_CODE_ENCRYPT_KEY = 'DsH24E4xr8AfeZz24n6BCdew6f63';
 
 // Ref: https://ai.google.dev/models/gemini
 // Updated on 2024-01-26
-export const GOOGLE_AI_MODELS = ["gemini-pro"];
+export const GOOGLE_AI_MODELS = ['gemini-pro'];
 
 export enum APIProvider {
-	OpenAI = "OpenAI",
-	AzureOpenAI = "Azure OpenAI",
-	GoogleGemini = "Google Gemini",
-	Anthropic = "Anthropic",
-	Cohere = "Cohere",
+	OpenAI = 'OpenAI',
+	AzureOpenAI = 'Azure OpenAI',
+	GoogleGemini = 'Google Gemini',
+	Anthropic = 'Anthropic',
+	Cohere = 'Cohere',
 }
 
 export enum CommandNames {
-	ImproveWriting = "Improve Writing",
-	FixGrammar = "Fix Grammar",
-	SimplifyText = "Simplify Text",
-	MakeShorter = "Make Shorter",
-	MakeLonger = "Make Longer",
-	Paraphrase = "Paraphrase",
-	HighlightMainPoint = "Highlight Main Point",
+	ImproveWriting = 'Improve Writing',
+	FixGrammar = 'Fix Grammar',
+	SimplifyText = 'Simplify Text',
+	MakeShorter = 'Make Shorter',
+	MakeLonger = 'Make Longer',
+	Paraphrase = 'Paraphrase',
+	HighlightMainPoint = 'Highlight Main Point',
 
 	// Extra Commands
-	CustomInstructions = "Custom Instructions",
+	CustomInstructions = 'Custom Instructions',
 }
 
 export enum CommandActions {
@@ -85,47 +85,47 @@ export enum CommandActions {
 }
 
 export const DEFAULT_HOST = {
-	[APIProvider.OpenAI]: "https://api.openai.com",
-	[APIProvider.AzureOpenAI]: "",
-	[APIProvider.GoogleGemini]: "https://generativelanguage.googleapis.com",
-	[APIProvider.Anthropic]: "https://api.anthropic.com",
-	[APIProvider.Cohere]: "https://api.cohere.ai",
+	[APIProvider.OpenAI]: 'https://api.openai.com',
+	[APIProvider.AzureOpenAI]: '',
+	[APIProvider.GoogleGemini]: 'https://generativelanguage.googleapis.com',
+	[APIProvider.Anthropic]: 'https://api.anthropic.com',
+	[APIProvider.Cohere]: 'https://api.cohere.ai',
 };
 
 export const DEFAULT_SETTINGS: PluginSettings = {
-	dataSchemeDate: new Date("2024-02-03").toISOString(),
+	dataSchemeDate: new Date('2024-02-03').toISOString(),
 
 	aiProvider: APIProvider.OpenAI,
 	aiProviderConfig: {
 		[APIProvider.OpenAI]: {
-			apiKey: "",
+			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.OpenAI],
-			model: "gpt-3.5-turbo",
+			model: 'gpt-3.5-turbo',
 		},
 		[APIProvider.AzureOpenAI]: {
-			apiKey: "",
-			baseUrl: "",
-			model: "gpt-35-turbo",
-			apiVersion: "2023-05-15",
+			apiKey: '',
+			baseUrl: '',
+			model: 'gpt-35-turbo',
+			apiVersion: '2023-05-15',
 		},
 		[APIProvider.GoogleGemini]: {
-			apiKey: "",
+			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.GoogleGemini],
-			model: "gemini-pro",
+			model: 'gemini-pro',
 		},
 		[APIProvider.Anthropic]: {
-			apiKey: "",
+			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.Anthropic],
-			model: "claude-2.1",
+			model: 'claude-2.1',
 		},
 		[APIProvider.Cohere]: {
-			apiKey: "",
+			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.Cohere],
-			model: "command",
+			model: 'command',
 		},
 	},
 
-	customAiModel: "",
+	customAiModel: '',
 	maxTokens: 2000,
 	temperature: 0.5,
 	presencePenalty: 0,
@@ -138,32 +138,32 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 export const settingTabProviderConfiguations = {
 	[APIProvider.OpenAI]: {
 		defaultHost: DEFAULT_HOST[APIProvider.OpenAI],
-		docs: "https://platform.openai.com/docs/introduction",
-		defaultModel: "gpt-3.5-turbo",
+		docs: 'https://platform.openai.com/docs/introduction',
+		defaultModel: 'gpt-3.5-turbo',
 		models: OPENAI_MODELS,
 	},
 	[APIProvider.AzureOpenAI]: {
-		defaultHost: "",
-		docs: "https://learn.microsoft.com/en-us/azure/ai-services/openai/reference",
-		defaultModel: "gpt-35-turbo",
+		defaultHost: '',
+		docs: 'https://learn.microsoft.com/en-us/azure/ai-services/openai/reference',
+		defaultModel: 'gpt-35-turbo',
 		models: AZURE_OPENAI_MODELS,
 	},
 	[APIProvider.Anthropic]: {
 		defaultHost: DEFAULT_HOST[APIProvider.Anthropic],
-		docs: "https://docs.anthropic.com/claude/reference/getting-started-with-the-api",
-		defaultModel: "claude-2.1",
+		docs: 'https://docs.anthropic.com/claude/reference/getting-started-with-the-api',
+		defaultModel: 'claude-2.1',
 		models: ANTHROPIC_MODELS,
 	},
 	[APIProvider.GoogleGemini]: {
 		defaultHost: DEFAULT_HOST[APIProvider.GoogleGemini],
-		docs: "https://ai.google.dev/models/gemini",
-		defaultModel: "gemini-pro",
+		docs: 'https://ai.google.dev/models/gemini',
+		defaultModel: 'gemini-pro',
 		models: GOOGLE_AI_MODELS,
 	},
 	[APIProvider.Cohere]: {
 		defaultHost: DEFAULT_HOST[APIProvider.Cohere],
-		docs: "https://docs.cohere.com/reference/versioning",
-		defaultModel: "command",
+		docs: 'https://docs.cohere.com/reference/versioning',
+		defaultModel: 'command',
 		models: COHERE_MODELS,
 	},
 };
