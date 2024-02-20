@@ -1,4 +1,5 @@
 import { safeParse } from 'valibot';
+import { CommandActions, CommandNames } from './config';
 import CustomInstructions from './icons/custom-instructions.svg';
 import FixGrammarIcon from './icons/fix-grammar.svg';
 import HighlightMainPointIcon from './icons/highlight-mainpoint.svg';
@@ -9,7 +10,6 @@ import ParaphraseIcon from './icons/paraphrase.svg';
 import SimplifyIcon from './icons/simplify-text.svg';
 import { type Prompt, PromptSchema } from './types';
 import { type PluginSettings } from './types';
-import { CommandActions, CommandNames } from './config';
 
 export function getCommands(settings: PluginSettings) {
 	const localCustomPrompts = settings.customPrompts;

@@ -1,12 +1,12 @@
 import { App, type Editor, Notice } from 'obsidian';
 
 import Mustache from 'mustache';
+import { CommandActions, CommandNames } from './config';
 import WordWisePlugin from './main';
 import AskForInstructionModal from './modals/ask-for-instruction';
 import { getCommands } from './prompts';
 import { callAPI } from './utils/call-api';
 import { log } from './utils/logging';
-import { CommandNames, CommandActions } from './config';
 
 export async function runCommand(
 	app: App,

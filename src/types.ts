@@ -9,8 +9,8 @@ import {
 	string,
 	union,
 } from 'valibot';
+import { APIProvider, CommandActions, CommandNames } from './config';
 import WordWisePlugin from './main';
-import { CommandNames, CommandActions, APIProvider } from './config';
 
 export const PromptSchema = object({
 	name: union([string(), enum_(CommandNames)]),

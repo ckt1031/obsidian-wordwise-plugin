@@ -46,7 +46,7 @@
   },
   "lint-staged": {
 	"*.{js,ts,mjs,cjs}": [
-	  "biome check"
+	  "biome check && tsc"
 	]
   }
 }
