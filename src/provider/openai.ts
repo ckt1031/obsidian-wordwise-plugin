@@ -1,4 +1,4 @@
-import { DEFAULT_OPENAI_API_HOST } from '@/config';
+import { DEFAULT_HOST } from '@/config';
 import type { AIProviderProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import { request } from 'obsidian';
@@ -40,7 +40,7 @@ export async function handleTextOpenAI({
 
 	const url = `${getAPIHost(
 		providerSettings.baseUrl,
-		DEFAULT_OPENAI_API_HOST,
+		DEFAULT_HOST[settings.aiProvider]
 	)}/v1/chat/completions`;
 
 	const response = await request({

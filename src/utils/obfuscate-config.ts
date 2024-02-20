@@ -1,6 +1,14 @@
 import { DEFAULT_SETTINGS } from '@/config';
 import type { ObfuscatedPluginSettings, PluginSettings } from '@/types';
 
+/**
+ * Security Reminder
+ *
+ * This is to obfuscate the plugin settings to avoid known software scanning the API keys.
+ * It is not a guarantee of security, you should always be careful with software that you install.
+ */
+
+
 const SECRET_KEY = 'RSUH6NwtuGcUS252ssX2U4dCeCi48Yg2ekqnrKatZkmQRetZpxMUxqE';
 
 const reverseString = (input: string): string => [...input].reverse().join('');

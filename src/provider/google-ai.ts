@@ -1,4 +1,4 @@
-import { DEFAULT_GOOGLE_AI_API_HOST } from '@/config';
+import { DEFAULT_HOST } from '@/config';
 import type { AIProviderProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import type {
@@ -38,7 +38,7 @@ export async function handleTextGoogleGenAI({
 
 	const url = `${getAPIHost(
 		providerSettings.baseUrl,
-		DEFAULT_GOOGLE_AI_API_HOST,
+		DEFAULT_HOST[settings.aiProvider],
 	)}/v1beta/models/${modelName}:generateContent?key=${providerSettings.apiKey}`;
 
 	const response = await request({

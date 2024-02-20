@@ -10,45 +10,7 @@ import {
 	union,
 } from 'valibot';
 import WordWisePlugin from './main';
-
-/**
- * Security Reminder
- * 
- * This is to obfuscate the plugin settings to avoid known software scanning the API keys.
- * It is not a guarantee of security, you should always be careful with software that you install.
- */
-
-export enum APIProvider {
-	OpenAI = 'OpenAI',
-	AzureOpenAI = 'Azure OpenAI',
-	GoogleGemini = 'Google Gemini',
-	Anthropic = 'Anthropic',
-	Cohere = 'Cohere',
-}
-
-export enum CommandNames {
-	ImproveWriting = 'Improve Writing',
-	FixGrammar = 'Fix Grammar',
-	SimplifyText = 'Simplify Text',
-	MakeShorter = 'Make Shorter',
-	MakeLonger = 'Make Longer',
-	Paraphrase = 'Paraphrase',
-	HighlightMainPoint = 'Highlight Main Point',
-
-	// Extra Commands
-	CustomInstructions = 'Custom Instructions',
-}
-
-export enum CommandActions {
-	/**
-	 * Directly replace the selected text with the generated text.
-	 */
-	DirectReplacement = 0,
-	/**
-	 * This will not be using native prompts, but instead will be using custom prompts by a modal for custom instructions.
-	 */
-	CustomInstructions = 1,
-}
+import { CommandNames, CommandActions, APIProvider } from './config';
 
 export const PromptSchema = object({
 	name: union([string(), enum_(CommandNames)]),

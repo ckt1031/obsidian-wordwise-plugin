@@ -2,8 +2,9 @@ import { handleTextAnthropicAI } from '@/provider/anthropic';
 import { handleTextCohere } from '@/provider/cohere';
 import { handleTextGoogleGenAI } from '@/provider/google-ai';
 import { handleTextOpenAI } from '@/provider/openai';
-import { APIProvider, type CallAPIProps } from '@/types';
+import { type CallAPIProps } from '@/types';
 import { log } from './logging';
+import { APIProvider } from '@/config';
 
 export async function callAPI({
 	plugin,

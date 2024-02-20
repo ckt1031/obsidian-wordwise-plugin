@@ -3,10 +3,9 @@ import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
 import { wrapPasswordComponent } from './components/password';
 import { ExportSettingsQrCodeModal } from './components/qr-code';
-import { settingTabProviderConfiguations } from './config';
+import { APIProvider, settingTabProviderConfiguations } from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
-import { APIProvider } from './types';
 import { callAPI } from './utils/call-api';
 import { log } from './utils/logging';
 

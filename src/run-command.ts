@@ -4,9 +4,9 @@ import Mustache from 'mustache';
 import WordWisePlugin from './main';
 import AskForInstructionModal from './modals/ask-for-instruction';
 import { getCommands } from './prompts';
-import { CommandActions, type CommandNames } from './types';
 import { callAPI } from './utils/call-api';
 import { log } from './utils/logging';
+import { CommandNames, CommandActions } from './config';
 
 export async function runCommand(
 	app: App,
@@ -45,7 +45,9 @@ export async function runCommand(
 			if (!instructions || instructions === '') return;
 		}
 
-		new Notice(`Generating text with ${command} (${plugin.settings.aiProvider})...`);
+		new Notice(
+			`Generating text with ${command} (${plugin.settings.aiProvider})...`,
+		);
 
 		const userMessage: string = Mustache.render(actionData.data, {
 			input,

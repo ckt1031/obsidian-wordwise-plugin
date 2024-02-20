@@ -1,4 +1,4 @@
-import { DEFAULT_COHERE_AI_API_HOST } from '@/config';
+import { DEFAULT_HOST } from '@/config';
 import type { AIProviderProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import type { GenerateRequest, Generation } from 'cohere-ai/api';
@@ -27,7 +27,7 @@ export async function handleTextCohere({
 
 	const url = `${getAPIHost(
 		providerSettings.baseUrl,
-		DEFAULT_COHERE_AI_API_HOST,
+		DEFAULT_HOST[settings.aiProvider],
 	)}/v1/generate`;
 
 	const response = await request({

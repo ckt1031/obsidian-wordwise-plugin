@@ -1,4 +1,4 @@
-import { DEFAULT_ANTHROPIC_API_HOST } from '@/config';
+import { DEFAULT_HOST } from '@/config';
 import type { AIProviderProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import type {
@@ -36,7 +36,7 @@ Please kindly remember no human conversation here, do not give extra comments ou
 
 	const url = `${getAPIHost(
 		providerSettings.baseUrl,
-		DEFAULT_ANTHROPIC_API_HOST,
+		DEFAULT_HOST[settings.aiProvider]
 	)}/v1/messages`;
 
 	const response = await request({
