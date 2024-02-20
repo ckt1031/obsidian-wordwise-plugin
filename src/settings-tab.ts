@@ -68,21 +68,23 @@ export class SettingTab extends PluginSettingTab {
 							});
 					});
 
-				new Setting(containerEl)
-					.setName(`${provider} endpoint base url`)
-					.setDesc(
-						`Base URL for the ${provider} API, defaults to ${config.defaultHost}, DO NOT include / trailing slash and paths.`,
-					)
-					.addText((text) =>
-						text
-							.setPlaceholder(config.defaultHost)
-							.setValue(settings.aiProviderConfig[provider].baseUrl)
-							.onChange(async (value) => {
-								// Update the Base URL
-								settings.aiProviderConfig[provider].baseUrl = value;
-								await plugin.saveSettings();
-							}),
-					);
+				if (settings.advancedSettings || provider === APIProvider.AzureOpenAI) {
+					new Setting(containerEl)
+						.setName(`${provider} endpoint base url`)
+						.setDesc(
+							`Base URL for the ${provider} API, defaults to ${config.defaultHost}, DO NOT include / trailing slash and paths.`,
+						)
+						.addText((text) =>
+							text
+								.setPlaceholder(config.defaultHost)
+								.setValue(settings.aiProviderConfig[provider].baseUrl)
+								.onChange(async (value) => {
+									// Update the Base URL
+									settings.aiProviderConfig[provider].baseUrl = value;
+									await plugin.saveSettings();
+								}),
+						);
+				}
 
 				if (provider === APIProvider.AzureOpenAI) {
 					// API Version
