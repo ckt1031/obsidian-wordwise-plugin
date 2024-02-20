@@ -45,7 +45,7 @@ export async function runCommand(
 			if (!instructions || instructions === '') return;
 		}
 
-		new Notice(`Generating text with ${command}...`);
+		new Notice(`Generating text with ${command} (${plugin.settings.aiProvider})...`);
 
 		const userMessage: string = Mustache.render(actionData.data, {
 			input,

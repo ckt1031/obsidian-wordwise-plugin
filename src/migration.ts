@@ -1,4 +1,4 @@
-import { Notice } from 'obsidian';
+import { Notice } from "obsidian";
 import {
 	array,
 	boolean,
@@ -7,9 +7,9 @@ import {
 	object,
 	safeParseAsync,
 	string,
-} from 'valibot';
-import { DEFAULT_SETTINGS } from './config';
-import { APIProvider, CustomPromptSchema } from './types';
+} from "valibot";
+import { DEFAULT_SETTINGS } from "./config";
+import { APIProvider, CustomPromptSchema } from "./types";
 
 const OldPluginSettingsSchemaBefore20240205 = object({
 	dataSchemeDate: string(),
@@ -46,11 +46,9 @@ export async function migrate20240205(settings: unknown) {
 		settings,
 	);
 
-	if (!success) {
-		return settings;
-	}
+	if (!success) return settings;
 
-	new Notice('Migrating wordwise settings to new schema');
+	new Notice("Migrating wordwise settings to new schema");
 
 	// Migrate to new schema
 	return {

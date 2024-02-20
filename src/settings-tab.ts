@@ -10,18 +10,18 @@ import { APIProvider } from './types';
 import { callAPI } from './utils/call-api';
 import { log } from './utils/logging';
 
-async function restartSettingsTab(plugin: WordWisePlugin) {
-	await plugin.app.setting.close();
-	await plugin.app.setting.open();
-	await plugin.app.setting.openTabById(plugin.manifest.id);
-}
-
 export class SettingTab extends PluginSettingTab {
 	plugin: WordWisePlugin;
 
 	constructor(app: App, plugin: WordWisePlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+	}
+
+	async restartSettingsTab(plugin: WordWisePlugin) {
+		await plugin.app.setting.close();
+		await plugin.app.setting.open();
+		await plugin.app.setting.openTabById(plugin.manifest.id);
 	}
 
 	display(): void {
@@ -45,7 +45,7 @@ export class SettingTab extends PluginSettingTab {
 				dropDown.onChange(async (value) => {
 					settings.aiProvider = value as APIProvider;
 					await plugin.saveSettings();
-					restartSettingsTab(plugin);
+					this.restartSettingsTab(plugin);
 				});
 			});
 
@@ -162,7 +162,7 @@ export class SettingTab extends PluginSettingTab {
 				toggle.setValue(settings.advancedSettings).onChange(async (value) => {
 					settings.advancedSettings = value;
 					await plugin.saveSettings();
-					restartSettingsTab(plugin);
+					this.restartSettingsTab(plugin);
 				}),
 			);
 
@@ -278,7 +278,7 @@ export class SettingTab extends PluginSettingTab {
 						// This has already been clicked once, so reset the settings
 						await plugin.resetSettings();
 						new Notice('Resetting settings to default values');
-						restartSettingsTab(plugin);
+						this.restartSettingsTab(plugin);
 					}
 				});
 			});
