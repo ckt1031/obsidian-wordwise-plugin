@@ -1,7 +1,5 @@
-import { QR_CODE_ENCRYPT_KEY } from '@/config';
 import WordWisePlugin from '@/main';
 import { PluginSettings } from '@/types';
-import CryptoJS from 'crypto-js';
 import QRCode from 'qrcode';
 
 export interface ProcessQrCodeResultType {
@@ -16,23 +14,20 @@ export interface UriParams {
 	data?: string;
 }
 
-const encryptBrowser = (text: string, key: string) => {
-	return CryptoJS.AES.encrypt(text, key).toString();
-};
+function utf8_to_b64(str: string | number | boolean) {
+	return btoa(encodeURIComponent(str));
+}
 
-const decryptBrowser = (encrypted: string, key: string) => {
-	const bytes = CryptoJS.AES.decrypt(encrypted, key);
-	return bytes.toString(CryptoJS.enc.Utf8);
-};
+function b64_to_utf8(str: string) {
+	return decodeURIComponent(atob(str));
+}
 
 export const exportQrCodeUri = async (
 	plugin: WordWisePlugin,
 	currentVaultName: string,
 ) => {
 	const vault = encodeURIComponent(currentVaultName);
-	const data = encodeURIComponent(
-		encryptBrowser(JSON.stringify(plugin.settings), QR_CODE_ENCRYPT_KEY),
-	);
+	const data = encodeURIComponent(utf8_to_b64(JSON.stringify(plugin.settings)));
 	const rawUri = `obsidian://${plugin.manifest.id}?func=import&version=${plugin.manifest.version}&vault=${vault}&data=${data}`;
 	const imgUri = await QRCode.toDataURL(rawUri);
 	return {
@@ -74,9 +69,7 @@ export const importQrCodeUri = (
 
 	let settings = {} as PluginSettings;
 	try {
-		settings = JSON.parse(
-			decryptBrowser(decodeURIComponent(params.data), QR_CODE_ENCRYPT_KEY),
-		);
+		settings = JSON.parse(b64_to_utf8(decodeURIComponent(params.data)));
 	} catch (e) {
 		return {
 			status: 'error',

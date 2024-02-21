@@ -1,6 +1,5 @@
 import { Notice, Plugin, addIcon } from 'obsidian';
 
-import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
 import { DEFAULT_SETTINGS } from './config';
 import AiIcon from './icons/ai.svg';
@@ -16,6 +15,7 @@ import {
 import { log } from './utils/logging';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 import { importQrCodeUri } from './utils/settings-sharing';
+import { slugify } from './utils/slugify';
 
 export default class WordWisePlugin extends Plugin {
 	settings: PluginSettings;

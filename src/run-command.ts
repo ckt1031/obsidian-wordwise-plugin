@@ -1,12 +1,12 @@
 import { App, type Editor, Notice } from 'obsidian';
 
-import Mustache from 'mustache';
 import { CommandActions, CommandNames } from './config';
 import WordWisePlugin from './main';
 import AskForInstructionModal from './modals/ask-for-instruction';
 import { getCommands } from './prompts';
 import { callTextAPI } from './utils/call-api';
 import { log } from './utils/logging';
+import { mustacheRender } from './utils/mustache';
 
 export async function runCommand(
 	app: App,
@@ -49,7 +49,7 @@ export async function runCommand(
 			`Generating text with ${command} (${plugin.settings.aiProvider})...`,
 		);
 
-		const userMessage: string = Mustache.render(actionData.data, {
+		const userMessage: string = mustacheRender(actionData.data, {
 			input,
 			instructions,
 		});
