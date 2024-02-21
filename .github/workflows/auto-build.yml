@@ -2,7 +2,7 @@ name: BuildCI
 
 on:
   push:
-    branches: ['**']
+    branches: ["**"]
   pull_request:
     branches: [main]
 
@@ -24,6 +24,8 @@ jobs:
       - run: bun run test
 
       - run: bun run build
+        env:
+          SETTINGS_OBFUSCATE_KEY: ${{ secrets.SETTINGS_OBFUSCATE_KEY }}
 
       - uses: actions/upload-artifact@v4
         with:

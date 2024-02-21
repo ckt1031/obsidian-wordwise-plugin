@@ -8,7 +8,7 @@ import type { ObfuscatedPluginSettings, PluginSettings } from '@/types';
  * It is not a guarantee of security, you should always be careful with software that you install.
  */
 
-const SECRET_KEY = 'RSUH6NwtuGcUS252ssX2U4dCeCi48Yg2ekqnrKatZkmQRetZpxMUxqE';
+const SECRET_KEY = process.env.SETTINGS_OBFUSCATE_KEY || 'secret';
 
 const reverseString = (input: string): string => [...input].reverse().join('');
 

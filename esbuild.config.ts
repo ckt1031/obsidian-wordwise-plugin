@@ -23,6 +23,8 @@ const context = await esbuild.context({
 	},
 	define: {
 		'import.meta.vitest': 'undefined',
+		'process.env.SETTINGS_OBFUSCATE_KEY':
+			process.env.SETTINGS_OBFUSCATE_KEY || 'secret',
 	},
 });
 
