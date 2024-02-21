@@ -27,6 +27,12 @@ export const CustomPromptSchema = object({
 	data: string(),
 });
 
+export const OpenAIModelsSchema = object({
+	data: array(object({ id: string(), name: string() })),
+});
+
+export type OpenAIModels = Output<typeof OpenAIModelsSchema>;
+
 export const PluginSettingsSchema = object({
 	dataSchemeDate: string(),
 
@@ -54,6 +60,11 @@ export const PluginSettingsSchema = object({
 			model: string(),
 		}),
 		[APIProvider.Cohere]: object({
+			apiKey: string(),
+			baseUrl: string(),
+			model: string(),
+		}),
+		[APIProvider.OpenRouter]: object({
 			apiKey: string(),
 			baseUrl: string(),
 			model: string(),

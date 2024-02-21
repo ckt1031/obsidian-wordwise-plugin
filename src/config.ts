@@ -1,7 +1,9 @@
-import { type PluginSettings } from './types';
+import { OpenAIModels, type PluginSettings } from './types';
 
-// Ref: https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models
-// Updated on 2024-02-17
+/**
+ * Reference: https://platform.openai.com/docs/models/overview
+ * Updated: 2024-02-19
+ */
 export const AZURE_OPENAI_MODELS = [
 	'gpt-4',
 	'gpt-4-32k',
@@ -10,8 +12,10 @@ export const AZURE_OPENAI_MODELS = [
 	'gpt-35-turbo-16k',
 ];
 
-// Ref: https://platform.openai.com/docs/models/overview
-// Updated on 2024-02-19
+/**
+ * Reference: https://platform.openai.com/docs/models/overview
+ * Updated: 2024-02-19
+ */
 export const OPENAI_MODELS = [
 	'gpt-3.5-turbo',
 	'gpt-3.5-turbo-1106',
@@ -27,8 +31,10 @@ export const OPENAI_MODELS = [
 	'gpt-4-0125-preview',
 ];
 
-// Ref: https://docs.anthropic.com/claude/reference/selecting-a-model
-// Updated on 2024-02-02
+/**
+ * Reference: https://docs.anthropic.com/claude/reference/selecting-a-model
+ * Updated: 2024-02-02
+ */
 export const ANTHROPIC_MODELS = [
 	'claude-2.0',
 	'claude-2.1',
@@ -36,8 +42,10 @@ export const ANTHROPIC_MODELS = [
 	'claude-instant-1.2',
 ];
 
-// Ref: https://docs.cohere.com/reference/generate
-// Updated on 2024-02-05
+/**
+ * Reference: https://docs.cohere.com/reference/generate
+ * Updated: 2024-02-05
+ */
 export const COHERE_MODELS = [
 	'command',
 	'command-nightly',
@@ -45,12 +53,42 @@ export const COHERE_MODELS = [
 	'command-light-nightly',
 ];
 
-// This key can be exposed here as the aim is only to prevent direct exposure of data through sharing.
-export const QR_CODE_ENCRYPT_KEY = 'DsH24E4xr8AfeZz24n6BCdew6f63';
+/**
+ * Reference: https://openrouter.ai/docs#quick-start
+ * Updated: 2024-02-21
+ *
+ * Since there is too many models, this will not hard code all models.
+ * We will fetch the models from the API to local storage and use it from there.
+ */
+export const OPENROUTER_MODELS: OpenAIModels['data'] = [
+	{
+		id: 'openai/gpt-3.5-turbo',
+		name: 'OpenAI: GPT-3.5 Turbo',
+	},
+	{
+		id: 'openai/gpt-4',
+		name: 'OpenAI: GPT-4',
+	},
+	{
+		id: 'google/gemini-pro',
+		name: 'Google: Gemini Pro (preview)',
+	},
+	{
+		id: 'anthropic/claude-2',
+		name: 'Anthropic: Claude v2',
+	},
+	{
+		id: 'anthropic/claude-instant-1',
+		name: 'Anthropic: Claude Instant v1',
+	},
+];
 
 // Ref: https://ai.google.dev/models/gemini
 // Updated on 2024-01-26
-export const GOOGLE_AI_MODELS = ['gemini-pro'];
+export const GOOGLE_AI_MODELS = ['gemini-pro', 'gemini-pro-vision'];
+
+// This key can be exposed here as the aim is only to prevent direct exposure of data through sharing.
+export const QR_CODE_ENCRYPT_KEY = 'DsH24E4xr8AfeZz24n6BCdew6f63';
 
 export enum APIProvider {
 	OpenAI = 'OpenAI',
@@ -58,6 +96,7 @@ export enum APIProvider {
 	GoogleGemini = 'Google Gemini',
 	Anthropic = 'Anthropic',
 	Cohere = 'Cohere',
+	OpenRouter = 'OpenRouter',
 }
 
 export enum CommandNames {
@@ -90,6 +129,7 @@ export const DEFAULT_HOST = {
 	[APIProvider.GoogleGemini]: 'https://generativelanguage.googleapis.com',
 	[APIProvider.Anthropic]: 'https://api.anthropic.com',
 	[APIProvider.Cohere]: 'https://api.cohere.ai',
+	[APIProvider.OpenRouter]: 'https://openrouter.ai',
 };
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -122,6 +162,11 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.Cohere],
 			model: 'command',
+		},
+		[APIProvider.OpenRouter]: {
+			apiKey: '',
+			baseUrl: DEFAULT_HOST[APIProvider.OpenRouter],
+			model: 'openai/gpt-3.5-turbo',
 		},
 	},
 
@@ -165,5 +210,11 @@ export const settingTabProviderConfiguations = {
 		docs: 'https://docs.cohere.com/reference/versioning',
 		defaultModel: 'command',
 		models: COHERE_MODELS,
+	},
+	[APIProvider.OpenRouter]: {
+		defaultHost: DEFAULT_HOST[APIProvider.OpenRouter],
+		docs: 'https://openrouter.ai/docs',
+		defaultModel: OPENROUTER_MODELS[0],
+		models: OPENROUTER_MODELS,
 	},
 };

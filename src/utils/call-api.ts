@@ -6,7 +6,7 @@ import { handleTextOpenAI } from '@/provider/openai';
 import { type CallAPIProps } from '@/types';
 import { log } from './logging';
 
-export async function callAPI({
+export async function callTextAPI({
 	plugin,
 	userMessage,
 }: CallAPIProps): Promise<string | null | undefined> {
@@ -25,23 +25,25 @@ export async function callAPI({
 		`Sending request to ${apiProvider} with prompt:\n\n${userMessage}`,
 	);
 
-	switch (apiProvider) {
-		case APIProvider.OpenAI: {
-			return handleTextOpenAI({ plugin, userMessage, customAiModel });
-		}
-		case APIProvider.AzureOpenAI: {
-			return handleTextOpenAI({ plugin, userMessage, customAiModel });
-		}
-		case APIProvider.Anthropic: {
-			return handleTextAnthropicAI({ plugin, userMessage, customAiModel });
-		}
-		case APIProvider.GoogleGemini: {
-			return handleTextGoogleGenAI({ plugin, userMessage, customAiModel });
-		}
-		case APIProvider.Cohere: {
-			return handleTextCohere({ plugin, userMessage, customAiModel });
-		}
-		default:
-			throw new Error(`Unknown API Provider: ${apiProvider}`);
+	if (
+		apiProvider === APIProvider.OpenAI ||
+		apiProvider === APIProvider.OpenRouter ||
+		apiProvider === APIProvider.AzureOpenAI
+	) {
+		return handleTextOpenAI({ plugin, userMessage, customAiModel });
 	}
+
+	if (apiProvider === APIProvider.Anthropic) {
+		return handleTextAnthropicAI({ plugin, userMessage, customAiModel });
+	}
+
+	if (apiProvider === APIProvider.GoogleGemini) {
+		return handleTextGoogleGenAI({ plugin, userMessage, customAiModel });
+	}
+
+	if (apiProvider === APIProvider.Cohere) {
+		return handleTextCohere({ plugin, userMessage, customAiModel });
+	}
+
+	throw new Error(`Unknown API Provider: ${apiProvider}`);
 }

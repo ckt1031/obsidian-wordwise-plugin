@@ -1,27 +1,12 @@
 import { TextComponent, setIcon } from 'obsidian';
 
-// Main function to wrap the password component
-export const wrapPasswordComponent = (text: TextComponent) => {
-	// Create a new hider element
-	const hider = createHiderElement(text);
-	if (!hider) return;
-
-	// Set the initial icon for the hider element
-	setIcon(hider as HTMLElement, 'eye-off');
-
-	// Add a click event listener to the hider element
-	addClickListener(hider as HTMLElement, text);
-
-	// Set the initial input type for the text element
-	text.inputEl.setAttribute('type', 'password');
-
-	return text;
-};
-
 // Function to create a new hider element
 const createHiderElement = (text: TextComponent) => {
 	// Insert a new span element before the text input element
-	return text.inputEl.insertAdjacentElement('beforebegin', createSpan());
+	return text.inputEl.insertAdjacentElement(
+		'beforebegin',
+		document.createElement('button'),
+	);
 };
 
 // Function to add a click event listener to the hider element
@@ -47,4 +32,23 @@ const togglePasswordVisibility = (hider: HTMLElement, text: TextComponent) => {
 	setIcon(hider, icon);
 	// Set the new input type for the text input element
 	text.inputEl.setAttribute('type', type);
+};
+
+// Main function to wrap the password component
+export const wrapPasswordComponent = (text: TextComponent) => {
+	// Create a new hider element
+	const hider = createHiderElement(text);
+
+	if (!hider) return;
+
+	// Set the initial icon for the hider element
+	setIcon(hider as HTMLElement, 'eye-off');
+
+	// Add a click event listener to the hider element
+	addClickListener(hider as HTMLElement, text);
+
+	// Set the initial input type for the text element
+	text.inputEl.setAttribute('type', 'password');
+
+	return text;
 };

@@ -5,7 +5,7 @@ import { CommandActions, CommandNames } from './config';
 import WordWisePlugin from './main';
 import AskForInstructionModal from './modals/ask-for-instruction';
 import { getCommands } from './prompts';
-import { callAPI } from './utils/call-api';
+import { callTextAPI } from './utils/call-api';
 import { log } from './utils/logging';
 
 export async function runCommand(
@@ -56,7 +56,7 @@ export async function runCommand(
 
 		const startTime = Date.now(); // Capture start time
 
-		const result = await callAPI({
+		const result = await callTextAPI({
 			plugin,
 			userMessage,
 		});

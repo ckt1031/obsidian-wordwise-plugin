@@ -1,13 +1,14 @@
 import type { App, ButtonComponent } from 'obsidian';
 import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
+import { wrapFetchModelComponent } from './components/fetch-model';
 import { wrapPasswordComponent } from './components/password';
 import { ExportSettingsQrCodeModal } from './components/qr-code';
+import { wrapAPITestComponent } from './components/test-api';
 import { APIProvider, settingTabProviderConfiguations } from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
-import { callAPI } from './utils/call-api';
-import { log } from './utils/logging';
+import { getOpenRouterForage } from './utils/storage';
 
 export class SettingTab extends PluginSettingTab {
 	plugin: WordWisePlugin;
@@ -57,6 +58,11 @@ export class SettingTab extends PluginSettingTab {
 					.setDesc(`API Key for the ${provider} API`)
 					.addText((text) => {
 						wrapPasswordComponent(text);
+						wrapAPITestComponent({
+							text,
+							settings,
+							plugin,
+						});
 						text
 							.setPlaceholder(`Enter your ${provider} API Key`)
 							.setValue(settings.aiProviderConfig[provider].apiKey)
@@ -71,7 +77,7 @@ export class SettingTab extends PluginSettingTab {
 					new Setting(containerEl)
 						.setName(`${provider} endpoint base url`)
 						.setDesc(
-							`Base URL for the ${provider} API, defaults to ${config.defaultHost}, DO NOT include / trailing slash and paths.`,
+							`Base URL for the ${provider} API. DO NOT include / trailing slash and paths.`,
 						)
 						.addText((text) =>
 							text
@@ -107,9 +113,24 @@ export class SettingTab extends PluginSettingTab {
 					.setDesc(
 						`Model to be used, defaults to ${config.defaultModel}, see ${provider} Models for more info`,
 					)
-					.addDropdown((dropDown) => {
-						for (const model of config.models) {
-							dropDown.addOption(model, model);
+					.addDropdown(async (dropDown) => {
+						wrapFetchModelComponent({
+							dropDown,
+							plugin,
+						});
+
+						let models = config.models;
+
+						if (provider === APIProvider.OpenRouter) {
+							models = await getOpenRouterForage();
+						}
+
+						for (const model of models) {
+							if (typeof model === 'string') {
+								dropDown.addOption(model, model);
+							} else {
+								dropDown.addOption(model.id, model.name);
+							}
 						}
 						dropDown.setValue(settings.aiProviderConfig[provider].model);
 						dropDown.onChange(async (value) => {
@@ -120,37 +141,6 @@ export class SettingTab extends PluginSettingTab {
 					});
 			}
 		}
-
-		new Setting(containerEl)
-			.setName('Check api availability')
-			.setDesc('Test if your API Key is valid and working.')
-			.addButton((button) =>
-				button.setButtonText('Check').onClick(async () => {
-					try {
-						new Notice('Checking API Status...');
-
-						const result = await callAPI({
-							plugin,
-							userMessage: 'Say word hello only.',
-						});
-
-						if (result && result.length > 0) {
-							const provider = settings.aiProvider;
-							const providerSettings = settings.aiProviderConfig[provider];
-							const model =
-								settings.customAiModel.length > 0
-									? settings.customAiModel
-									: providerSettings.model;
-							new Notice(
-								`${provider} API is working properly with model ${model}`,
-							);
-						}
-					} catch (error) {
-						if (error instanceof Error) log(plugin, error);
-						new Notice('API is not working properly.');
-					}
-				}),
-			);
 
 		new Setting(containerEl)
 			.setName('Advanced mode')

@@ -15,13 +15,14 @@
     "test": "vitest run",
     "version": "bun version-bump.ts && biome format manifest.json versions.json --write && git add manifest.json versions.json",
     "prepare": "husky || true",
-	"lint-staged": "lint-staged"
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.14.0",
     "@google/generative-ai": "0.2.1",
     "cohere-ai": "7.7.5",
     "crypto-js": "4.2.0",
+    "localforage": "^1.10.0",
     "mustache": "4.2.0",
     "openai": "4.28.0",
     "qrcode": "1.5.3",
@@ -45,8 +46,8 @@
     "vitest": "1.3.1"
   },
   "lint-staged": {
-	"*.{js,ts,mjs,cjs}": [
-	  "biome check && tsc"
-	]
+    "*.{js,ts,mjs,cjs}": [
+      "biome check && tsc"
+    ]
   }
 }
