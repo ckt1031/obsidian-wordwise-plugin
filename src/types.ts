@@ -28,7 +28,7 @@ export const CustomPromptSchema = object({
 });
 
 export const OpenAIModelsSchema = object({
-	data: array(object({ id: string(), name: string() })),
+	data: array(object({ id: string(), name: optional(string()) })),
 });
 
 export type OpenAIModels = Output<typeof OpenAIModelsSchema>;
@@ -65,6 +65,11 @@ export const PluginSettingsSchema = object({
 			model: string(),
 		}),
 		[APIProvider.OpenRouter]: object({
+			apiKey: string(),
+			baseUrl: string(),
+			model: string(),
+		}),
+		[APIProvider.Custom]: object({
 			apiKey: string(),
 			baseUrl: string(),
 			model: string(),

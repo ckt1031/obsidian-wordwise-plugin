@@ -19,7 +19,6 @@ export class ExportSettingsQrCodeModal extends Modal {
 		);
 
 		const div1 = contentEl.createDiv();
-
 		div1.createEl('p', {
 			text: 'Scan the QR code with your mobile device to import the settings',
 		});

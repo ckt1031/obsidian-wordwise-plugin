@@ -8,7 +8,7 @@ import { wrapAPITestComponent } from './components/test-api';
 import { APIProvider, settingTabProviderConfiguations } from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
-import { getOpenRouterForage } from './utils/storage';
+import { getModelsForage } from './utils/storage';
 
 export class SettingTab extends PluginSettingTab {
 	plugin: WordWisePlugin;
@@ -114,22 +114,24 @@ export class SettingTab extends PluginSettingTab {
 						`Model to be used, defaults to ${config.defaultModel}, see ${provider} Models for more info`,
 					)
 					.addDropdown(async (dropDown) => {
-						wrapFetchModelComponent({
-							dropDown,
-							plugin,
-						});
-
 						let models = config.models;
-
-						if (provider === APIProvider.OpenRouter) {
-							models = await getOpenRouterForage();
+						// Only in advanced mode or provider is OpenRouter OR Custom
+						if (
+							provider === APIProvider.OpenRouter ||
+							provider === APIProvider.Custom
+						) {
+							wrapFetchModelComponent({
+								dropDown,
+								plugin,
+							});
+							models = await getModelsForage(provider);
 						}
 
 						for (const model of models) {
 							if (typeof model === 'string') {
 								dropDown.addOption(model, model);
 							} else {
-								dropDown.addOption(model.id, model.name);
+								dropDown.addOption(model.id, model.name || model.id);
 							}
 						}
 						dropDown.setValue(settings.aiProviderConfig[provider].model);

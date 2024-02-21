@@ -1,4 +1,4 @@
-import { TextComponent, setIcon } from 'obsidian';
+import { TextComponent, setIcon, setTooltip } from 'obsidian';
 
 // Function to create a new hider element
 const createHiderElement = (text: TextComponent) => {
@@ -40,6 +40,8 @@ export const wrapPasswordComponent = (text: TextComponent) => {
 	const hider = createHiderElement(text);
 
 	if (!hider) return;
+
+	setTooltip(hider as HTMLElement, 'Toggle password visibility');
 
 	// Set the initial icon for the hider element
 	setIcon(hider as HTMLElement, 'eye-off');

@@ -1,9 +1,10 @@
 import { Notice, Plugin, addIcon } from 'obsidian';
 
+import { mergeDeepRight } from 'rambda';
+import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
 import { DEFAULT_SETTINGS } from './config';
 import AiIcon from './icons/ai.svg';
-import { migrate20240205 } from './migration';
 import { getCommands } from './prompts';
 import { runCommand } from './run-command';
 import { SettingTab } from './settings-tab';
@@ -15,7 +16,6 @@ import {
 import { log } from './utils/logging';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 import { importQrCodeUri } from './utils/settings-sharing';
-import { slugify } from './utils/slugify';
 
 export default class WordWisePlugin extends Plugin {
 	settings: PluginSettings;
@@ -78,12 +78,8 @@ export default class WordWisePlugin extends Plugin {
 				const parsed = importQrCodeUri(inputParams, this.app.vault.getName());
 				if (parsed.status === 'error') {
 					new Notice(parsed.message);
-				} else {
-					this.settings = Object.assign(
-						{},
-						this.settings,
-						await this.handleData(parsed.result),
-					);
+				} else if (parsed.result) {
+					this.settings = mergeDeepRight(this.settings, parsed.result);
 					this.saveSettings();
 					new Notice(
 						'Settings imported. Please check the settings tab to verify.',
@@ -119,17 +115,13 @@ export default class WordWisePlugin extends Plugin {
 		}
 		const parsedData = deobfuscateConfig(localData);
 
-		this.settings = Object.assign(
-			{},
-			DEFAULT_SETTINGS,
-			await this.handleData(parsedData),
-		);
-	}
+		if (parsedData === null) {
+			this.settings = DEFAULT_SETTINGS;
+			log(this, 'Failed to deobfuscate settings, using default settings.');
+			return;
+		}
 
-	async handleData(data: unknown) {
-		const newMigratedData = await migrate20240205(data);
-
-		return newMigratedData;
+		this.settings = mergeDeepRight(DEFAULT_SETTINGS, parsedData);
 	}
 
 	async saveSettings() {

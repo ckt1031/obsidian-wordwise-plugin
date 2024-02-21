@@ -2,7 +2,7 @@ import WordWisePlugin from '@/main';
 import { PluginSettings } from '@/types';
 import { callTextAPI } from '@/utils/call-api';
 import { log } from '@/utils/logging';
-import { Notice, TextComponent, setIcon } from 'obsidian';
+import { Notice, TextComponent, setIcon, setTooltip } from 'obsidian';
 
 type Props = {
 	text: TextComponent;
@@ -25,6 +25,8 @@ export const wrapAPITestComponent = ({ text, settings, plugin }: Props) => {
 	const hider = createHiderElement(text);
 
 	if (!hider) return;
+
+	setTooltip(hider as HTMLElement, 'Test API');
 
 	// Set the initial icon for the hider element
 	setIcon(hider as HTMLElement, 'check-circle-2');
@@ -50,7 +52,13 @@ export const wrapAPITestComponent = ({ text, settings, plugin }: Props) => {
 			}
 		} catch (error) {
 			log(plugin, error);
-			new Notice('API is not working properly.');
+			let message = 'API is not working properly';
+
+			if (error instanceof Error) {
+				message += `: ${error.message}`;
+			}
+
+			new Notice(message);
 		}
 	});
 

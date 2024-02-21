@@ -84,16 +84,24 @@ export const OPENROUTER_MODELS: OpenAIModels['data'] = [
 ];
 
 // Ref: https://ai.google.dev/models/gemini
-// Updated on 2024-01-26
+// Updated on 2024-02-21
 export const GOOGLE_AI_MODELS = ['gemini-pro', 'gemini-pro-vision'];
 
 export enum APIProvider {
+	/** https://openai.com/ */
 	OpenAI = 'OpenAI',
+	/** https://azure.microsoft.com/en-us/products/ai-services/openai-service */
 	AzureOpenAI = 'Azure OpenAI',
+	/** https://deepmind.google/technologies/gemini/ */
 	GoogleGemini = 'Google Gemini',
+	/** https://www.anthropic.com/ */
 	Anthropic = 'Anthropic',
+	/** https://cohere.com/ */
 	Cohere = 'Cohere',
+	/** https://openrouter.ai/ */
 	OpenRouter = 'OpenRouter',
+	/** OpenAI Compatible API, such as OneAPI and FastGPT */
+	Custom = 'Custom (OpenAI Compatible)',
 }
 
 export enum CommandNames {
@@ -127,6 +135,7 @@ export const DEFAULT_HOST = {
 	[APIProvider.Anthropic]: 'https://api.anthropic.com',
 	[APIProvider.Cohere]: 'https://api.cohere.ai',
 	[APIProvider.OpenRouter]: 'https://openrouter.ai',
+	[APIProvider.Custom]: '',
 };
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -164,6 +173,11 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.OpenRouter],
 			model: 'openai/gpt-3.5-turbo',
+		},
+		[APIProvider.Custom]: {
+			apiKey: '',
+			baseUrl: '',
+			model: '',
 		},
 	},
 
@@ -213,5 +227,11 @@ export const settingTabProviderConfiguations = {
 		docs: 'https://openrouter.ai/docs',
 		defaultModel: OPENROUTER_MODELS[0],
 		models: OPENROUTER_MODELS,
+	},
+	[APIProvider.Custom]: {
+		defaultHost: '',
+		docs: '',
+		defaultModel: '',
+		models: [],
 	},
 };

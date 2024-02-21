@@ -28,7 +28,8 @@ export async function callTextAPI({
 	if (
 		apiProvider === APIProvider.OpenAI ||
 		apiProvider === APIProvider.OpenRouter ||
-		apiProvider === APIProvider.AzureOpenAI
+		apiProvider === APIProvider.AzureOpenAI ||
+		apiProvider === APIProvider.Custom
 	) {
 		return handleTextOpenAI({ plugin, userMessage, customAiModel });
 	}

@@ -2,8 +2,8 @@ import { APIProvider, OPENROUTER_MODELS } from '@/config';
 import WordWisePlugin from '@/main';
 import { getOpenAIModels } from '@/provider/openai';
 import { log } from '@/utils/logging';
-import { setOpenRouterForage } from '@/utils/storage';
-import { DropdownComponent, Notice, setIcon } from 'obsidian';
+import { setModelsForage } from '@/utils/storage';
+import { DropdownComponent, Notice, setIcon, setTooltip } from 'obsidian';
 
 type Props = {
 	dropDown: DropdownComponent;
@@ -29,10 +29,17 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 	setIcon(fetchButton as HTMLElement, 'list-restart');
 	setIcon(resetButton as HTMLElement, 'list-x');
 
+	setTooltip(fetchButton as HTMLElement, 'Fetch models');
+	setTooltip(resetButton as HTMLElement, 'Reset models (use with caution)');
+
 	resetButton.addEventListener('click', async () => {
 		switch (plugin.settings.aiProvider) {
 			case APIProvider.OpenRouter: {
-				await setOpenRouterForage(OPENROUTER_MODELS);
+				await setModelsForage(APIProvider.OpenRouter, OPENROUTER_MODELS);
+				break;
+			}
+			case APIProvider.Custom: {
+				await setModelsForage(APIProvider.Custom, []);
 				break;
 			}
 			default:
@@ -53,11 +60,14 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 					models = await getOpenAIModels({ plugin });
 					break;
 				}
+				case APIProvider.Custom:
+					models = await getOpenAIModels({ plugin });
+					break;
 				default:
 					throw new Error(`Unknown API Provider: ${settings.aiProvider}`);
 			}
 
-			await setOpenRouterForage(models);
+			await setModelsForage(settings.aiProvider, models);
 
 			log(plugin, models);
 
@@ -66,7 +76,13 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 			);
 		} catch (error) {
 			log(plugin, error);
-			new Notice('Failed to fetch models.');
+			let message = 'Failed to fetch models';
+
+			if (error instanceof Error) {
+				message += `: ${error.message}`;
+			}
+
+			new Notice(message);
 		}
 	});
 

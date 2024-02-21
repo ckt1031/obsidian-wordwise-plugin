@@ -1,9 +1,9 @@
 import { DEFAULT_HOST } from '@/config';
 import type { AIProviderProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
-import { convertKeysToSnakeCase } from '@/utils/keys-to-snakecase';
 import type { GenerateRequest, Generation } from 'cohere-ai/api';
 import { request } from 'obsidian';
+import snakecaseKeys from 'snakecase-keys';
 
 export async function handleTextCohere({
 	plugin,
@@ -39,7 +39,7 @@ export async function handleTextCohere({
 			Authorization: `Bearer ${providerSettings.apiKey}`,
 		},
 		body: JSON.stringify(
-			convertKeysToSnakeCase(body as unknown as Record<string, unknown>),
+			snakecaseKeys(body as unknown as Record<string, unknown>),
 		),
 	});
 
