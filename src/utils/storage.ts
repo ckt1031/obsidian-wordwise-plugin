@@ -5,7 +5,6 @@ import { safeParseAsync } from 'valibot';
 
 export const forageStore = localforage.createInstance({
 	name: 'WordWise',
-	driver: localforage.LOCALSTORAGE,
 });
 
 export async function getModelsForage(provider: APIProvider) {
