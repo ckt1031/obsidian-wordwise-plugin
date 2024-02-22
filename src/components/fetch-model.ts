@@ -1,5 +1,6 @@
 import { APIProvider, OPENROUTER_MODELS } from '@/config';
 import WordWisePlugin from '@/main';
+import ConfirmModal from '@/modals/confirm';
 import { getOpenAIModels } from '@/provider/openai';
 import { log } from '@/utils/logging';
 import { setModelsForage } from '@/utils/storage';
@@ -33,6 +34,12 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 	setTooltip(resetButton as HTMLElement, 'Reset models (use with caution)');
 
 	resetButton.addEventListener('click', async () => {
+		const confirm = new ConfirmModal(plugin.app);
+
+		const result = await confirm.promise;
+
+		if (!result) return;
+
 		switch (plugin.settings.aiProvider) {
 			case APIProvider.OpenRouter: {
 				await setModelsForage(APIProvider.OpenRouter, OPENROUTER_MODELS);
