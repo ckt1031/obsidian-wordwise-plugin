@@ -139,7 +139,7 @@ export const DEFAULT_HOST = {
 };
 
 export const DEFAULT_SETTINGS: PluginSettings = {
-	dataSchemeDate: new Date('2024-02-03').toISOString(),
+	dataSchemeDate: new Date('2024-02-22').toISOString(),
 
 	aiProvider: APIProvider.OpenAI,
 	aiProviderConfig: {
@@ -181,13 +181,17 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 		},
 	},
 
+	advancedSettings: false,
 	customAiModel: '',
 	maxTokens: 2000,
 	temperature: 0.5,
 	presencePenalty: 0,
 	frequencyPenalty: 0,
-	advancedSettings: false,
+
+	enableGenerationLogging: false,
+
 	debugMode: false,
+
 	customPrompts: [],
 };
 

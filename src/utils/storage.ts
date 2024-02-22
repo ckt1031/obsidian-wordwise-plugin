@@ -1,25 +1,71 @@
 import { APIProvider, OPENROUTER_MODELS } from '@/config';
-import { OpenAIModels, OpenAIModelsSchema } from '@/types';
+import {
+	OpenAIModels,
+	OpenAIModelsSchema,
+	TextGenerationLoggings,
+	TextGenerationLoggingsSchema,
+} from '@/types';
 import localforage from 'localforage';
-import { safeParseAsync } from 'valibot';
+import { array, object, safeParseAsync } from 'valibot';
 
-export const forageStore = localforage.createInstance({
-	name: 'WordWise',
-});
+export class ForageStorage {
+	forageStore = localforage.createInstance({
+		name: 'WordWise',
+	});
 
-export async function getModelsForage(provider: APIProvider) {
-	const data = await forageStore.getItem(`${provider}-models`);
+	async getLog() {
+		const data = await this.forageStore.getItem('text-generations');
 
-	const { success, output } = await safeParseAsync(OpenAIModelsSchema, data);
+		const { success, output } = await safeParseAsync(
+			object({
+				data: array(TextGenerationLoggingsSchema),
+			}),
+			data,
+		);
 
-	return success ? output.data : OPENROUTER_MODELS;
-}
+		return success ? output.data : [];
+	}
 
-export async function setModelsForage(
-	provider: APIProvider,
-	value: OpenAIModels['data'],
-) {
-	const _data = { data: value };
-	const { success, output } = await safeParseAsync(OpenAIModelsSchema, _data);
-	if (success) await forageStore.setItem(`${provider}-models`, output);
+	async addLog(log: TextGenerationLoggings) {
+		const data = await this.forageStore.getItem('text-generations');
+
+		const { success, output } = await safeParseAsync(
+			object({
+				data: array(TextGenerationLoggingsSchema),
+			}),
+			data,
+		);
+
+		if (!success) {
+			await this.forageStore.setItem('text-generations', {
+				data: [log],
+			});
+			return;
+		}
+
+		const result = await safeParseAsync(array(TextGenerationLoggingsSchema), [
+			...output.data,
+			log,
+		]);
+
+		if (!result.success) return;
+
+		await this.forageStore.setItem('text-generations', {
+			data: result.output,
+		});
+	}
+
+	async getModels(provider: APIProvider) {
+		const data = await this.forageStore.getItem(`${provider}-models`);
+
+		const { success, output } = await safeParseAsync(OpenAIModelsSchema, data);
+
+		return success ? output.data : OPENROUTER_MODELS;
+	}
+
+	async setModels(provider: APIProvider, value: OpenAIModels['data']) {
+		const _data = { data: value };
+		const { success, output } = await safeParseAsync(OpenAIModelsSchema, _data);
+		if (success) await this.forageStore.setItem(`${provider}-models`, output);
+	}
 }

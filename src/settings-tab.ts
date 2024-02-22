@@ -8,7 +8,7 @@ import { wrapAPITestComponent } from './components/test-api';
 import { APIProvider, settingTabProviderConfiguations } from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
-import { getModelsForage } from './utils/storage';
+import { ForageStorage } from './utils/storage';
 
 export class SettingTab extends PluginSettingTab {
 	plugin: WordWisePlugin;
@@ -124,7 +124,7 @@ export class SettingTab extends PluginSettingTab {
 								dropDown,
 								plugin,
 							});
-							models = await getModelsForage(provider);
+							models = await new ForageStorage().getModels(provider);
 						}
 
 						for (const model of models) {

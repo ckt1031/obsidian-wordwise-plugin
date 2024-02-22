@@ -1,5 +1,5 @@
 import { DEFAULT_HOST } from '@/config';
-import type { AIProviderProps } from '@/types';
+import type { ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import type {
 	Message,
@@ -11,7 +11,7 @@ export async function handleTextAnthropicAI({
 	plugin,
 	userMessage,
 	customAiModel = '',
-}: AIProviderProps) {
+}: ProviderTextAPIProps) {
 	const { settings } = plugin;
 
 	const providerSettings = settings.aiProviderConfig[settings.aiProvider];

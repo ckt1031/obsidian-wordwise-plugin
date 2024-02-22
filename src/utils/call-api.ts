@@ -3,13 +3,13 @@ import { handleTextAnthropicAI } from '@/provider/anthropic';
 import { handleTextCohere } from '@/provider/cohere';
 import { handleTextGoogleGenAI } from '@/provider/google-ai';
 import { handleTextOpenAI } from '@/provider/openai';
-import { type CallAPIProps } from '@/types';
+import { type CallTextAPIProps } from '@/types';
 import { log } from './logging';
 
 export async function callTextAPI({
 	plugin,
 	userMessage,
-}: CallAPIProps): Promise<string | null | undefined> {
+}: CallTextAPIProps): Promise<string | null | undefined> {
 	const { settings } = plugin;
 
 	const apiProvider = settings.aiProvider;

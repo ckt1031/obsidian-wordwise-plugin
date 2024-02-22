@@ -3,7 +3,7 @@ import WordWisePlugin from '@/main';
 import ConfirmModal from '@/modals/confirm';
 import { getOpenAIModels } from '@/provider/openai';
 import { log } from '@/utils/logging';
-import { setModelsForage } from '@/utils/storage';
+import { ForageStorage } from '@/utils/storage';
 import { DropdownComponent, Notice, setIcon, setTooltip } from 'obsidian';
 
 type Props = {
@@ -33,20 +33,24 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 	setTooltip(fetchButton as HTMLElement, 'Fetch models');
 	setTooltip(resetButton as HTMLElement, 'Reset models (use with caution)');
 
-	resetButton.addEventListener('click', async () => {
-		const confirm = new ConfirmModal(plugin.app);
+	const { setModels } = new ForageStorage();
 
-		const result = await confirm.promise;
+	resetButton.addEventListener('click', async () => {
+		const confirmModal = new ConfirmModal(plugin.app);
+
+		confirmModal.open();
+
+		const result = await confirmModal.promise;
 
 		if (!result) return;
 
 		switch (plugin.settings.aiProvider) {
 			case APIProvider.OpenRouter: {
-				await setModelsForage(APIProvider.OpenRouter, OPENROUTER_MODELS);
+				await setModels(APIProvider.OpenRouter, OPENROUTER_MODELS);
 				break;
 			}
 			case APIProvider.Custom: {
-				await setModelsForage(APIProvider.Custom, []);
+				await setModels(APIProvider.Custom, []);
 				break;
 			}
 			default:
@@ -74,7 +78,7 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 					throw new Error(`Unknown API Provider: ${settings.aiProvider}`);
 			}
 
-			await setModelsForage(settings.aiProvider, models);
+			await setModels(settings.aiProvider, models);
 
 			log(plugin, models);
 

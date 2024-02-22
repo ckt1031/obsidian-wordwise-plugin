@@ -34,6 +34,7 @@ export const OpenAIModelsSchema = object({
 export type OpenAIModels = Output<typeof OpenAIModelsSchema>;
 
 export const PluginSettingsSchema = object({
+	/** Date that helps migration */
 	dataSchemeDate: string(),
 
 	aiProvider: enum_(APIProvider),
@@ -82,9 +83,13 @@ export const PluginSettingsSchema = object({
 	temperature: number(),
 	presencePenalty: number(),
 	frequencyPenalty: number(),
+
+	/** Log the text to storage to trace usage and original text */
+	enableGenerationLogging: boolean(),
+
+	/** Enable logging */
 	debugMode: boolean(),
 
-	// Custom Prompt Settings
 	customPrompts: array(CustomPromptSchema),
 });
 
@@ -99,18 +104,27 @@ export type ObfuscatedPluginSettings = Output<
 	typeof ObfuscatedPluginSettingsSchema
 >;
 
-export interface OpenAiKeyCredit {
-	consumedCredits: number;
-	remainingCredits: number;
-	totalCredits: number;
-	expiryDate: string;
-}
-
-export interface CallAPIProps {
+export interface CallTextAPIProps {
 	plugin: WordWisePlugin;
 	userMessage: string;
 }
 
-export interface AIProviderProps extends CallAPIProps {
+export interface ProviderTextAPIProps extends CallTextAPIProps {
 	customAiModel: string;
 }
+
+export const TextGenerationLoggingsSchema = object({
+	by: string(),
+	model: string(),
+	provider: enum_(APIProvider),
+	generatedAt: string(),
+
+	customInstruction: optional(string()),
+
+	orginalText: string(),
+	generatedText: string(),
+});
+
+export type TextGenerationLoggings = Output<
+	typeof TextGenerationLoggingsSchema
+>;

@@ -5,8 +5,10 @@ import { CommandActions, CommandNames } from './config';
 import WordWisePlugin from './main';
 import AskForInstructionModal from './modals/ask-for-instruction';
 import { getCommands } from './prompts';
+import { TextGenerationLoggings } from './types';
 import { callTextAPI } from './utils/call-api';
 import { log } from './utils/logging';
+import { ForageStorage } from './utils/storage';
 
 export async function runCommand(
 	app: App,
@@ -45,6 +47,13 @@ export async function runCommand(
 			if (!instructions || instructions === '') return;
 		}
 
+		const customModel = plugin.settings.customAiModel;
+
+		const model =
+			customModel.length > 0
+				? customModel
+				: plugin.settings.aiProviderConfig[plugin.settings.aiProvider].model;
+
 		new Notice(
 			`Generating text with ${command} (${plugin.settings.aiProvider})...`,
 		);
@@ -65,6 +74,20 @@ export async function runCommand(
 			new Notice(`No result from ${plugin.settings.aiProvider}`);
 			return;
 		}
+
+		const loggingBody: TextGenerationLoggings = {
+			by: command,
+			model,
+			generatedAt: new Date().toISOString(),
+			provider: plugin.settings.aiProvider,
+
+			orginalText: input,
+			generatedText: result,
+
+			customInstruction: instructions,
+		};
+
+		await new ForageStorage().addLog(loggingBody);
 
 		editor.replaceSelection(result);
 
