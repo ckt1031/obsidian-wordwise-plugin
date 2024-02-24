@@ -2,23 +2,27 @@ import { APIProvider, OPENROUTER_MODELS } from '@/config';
 import {
 	OpenAIModels,
 	OpenAIModelsSchema,
-	TextGenerationLoggings,
-	TextGenerationLoggingsSchema,
+	TextGenerationLog,
+	TextGenerationLogSchema,
 } from '@/types';
 import localforage from 'localforage';
 import { array, object, safeParseAsync } from 'valibot';
 
+enum StorageKey {
+	TEXT_GENERATIONS = 'text-generations',
+}
+
 export class ForageStorage {
-	forageStore = localforage.createInstance({
+	public forageStore = localforage.createInstance({
 		name: 'WordWise',
 	});
 
-	async getLog() {
-		const data = await this.forageStore.getItem('text-generations');
+	async getTextGenerationLogs() {
+		const data = await this.forageStore.getItem(StorageKey.TEXT_GENERATIONS);
 
 		const { success, output } = await safeParseAsync(
 			object({
-				data: array(TextGenerationLoggingsSchema),
+				data: array(TextGenerationLogSchema),
 			}),
 			data,
 		);
@@ -26,35 +30,38 @@ export class ForageStorage {
 		return success ? output.data : [];
 	}
 
-	async addLog(log: TextGenerationLoggings) {
-		const data = await this.forageStore.getItem('text-generations');
+	async addTextGenerationLog(log: TextGenerationLog) {
+		const data = await this.forageStore.getItem(StorageKey.TEXT_GENERATIONS);
 
 		const { success, output } = await safeParseAsync(
 			object({
-				data: array(TextGenerationLoggingsSchema),
+				data: array(TextGenerationLogSchema),
 			}),
 			data,
 		);
 
 		if (!success) {
-			await this.forageStore.setItem('text-generations', {
+			await this.forageStore.setItem(StorageKey.TEXT_GENERATIONS, {
 				data: [log],
 			});
 			return;
 		}
 
-		const result = await safeParseAsync(array(TextGenerationLoggingsSchema), [
+		const result = await safeParseAsync(array(TextGenerationLogSchema), [
 			...output.data,
 			log,
 		]);
 
 		if (!result.success) return;
 
-		await this.forageStore.setItem('text-generations', {
+		await this.forageStore.setItem(StorageKey.TEXT_GENERATIONS, {
 			data: result.output,
 		});
 	}
 
+	/**
+	 * Get the specified provider's model list from the storage
+	 */
 	async getModels(provider: APIProvider) {
 		const data = await this.forageStore.getItem(`${provider}-models`);
 

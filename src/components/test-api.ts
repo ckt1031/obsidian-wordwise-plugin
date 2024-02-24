@@ -1,5 +1,4 @@
 import WordWisePlugin from '@/main';
-import { PluginSettings } from '@/types';
 import { callTextAPI } from '@/utils/call-api';
 import { log } from '@/utils/logging';
 import { Notice, TextComponent, setIcon, setTooltip } from 'obsidian';
@@ -7,32 +6,27 @@ import { Notice, TextComponent, setIcon, setTooltip } from 'obsidian';
 type Props = {
 	text: TextComponent;
 	plugin: WordWisePlugin;
-	settings: PluginSettings;
-};
-
-// Function to create a new hider element
-const createHiderElement = (text: TextComponent) => {
-	// Insert a new button element before the text input element
-	return text.inputEl.insertAdjacentElement(
-		'beforebegin',
-		document.createElement('button'),
-	);
 };
 
 // Main function to wrap the password component
-export const wrapAPITestComponent = ({ text, settings, plugin }: Props) => {
+export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 	// Create a new hider element
-	const hider = createHiderElement(text);
+	const button = text.inputEl.insertAdjacentElement(
+		'beforebegin',
+		document.createElement('button'),
+	) as HTMLElement;
 
-	if (!hider) return;
+	if (!button) return;
 
-	setTooltip(hider as HTMLElement, 'Test API');
+	setTooltip(button, 'Test API');
 
 	// Set the initial icon for the hider element
-	setIcon(hider as HTMLElement, 'check-circle-2');
+	setIcon(button, 'check-circle-2');
 
 	// Add a click event listener to the hider element
-	hider.addEventListener('click', async () => {
+	button.addEventListener('click', async () => {
+		const { settings } = plugin;
+
 		try {
 			const result = await callTextAPI({
 				plugin,

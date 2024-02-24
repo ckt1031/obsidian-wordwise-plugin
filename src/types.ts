@@ -113,7 +113,7 @@ export interface ProviderTextAPIProps extends CallTextAPIProps {
 	customAiModel: string;
 }
 
-export const TextGenerationLoggingsSchema = object({
+export const TextGenerationLogSchema = object({
 	by: string(),
 	model: string(),
 	provider: enum_(APIProvider),
@@ -125,6 +125,4 @@ export const TextGenerationLoggingsSchema = object({
 	generatedText: string(),
 });
 
-export type TextGenerationLoggings = Output<
-	typeof TextGenerationLoggingsSchema
->;
+export type TextGenerationLog = Output<typeof TextGenerationLogSchema>;

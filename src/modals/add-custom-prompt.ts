@@ -4,10 +4,10 @@ import { Modal, Notice, Setting } from 'obsidian';
 import type WordWisePlugin from '@/main';
 
 export default class AddCustomPromptModal extends Modal {
-	name: string;
-	data: string;
-	isEdit: boolean;
-	plugin: WordWisePlugin;
+	private name: string;
+	private data: string;
+	private readonly isEdit: boolean;
+	private readonly plugin: WordWisePlugin;
 
 	// Action sync function or async function
 	constructor(

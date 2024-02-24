@@ -1,17 +1,16 @@
-import { App, type Editor, Notice } from 'obsidian';
+import { type Editor, Notice } from 'obsidian';
 
 import Mustache from 'mustache';
 import { CommandActions, CommandNames } from './config';
 import WordWisePlugin from './main';
 import AskForInstructionModal from './modals/ask-for-instruction';
 import { getCommands } from './prompts';
-import { TextGenerationLoggings } from './types';
+import { TextGenerationLog } from './types';
 import { callTextAPI } from './utils/call-api';
 import { log } from './utils/logging';
 import { ForageStorage } from './utils/storage';
 
 export async function runCommand(
-	app: App,
 	editor: Editor,
 	plugin: WordWisePlugin,
 	command: CommandNames | string,
@@ -41,7 +40,7 @@ export async function runCommand(
 		let instructions = '';
 
 		if (actionData.action === CommandActions.CustomInstructions) {
-			const modal = new AskForInstructionModal(app);
+			const modal = new AskForInstructionModal(plugin);
 			modal.open();
 			instructions = await modal.promise;
 			if (!instructions || instructions === '') return;
@@ -75,7 +74,7 @@ export async function runCommand(
 			return;
 		}
 
-		const loggingBody: TextGenerationLoggings = {
+		const loggingBody: TextGenerationLog = {
 			by: command,
 			model,
 			generatedAt: new Date().toISOString(),
@@ -87,7 +86,9 @@ export async function runCommand(
 			customInstruction: instructions,
 		};
 
-		await new ForageStorage().addLog(loggingBody);
+		if (plugin.settings.enableGenerationLogging) {
+			await new ForageStorage().addTextGenerationLog(loggingBody);
+		}
 
 		editor.replaceSelection(result);
 

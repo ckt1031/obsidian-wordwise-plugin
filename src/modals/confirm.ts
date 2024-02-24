@@ -1,19 +1,18 @@
-import type { App } from 'obsidian';
+import WordWisePlugin from '@/main';
 import { Modal, Setting } from 'obsidian';
 
 export default class ConfirmModal extends Modal {
-	resolve: (value: boolean | PromiseLike<boolean>) => void;
-	reject: (reason?: unknown) => void;
+	// Promise Properties
+	private resolve: (value: boolean | PromiseLike<boolean>) => void;
 	promise: Promise<boolean>;
 
 	// Action sync function or async function
-	constructor(app: App) {
-		super(app);
+	constructor(plugin: WordWisePlugin) {
+		super(plugin.app);
 
 		// Create a new Promise that will be resolved when the form is submitted
-		this.promise = new Promise((resolve, reject) => {
+		this.promise = new Promise((resolve) => {
 			this.resolve = resolve;
-			this.reject = reject;
 		});
 	}
 

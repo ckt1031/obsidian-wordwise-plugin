@@ -1,12 +1,12 @@
 import WordWisePlugin from '@/main';
 import { exportQrCodeUri } from '@/utils/settings-sharing';
-import { App, Modal, Notice } from 'obsidian';
+import { Modal, Notice } from 'obsidian';
 
 export class ExportSettingsQrCodeModal extends Modal {
 	plugin: WordWisePlugin;
 
-	constructor(app: App, plugin: WordWisePlugin) {
-		super(app);
+	constructor(plugin: WordWisePlugin) {
+		super(plugin.app);
 		this.plugin = plugin;
 	}
 
@@ -50,7 +50,6 @@ export class ExportSettingsQrCodeModal extends Modal {
 	}
 
 	onClose() {
-		const { contentEl } = this;
-		contentEl.empty();
+		this.contentEl.empty();
 	}
 }

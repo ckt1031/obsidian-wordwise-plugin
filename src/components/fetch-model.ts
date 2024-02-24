@@ -17,26 +17,26 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 	const fetchButton = dropDown.selectEl.insertAdjacentElement(
 		'beforebegin',
 		document.createElement('button'),
-	);
+	) as HTMLElement;
 
 	const resetButton = dropDown.selectEl.insertAdjacentElement(
 		'beforebegin',
 		document.createElement('button'),
-	);
+	) as HTMLElement;
 
 	if (!fetchButton || !resetButton) return;
 
 	// Set the initial icon for the hider element
-	setIcon(fetchButton as HTMLElement, 'list-restart');
-	setIcon(resetButton as HTMLElement, 'list-x');
+	setIcon(fetchButton, 'list-restart');
+	setIcon(resetButton, 'list-x');
 
-	setTooltip(fetchButton as HTMLElement, 'Fetch models');
-	setTooltip(resetButton as HTMLElement, 'Reset models (use with caution)');
+	setTooltip(fetchButton, 'Fetch models');
+	setTooltip(resetButton, 'Reset models (use with caution)');
 
 	const { setModels } = new ForageStorage();
 
 	resetButton.addEventListener('click', async () => {
-		const confirmModal = new ConfirmModal(plugin.app);
+		const confirmModal = new ConfirmModal(plugin);
 
 		confirmModal.open();
 

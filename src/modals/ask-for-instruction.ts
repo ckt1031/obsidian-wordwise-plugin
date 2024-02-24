@@ -1,15 +1,17 @@
-import type { App, TextAreaComponent } from 'obsidian';
-import { Modal, Notice, Setting } from 'obsidian';
+import WordWisePlugin from '@/main';
+import type { TextAreaComponent } from 'obsidian';
+import { Modal, Setting } from 'obsidian';
 
 export default class AskForInstructionModal extends Modal {
-	instruction: string;
-	declare app: App;
-	resolve: (value: string | PromiseLike<string>) => void;
-	reject: (reason?: unknown) => void;
+	private instruction: string;
+
+	// Promise Properties
+	private resolve: (value: string | PromiseLike<string>) => void;
+	private reject: (reason?: unknown) => void;
 	promise: Promise<string>;
 
-	constructor(app: App) {
-		super(app);
+	constructor(plugin: WordWisePlugin) {
+		super(plugin.app);
 		this.instruction = '';
 
 		// Create a new Promise that will be resolved when the form is submitted
@@ -21,7 +23,6 @@ export default class AskForInstructionModal extends Modal {
 
 	async submitForm(): Promise<void> {
 		if (this.instruction === '') {
-			new Notice('Please fill out all fields');
 			this.reject('Instruction field is empty');
 			return;
 		}

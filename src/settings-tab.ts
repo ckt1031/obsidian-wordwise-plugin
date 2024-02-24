@@ -3,11 +3,11 @@ import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
 import { wrapFetchModelComponent } from './components/fetch-model';
 import { wrapPasswordComponent } from './components/password';
-import { ExportSettingsQrCodeModal } from './components/qr-code';
 import { wrapAPITestComponent } from './components/test-api';
 import { APIProvider, settingTabProviderConfiguations } from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
+import { ExportSettingsQrCodeModal } from './modals/qr-code';
 import { ForageStorage } from './utils/storage';
 
 export class SettingTab extends PluginSettingTab {
@@ -58,11 +58,7 @@ export class SettingTab extends PluginSettingTab {
 					.setDesc(`API Key for the ${provider} API`)
 					.addText((text) => {
 						wrapPasswordComponent(text);
-						wrapAPITestComponent({
-							text,
-							settings,
-							plugin,
-						});
+						wrapAPITestComponent({ text, plugin });
 						text
 							.setPlaceholder(`Enter your ${provider} API Key`)
 							.setValue(settings.aiProviderConfig[provider].apiKey)
@@ -241,7 +237,7 @@ export class SettingTab extends PluginSettingTab {
 			.setDesc('Export settings as a QR code.')
 			.addButton((button) => {
 				button.setButtonText('Export').onClick(async () => {
-					new ExportSettingsQrCodeModal(this.app, this.plugin).open();
+					new ExportSettingsQrCodeModal(this.plugin).open();
 				});
 			});
 

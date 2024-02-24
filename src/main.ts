@@ -36,8 +36,7 @@ export default class WordWisePlugin extends Plugin {
 				id: slugify(command.name),
 				name: command.name,
 				icon: command.icon ? iconName : AiIcon,
-				editorCallback: (editor) =>
-					runCommand(this.app, editor, this, command.name),
+				editorCallback: (editor) => runCommand(editor, this, command.name),
 			});
 		}
 
@@ -60,9 +59,7 @@ export default class WordWisePlugin extends Plugin {
 							item
 								.setTitle(command.name)
 								.setIcon(command.icon ? iconName : AiIcon)
-								.onClick(() =>
-									runCommand(this.app, editor, this, command.name),
-								);
+								.onClick(() => runCommand(editor, this, command.name));
 						});
 					}
 				});
