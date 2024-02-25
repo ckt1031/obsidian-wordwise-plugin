@@ -114,6 +114,8 @@ export interface ProviderTextAPIProps extends CallTextAPIProps {
 }
 
 export const TextGenerationLogSchema = object({
+	id: string(),
+
 	by: string(),
 	model: string(),
 	provider: enum_(APIProvider),

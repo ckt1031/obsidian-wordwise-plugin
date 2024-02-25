@@ -1,20 +1,25 @@
 import { Modal, Notice } from 'obsidian';
 
+import { CommandNames } from '@/config';
 import type WordWisePlugin from '@/main';
 import { TextGenerationLog } from '@/types';
 import { ForageStorage } from '@/utils/storage';
+import dayjs from 'dayjs';
 
-export default class AddCustomPromptModal extends Modal {
+export default class TextGenerationLogModal extends Modal {
 	private enabled: boolean;
 	private logs: TextGenerationLog[];
 	private page = 1;
 	private perPage = 10;
 	private readonly plugin: WordWisePlugin;
 
+	private forageStore: ForageStorage;
+
 	// Action sync function or async function
 	constructor(plugin: WordWisePlugin) {
 		super(plugin.app);
 		this.plugin = plugin;
+		this.forageStore = new ForageStorage();
 	}
 
 	// Called when the modal is opened
@@ -30,41 +35,112 @@ export default class AddCustomPromptModal extends Modal {
 		}
 
 		// Get logs from storage
-		this.logs = await new ForageStorage().getTextGenerationLogs();
+		const logs = await this.forageStore.getTextGenerationLogs();
+
+		// Sort logs by date
+		this.logs = logs.sort(
+			(a, b) =>
+				new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime(),
+		);
+
+		this.logs = logs;
 	}
 
-	onOpen() {
-		const { contentEl } = this;
+	showLog(id: string) {
+		const { titleEl, contentEl } = this;
+		const log = this.logs.find((l) => l.id === id);
 
-		contentEl.createEl('h2', { text: 'Text Generation Logs' });
-
-		if (!this.enabled) {
-			contentEl.createEl('p', {
-				text: 'Text generation logging is disabled',
-			});
+		if (!log) {
+			new Notice('Log not found');
 			return;
 		}
 
-		if (this.logs.length === 0) {
-			contentEl.createEl('p', {
-				text: 'No logs found',
+		contentEl.empty();
+
+		titleEl.setText(
+			`Log: ${dayjs(log.generatedAt).format('YYYY-MM-DD HH:mm:ss')}`,
+		);
+
+		// Add delete button
+		const deleteButton = contentEl.createEl('button', { text: 'Delete Log' });
+
+		deleteButton.onclick = async () => {
+			await this.forageStore.deleteSingleTextGenerationLog(id);
+			this.logs = this.logs.filter((l) => l.id !== id);
+			new Notice('Log deleted');
+			this.showList();
+		};
+
+		contentEl.createEl('p', { text: `Model: ${log.model}` });
+		contentEl.createEl('p', { text: `Provider: ${log.provider}` });
+		contentEl.createEl('p', { text: `Command Name: ${log.by}` });
+
+		// Show Text Custom Instruction if it exists
+		if (log.by === CommandNames.CustomInstructions && log.customInstruction) {
+			contentEl.createEl('textarea', {
+				text: `Custom Instruction: ${log.customInstruction}`,
+				cls: 'modal-text-area',
 			});
-			return;
 		}
+
+		contentEl.createEl('h4', { text: 'Original Text' });
+
+		contentEl.createEl('textarea', {
+			text: log.orginalText,
+			cls: 'modal-text-area',
+		});
+
+		contentEl.createEl('h4', { text: 'Generated Text' });
+
+		contentEl.createEl('textarea', {
+			text: log.generatedText,
+			cls: 'modal-text-area',
+		});
+	}
+
+	showList() {
+		const { titleEl, contentEl } = this;
+
+		this.contentEl.empty();
+
+		titleEl.setText('Text Generation Logs');
 
 		const displayingLogs = this.logs.slice(
 			(this.page - 1) * this.perPage,
 			this.page * this.perPage,
 		);
 
+		// create a scrollable container
+		const scrollContainer = contentEl.createDiv('scroll-container');
+
+		// create a list of logs
 		for (const log of displayingLogs) {
-			contentEl.createEl('p', {
-				text: log.generatedAt,
-			});
+			scrollContainer.createEl('p', {
+				text: dayjs(log.generatedAt).format('YYYY-MM-DD HH:mm:ss'),
+				cls: 'log-item',
+			}).onclick = () => this.showLog(log.id);
 		}
 	}
 
-	async onClose() {
+	onOpen() {
+		const { contentEl } = this;
+
+		if (!this.enabled) {
+			new Notice('Text generation logging is disabled');
+			contentEl.empty();
+			return;
+		}
+
+		if (this.logs.length === 0) {
+			contentEl.empty();
+			new Notice('No logs found');
+			return;
+		}
+
+		this.showList();
+	}
+
+	onClose() {
 		this.contentEl.empty();
 	}
 }

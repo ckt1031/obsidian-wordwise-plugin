@@ -1,10 +1,11 @@
-import { Notice, Plugin, addIcon } from 'obsidian';
+import { Editor, Notice, Plugin, addIcon } from 'obsidian';
 
 import { mergeDeepRight } from 'rambda';
 import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
 import { DEFAULT_SETTINGS } from './config';
 import AiIcon from './icons/ai.svg';
+import TextGenerationLogModal from './modals/generation-logs';
 import { getCommands } from './prompts';
 import { runCommand } from './run-command';
 import { SettingTab } from './settings-tab';
@@ -37,6 +38,27 @@ export default class WordWisePlugin extends Plugin {
 				name: command.name,
 				icon: command.icon ? iconName : AiIcon,
 				editorCallback: (editor) => runCommand(editor, this, command.name),
+			});
+		}
+
+		const commands = [
+			{
+				name: 'Check Text Generation Logs',
+				onClick: async (_editor: Editor) => {
+					const modal = new TextGenerationLogModal(this);
+
+					await modal.initStates();
+
+					modal.open();
+				},
+			},
+		];
+
+		for (const command of commands) {
+			this.addCommand({
+				id: slugify(command.name),
+				name: command.name,
+				editorCallback: (editor) => command.onClick(editor),
 			});
 		}
 

@@ -1,13 +1,24 @@
 .modal-text-area {
 	width: 100%;
+	min-height: 100px;
 	max-width: 400px;
-	min-height: 18vh;
+	max-height: 200px;
 }
 
 .qrcode-img {
-  width: 300px;
-  height: 300px;
-  
-  /* Padding top 5px */
-  padding-top: 5px;
+	width: 300px;
+	height: 300px;
+
+	/* Padding top 5px */
+	padding-top: 5px;
+}
+
+.scroll-container {
+	max-height: 300px;
+	overflow-y: auto;
+}
+
+.log-item {
+	cursor: pointer;
+	margin: 5px 0;
 }

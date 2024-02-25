@@ -27,7 +27,7 @@ export function getCommands(settings: PluginSettings) {
 			return {
 				...prompt,
 				action,
-				data: `${prompt.data}\n\n${basePrompt}`,
+				data: `${prompt.data}${basePrompt}`,
 			};
 		},
 	);

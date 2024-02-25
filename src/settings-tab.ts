@@ -233,6 +233,20 @@ export class SettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
+			.setName('Enable text generation log')
+			.setDesc(
+				'Enable text generation log, which will log all the generated text to the storage',
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(settings.enableGenerationLogging)
+					.onChange(async (value) => {
+						settings.enableGenerationLogging = value;
+						await plugin.saveSettings();
+					}),
+			);
+
+		new Setting(containerEl)
 			.setName('Export settings')
 			.setDesc('Export settings as a QR code.')
 			.addButton((button) => {

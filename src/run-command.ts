@@ -1,6 +1,7 @@
 import { type Editor, Notice } from 'obsidian';
 
 import Mustache from 'mustache';
+import { nanoid } from 'nanoid';
 import { CommandActions, CommandNames } from './config';
 import WordWisePlugin from './main';
 import AskForInstructionModal from './modals/ask-for-instruction';
@@ -75,6 +76,7 @@ export async function runCommand(
 		}
 
 		const loggingBody: TextGenerationLog = {
+			id: nanoid(),
 			by: command,
 			model,
 			generatedAt: new Date().toISOString(),
