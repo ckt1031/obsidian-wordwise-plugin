@@ -9,8 +9,6 @@ import dayjs from 'dayjs';
 export default class TextGenerationLogModal extends Modal {
 	private enabled: boolean;
 	private logs: TextGenerationLog[];
-	private page = 1;
-	private perPage = 10;
 	private readonly plugin: WordWisePlugin;
 
 	private forageStore: ForageStorage;
@@ -78,8 +76,9 @@ export default class TextGenerationLogModal extends Modal {
 		// Show Text Custom Instruction if it exists
 		if (log.by === CommandNames.CustomInstructions && log.customInstruction) {
 			contentEl.createEl('textarea', {
-				text: `Custom Instruction: ${log.customInstruction}`,
+				text: log.customInstruction,
 				cls: 'modal-text-area',
+				attr: { readonly: true },
 			});
 		}
 
@@ -88,6 +87,7 @@ export default class TextGenerationLogModal extends Modal {
 		contentEl.createEl('textarea', {
 			text: log.orginalText,
 			cls: 'modal-text-area',
+			attr: { readonly: true },
 		});
 
 		contentEl.createEl('h4', { text: 'Generated Text' });
@@ -95,6 +95,7 @@ export default class TextGenerationLogModal extends Modal {
 		contentEl.createEl('textarea', {
 			text: log.generatedText,
 			cls: 'modal-text-area',
+			attr: { readonly: true },
 		});
 	}
 
@@ -105,10 +106,12 @@ export default class TextGenerationLogModal extends Modal {
 
 		titleEl.setText('Text Generation Logs');
 
-		const displayingLogs = this.logs.slice(
-			(this.page - 1) * this.perPage,
-			this.page * this.perPage,
-		);
+		const displayingLogs = this.logs;
+
+		// .slice(
+		// 	(this.page - 1) * this.perPage,
+		// 	this.page * this.perPage,
+		// );
 
 		// create a scrollable container
 		const scrollContainer = contentEl.createDiv('scroll-container');
