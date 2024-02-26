@@ -71,7 +71,7 @@ export const extraPrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] = [
 ## Custom Instructions
 
 \`\`\`{{instructions}}\`\`\`
-		`,
+`,
 	},
 ];
 
@@ -86,6 +86,7 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 
 - Improve writing of the text.
 - Remain the tone.
+- Fix the factual inaccuracy.
 - Reduce duplicated ideas and wordings, keep writing simple and concise.
 - Make the text clearer, easier to understand, and well put together by correcting grammar, spelling, choosing the most suitable punctuation marks, and selecting the best tone and style based on the topic and purpose of the text.
 - Choose simple words and phrases to improve the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
@@ -152,7 +153,7 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			data: `
 ## Tasks
 
-- Aim to reformulate the sentences, changing the structure and using synonyms where appropriate, without distorting the meaning of the text.
+- Reformulate the sentences, changing the structure and using synonyms where appropriate, without distorting the meaning of the text.
 - Avoid using the same phrases or terminology as the original text unless necessary. The paraphrased text should be distinct yet convey the same information.
 - Ensure that the paraphrased version is clear, concise, and maintains the tone appropriate to the context of the original text.
 - Do not add new information or your own opinion, but focus on reflecting the ideas presented in the source material.

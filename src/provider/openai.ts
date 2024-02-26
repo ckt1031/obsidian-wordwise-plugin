@@ -95,6 +95,15 @@ export async function handleTextOpenAI({
 	const modelName =
 		customAiModel.length > 0 ? customAiModel : providerSettings.model;
 
+	let frequency_penalty = settings.advancedSettings
+		? settings.frequencyPenalty
+		: 0.0;
+
+	if (settings.aiProvider === APIProvider.PerplexityAI) {
+		// Set to 1.0 if frequency penalty is 0
+		frequency_penalty = frequency_penalty === 0 ? 1.0 : frequency_penalty;
+	}
+
 	let body:
 		| ChatCompletionCreateParams
 		| Omit<ChatCompletionCreateParams, 'model'> = {
@@ -105,9 +114,7 @@ export async function handleTextOpenAI({
 		// presence_penalty: settings.advancedSettings
 		// 	? settings.presencePenalty
 		// 	: 0.0,
-		frequency_penalty: settings.advancedSettings
-			? settings.frequencyPenalty
-			: 0.0,
+		frequency_penalty,
 		messages: [
 			{
 				role: 'user',
@@ -140,6 +147,9 @@ export async function handleTextOpenAI({
 			break;
 		}
 		default:
+			if (settings.aiProvider === APIProvider.PerplexityAI) {
+				path = path.replace('/v1', '');
+			}
 			headers = {
 				...headers,
 				Authorization: `Bearer ${providerSettings.apiKey}`,

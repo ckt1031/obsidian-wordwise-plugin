@@ -54,6 +54,26 @@ export const COHERE_MODELS = [
 ];
 
 /**
+ * Reference: https://docs.perplexity.ai/docs/model-cards
+ * Updated: 2024-02-26
+ */
+export const PERPLEXITY_MODELS = [
+	'sonar-small-chat',
+	'sonar-medium-chat',
+	'sonar-small-online',
+	'sonar-medium-online',
+	'llama-2-70b-chat',
+	'codellama-34b-instruct',
+	'codellama-70b-instruct',
+	'mistral-7b-instruct',
+	'mixtral-8x7b-instruct',
+	'pplx-7b-chat',
+	'pplx-7b-online',
+	'pplx-70b-chat',
+	'pplx-70b-online',
+];
+
+/**
  * Reference: https://openrouter.ai/docs#quick-start
  * Updated: 2024-02-21
  *
@@ -88,18 +108,20 @@ export const OPENROUTER_MODELS: OpenAIModels['data'] = [
 export const GOOGLE_AI_MODELS = ['gemini-pro', 'gemini-pro-vision'];
 
 export enum APIProvider {
-	/** https://openai.com/ */
+	/** https://openai.com */
 	OpenAI = 'OpenAI',
 	/** https://azure.microsoft.com/en-us/products/ai-services/openai-service */
 	AzureOpenAI = 'Azure OpenAI',
-	/** https://deepmind.google/technologies/gemini/ */
+	/** https://deepmind.google/technologies/gemini */
 	GoogleGemini = 'Google Gemini',
-	/** https://www.anthropic.com/ */
+	/** https://www.anthropic.com */
 	Anthropic = 'Anthropic',
-	/** https://cohere.com/ */
+	/** https://cohere.com */
 	Cohere = 'Cohere',
-	/** https://openrouter.ai/ */
+	/** https://openrouter.ai */
 	OpenRouter = 'OpenRouter',
+	/** https://docs.perplexity.ai */
+	PerplexityAI = 'Perplexity',
 	/** OpenAI Compatible API, such as OneAPI and FastGPT */
 	Custom = 'Custom (OpenAI Compatible)',
 }
@@ -135,6 +157,7 @@ export const DEFAULT_HOST = {
 	[APIProvider.Anthropic]: 'https://api.anthropic.com',
 	[APIProvider.Cohere]: 'https://api.cohere.ai',
 	[APIProvider.OpenRouter]: 'https://openrouter.ai',
+	[APIProvider.PerplexityAI]: 'https://api.perplexity.ai',
 	[APIProvider.Custom]: '',
 };
 
@@ -173,6 +196,11 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.OpenRouter],
 			model: 'openai/gpt-3.5-turbo',
+		},
+		[APIProvider.PerplexityAI]: {
+			apiKey: '',
+			baseUrl: DEFAULT_HOST[APIProvider.PerplexityAI],
+			model: '',
 		},
 		[APIProvider.Custom]: {
 			apiKey: '',
@@ -231,6 +259,12 @@ export const settingTabProviderConfiguations = {
 		docs: 'https://openrouter.ai/docs',
 		defaultModel: OPENROUTER_MODELS[0],
 		models: OPENROUTER_MODELS,
+	},
+	[APIProvider.PerplexityAI]: {
+		defaultHost: DEFAULT_HOST[APIProvider.PerplexityAI],
+		docs: 'https://docs.perplexity.ai',
+		defaultModel: '',
+		models: PERPLEXITY_MODELS,
 	},
 	[APIProvider.Custom]: {
 		defaultHost: '',

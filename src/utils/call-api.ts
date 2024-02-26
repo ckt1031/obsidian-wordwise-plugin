@@ -29,6 +29,7 @@ export async function callTextAPI({
 		apiProvider === APIProvider.OpenAI ||
 		apiProvider === APIProvider.OpenRouter ||
 		apiProvider === APIProvider.AzureOpenAI ||
+		apiProvider === APIProvider.PerplexityAI ||
 		apiProvider === APIProvider.Custom
 	) {
 		return handleTextOpenAI({ plugin, userMessage, customAiModel });

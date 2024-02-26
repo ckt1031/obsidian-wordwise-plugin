@@ -70,6 +70,11 @@ export const PluginSettingsSchema = object({
 			baseUrl: string(),
 			model: string(),
 		}),
+		[APIProvider.PerplexityAI]: object({
+			apiKey: string(),
+			baseUrl: string(),
+			model: string(),
+		}),
 		[APIProvider.Custom]: object({
 			apiKey: string(),
 			baseUrl: string(),
