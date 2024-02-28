@@ -29,7 +29,7 @@ export const exportQrCodeUri = async (
 	const vault = encodeURIComponent(currentVaultName);
 	const data = encodeURIComponent(utf8_to_b64(JSON.stringify(plugin.settings)));
 	const rawUri = `obsidian://${plugin.manifest.id}?func=import&version=${plugin.manifest.version}&vault=${vault}&data=${data}`;
-	const imgUri = await QRCode.toDataURL(rawUri);
+	const imgUri = await QRCode.toDataURL(rawUri).catch(() => '');
 	return {
 		rawUri,
 		imgUri,

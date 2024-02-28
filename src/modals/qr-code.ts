@@ -37,16 +37,18 @@ export class ExportSettingsQrCodeModal extends Modal {
 			},
 		);
 
-		const div3 = contentEl.createDiv();
-		div3.createEl(
-			'img',
-			{
-				cls: 'qrcode-img',
-			},
-			async (el) => {
-				el.src = imgUri;
-			},
-		);
+		if (imgUri !== '') {
+			const div3 = contentEl.createDiv();
+			div3.createEl(
+				'img',
+				{
+					cls: 'qrcode-img',
+				},
+				async (el) => {
+					el.src = imgUri;
+				},
+			);
+		}
 	}
 
 	onClose() {
