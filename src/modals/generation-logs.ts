@@ -59,15 +59,32 @@ export default class TextGenerationLogModal extends Modal {
 			`Log: ${dayjs(log.generatedAt).format('YYYY-MM-DD HH:mm:ss')}`,
 		);
 
+		// Add a button to go back to the list
+		const backButton = contentEl.createEl('button', { text: 'Back to List' });
+
+		backButton.onclick = () => this.showList();
+
 		// Add delete button
-		const deleteButton = contentEl.createEl('button', { text: 'Delete Log' });
+		const deleteButton = contentEl.createEl('button', {
+			text: 'Delete Log',
+			cls: 'log-delet-button',
+		});
 
 		deleteButton.onclick = async () => {
+			const confirmText = 'Are you sure?';
+
+			if (deleteButton.textContent !== confirmText) {
+				deleteButton.textContent = confirmText;
+				return;
+			}
+
 			await this.forageStore.deleteSingleTextGenerationLog(id);
 			this.logs = this.logs.filter((l) => l.id !== id);
 			new Notice('Log deleted');
 			this.showList();
 		};
+
+		// Make text in <code> inside p tag
 
 		contentEl.createEl('p', { text: `Model: ${log.model}` });
 		contentEl.createEl('p', { text: `Provider: ${log.provider}` });
