@@ -24,14 +24,19 @@ const xorCipher = (input: string, key: string): string =>
 const deobfuscateConfig = (
 	obfuscatedSettings: ObfuscatedPluginSettings | undefined,
 ): PluginSettings | null => {
-	if (!obfuscatedSettings?.z) {
+	try {
+		if (!obfuscatedSettings?.z) {
+			return null;
+		}
+
+		let deobfuscatedConfig = reverseString(obfuscatedSettings.z);
+		deobfuscatedConfig = xorCipher(deobfuscatedConfig, SECRET_KEY);
+
+		return JSON.parse(deobfuscatedConfig) as PluginSettings;
+	} catch (e) {
+		console.error(e);
 		return null;
 	}
-
-	let deobfuscatedConfig = reverseString(obfuscatedSettings.z);
-	deobfuscatedConfig = xorCipher(deobfuscatedConfig, SECRET_KEY);
-
-	return JSON.parse(deobfuscatedConfig) as PluginSettings;
 };
 
 const obfuscateConfig = (

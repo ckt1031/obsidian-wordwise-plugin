@@ -16,7 +16,6 @@ const context = await esbuild.context({
 	sourcemap: prod ? false : 'inline',
 	treeShaking: true,
 	legalComments: 'none',
-	// WSL: /mnt/d/cktsu/Documents/Obsidian/Test/.obsidian/plugins/ai-plugin/main.js
 	outfile: 'main.js',
 	loader: {
 		'.svg': 'text',
