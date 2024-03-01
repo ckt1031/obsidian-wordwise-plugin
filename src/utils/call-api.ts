@@ -8,21 +8,25 @@ import { log } from './logging';
 
 export async function callTextAPI({
 	plugin,
-	userMessage,
+	messages,
 }: CallTextAPIProps): Promise<string | null | undefined> {
 	const { settings } = plugin;
 
 	const apiProvider = settings.aiProvider;
 
-	let customAiModel = '';
+	let model = settings.aiProviderConfig[settings.aiProvider].model;
 
 	if (settings.customAiModel.length > 0 && settings.advancedSettings) {
-		customAiModel = settings.customAiModel;
+		model = settings.customAiModel;
 	}
 
 	log(
 		plugin,
-		`Sending request to ${apiProvider} with prompt:\n\n${userMessage}`,
+		`Sending request to ${apiProvider} with prompt in JSON:\n\n${JSON.stringify(
+			messages,
+			null,
+			2,
+		)}`,
 	);
 
 	if (
@@ -32,19 +36,19 @@ export async function callTextAPI({
 		apiProvider === APIProvider.PerplexityAI ||
 		apiProvider === APIProvider.Custom
 	) {
-		return handleTextOpenAI({ plugin, userMessage, customAiModel });
+		return handleTextOpenAI({ plugin, messages, model });
 	}
 
 	if (apiProvider === APIProvider.Anthropic) {
-		return handleTextAnthropicAI({ plugin, userMessage, customAiModel });
+		return handleTextAnthropicAI({ plugin, messages, model });
 	}
 
 	if (apiProvider === APIProvider.GoogleGemini) {
-		return handleTextGoogleGenAI({ plugin, userMessage, customAiModel });
+		return handleTextGoogleGenAI({ plugin, messages, model });
 	}
 
 	if (apiProvider === APIProvider.Cohere) {
-		return handleTextCohere({ plugin, userMessage, customAiModel });
+		return handleTextCohere({ plugin, messages, model });
 	}
 
 	throw new Error(`Unknown API Provider: ${apiProvider}`);

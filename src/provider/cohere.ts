@@ -7,19 +7,16 @@ import snakecaseKeys from 'snakecase-keys';
 
 export async function handleTextCohere({
 	plugin,
-	userMessage,
-	customAiModel = '',
+	messages,
+	model,
 }: ProviderTextAPIProps) {
 	const { settings } = plugin;
 
 	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 
-	const modelName =
-		customAiModel.length > 0 ? customAiModel : providerSettings.model;
-
 	const body: GenerateRequest = {
-		prompt: userMessage,
-		model: modelName,
+		prompt: `${messages.system}\n\n${messages.user}`,
+		model,
 		numGenerations: 1,
 		temperature: settings.advancedSettings ? settings.temperature : 0.5,
 		maxTokens: settings.advancedSettings ? settings.maxTokens : 2000,

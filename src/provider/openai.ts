@@ -70,8 +70,8 @@ export async function getOpenAIModels({
 
 export async function handleTextOpenAI({
 	plugin,
-	userMessage,
-	customAiModel = '',
+	messages,
+	model,
 }: ProviderTextAPIProps) {
 	const { settings } = plugin;
 
@@ -92,9 +92,6 @@ export async function handleTextOpenAI({
 		}
 	}
 
-	const modelName =
-		customAiModel.length > 0 ? customAiModel : providerSettings.model;
-
 	let frequency_penalty = settings.advancedSettings
 		? settings.frequencyPenalty
 		: 0.0;
@@ -108,7 +105,7 @@ export async function handleTextOpenAI({
 		| ChatCompletionCreateParams
 		| Omit<ChatCompletionCreateParams, 'model'> = {
 		stream: false,
-		model: modelName,
+		model,
 		temperature: settings.advancedSettings ? settings.temperature : 0.5,
 		max_tokens: settings.advancedSettings ? settings.maxTokens : 2000,
 		// presence_penalty: settings.advancedSettings
@@ -116,9 +113,17 @@ export async function handleTextOpenAI({
 		// 	: 0.0,
 		frequency_penalty,
 		messages: [
+			...(messages.system.length > 0
+				? [
+						{
+							role: 'system' as const,
+							content: messages.system,
+						},
+				  ]
+				: []),
 			{
-				role: 'user',
-				content: userMessage,
+				role: 'user' as const,
+				content: messages.user,
 			},
 		],
 	};
@@ -140,7 +145,7 @@ export async function handleTextOpenAI({
 			break;
 		case APIProvider.AzureOpenAI: {
 			const providerSettings = settings.aiProviderConfig[settings.aiProvider];
-			path = `/openai/deployments/${modelName}/chat/completions?api-version=${providerSettings.apiVersion}`;
+			path = `/openai/deployments/${model}/chat/completions?api-version=${providerSettings.apiVersion}`;
 			// Remove model from body
 			const { model: _, ...newObj } = body;
 			body = newObj;

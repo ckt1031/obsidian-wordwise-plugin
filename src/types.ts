@@ -111,11 +111,22 @@ export type ObfuscatedPluginSettings = Output<
 
 export interface CallTextAPIProps {
 	plugin: WordWisePlugin;
-	userMessage: string;
+	messages: {
+		system: string;
+		user: string;
+	};
 }
 
 export interface ProviderTextAPIProps extends CallTextAPIProps {
-	customAiModel: string;
+	model: string;
+}
+
+export interface ComandProps {
+	name: string;
+	icon: string | undefined;
+	action: CommandActions;
+	taskPrompt: string;
+	systemPrompt: string;
 }
 
 export const TextGenerationLogSchema = object({

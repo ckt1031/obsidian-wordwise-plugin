@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 import { CommandActions, CommandNames } from './config';
 import WordWisePlugin from './main';
 import AskForInstructionModal from './modals/ask-for-instruction';
-import { getCommands } from './prompts';
+import { getCommands, inputPrompt } from './prompts';
 import { TextGenerationLog } from './types';
 import { callTextAPI } from './utils/call-api';
 import { log } from './utils/logging';
@@ -34,10 +34,6 @@ export async function runCommand(
 			throw new Error(`Could not find command data with name ${command}`);
 		}
 
-		if (!actionData.data) {
-			throw new Error(`Command data with name ${command} has no data`);
-		}
-
 		let instructions = '';
 
 		if (actionData.action === CommandActions.CustomInstructions) {
@@ -58,16 +54,22 @@ export async function runCommand(
 			`Generating text with ${command} (${plugin.settings.aiProvider})...`,
 		);
 
-		const userMessage: string = Mustache.render(actionData.data, {
-			input,
-			instructions,
-		});
+		const userMessage: string = Mustache.render(
+			`${actionData.taskPrompt}\n\n${inputPrompt}`,
+			{
+				input,
+				instructions,
+			},
+		);
 
 		const startTime = Date.now(); // Capture start time
 
 		const result = await callTextAPI({
 			plugin,
-			userMessage,
+			messages: {
+				system: actionData.systemPrompt,
+				user: userMessage,
+			},
 		});
 
 		if (!result) {
@@ -102,7 +104,7 @@ export async function runCommand(
 			`Replaced selection with result: ${result} (Time taken: ${timeUsed}s)`,
 		);
 
-		new Notice('Text generated.');
+		new Notice(`Text generated in ${timeUsed}s`);
 	} catch (error) {
 		if (error instanceof Error) {
 			log(plugin, error);

@@ -9,23 +9,21 @@ import { request } from 'obsidian';
 
 export async function handleTextAnthropicAI({
 	plugin,
-	userMessage,
-	customAiModel = '',
+	messages,
+	model,
 }: ProviderTextAPIProps) {
 	const { settings } = plugin;
 
 	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 
-	const modelName =
-		customAiModel.length > 0 ? customAiModel : providerSettings.model;
-
-	const extraPrompt = `
-Please kindly remember no human conversation here, do not give extra comments outside, response only with modified text WITHOUT === WRAPPER, highly thanks.
-`;
-
 	const body: MessageCreateParams = {
-		messages: [{ role: 'user', content: `${extraPrompt}\n\n${userMessage}` }],
-		model: modelName,
+		messages: [
+			{
+				role: 'user',
+				content: `${messages.system}\n\n${messages.user}`,
+			},
+		],
+		model,
 		stream: false,
 		max_tokens:
 			settings.advancedSettings && settings.maxTokens !== 0

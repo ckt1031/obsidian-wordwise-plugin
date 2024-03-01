@@ -30,7 +30,10 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 		try {
 			const result = await callTextAPI({
 				plugin,
-				userMessage: 'Say word hello only.',
+				messages: {
+					system: '',
+					user: 'Say word hello only.',
+				},
 			});
 
 			log(plugin, result);

@@ -8,10 +8,10 @@ import MakeLongerIcon from './icons/make-longer.svg';
 import MakeShorterIcon from './icons/make-shorter.svg';
 import ParaphraseIcon from './icons/paraphrase.svg';
 import SimplifyIcon from './icons/simplify-text.svg';
-import { type Prompt, PromptSchema } from './types';
+import { ComandProps, type Prompt, PromptSchema } from './types';
 import { type PluginSettings } from './types';
 
-export function getCommands(settings: PluginSettings) {
+export function getCommands(settings: PluginSettings): ComandProps[] {
 	const localCustomPrompts = settings.customPrompts;
 
 	// Add basePromptEnding to all prompts ending
@@ -25,19 +25,22 @@ export function getCommands(settings: PluginSettings) {
 			}
 
 			return {
-				...prompt,
+				name: prompt.name,
+				icon: prompt.icon,
 				action,
-				data: `${prompt.data}${basePrompt}`,
+				taskPrompt: prompt.data,
+				systemPrompt,
 			};
 		},
 	);
 }
 
-export const basePrompt = `
+export const systemPrompt = `
 ## Base Instructions
 
 - Remain headings if given.
 - Change text in the ##Input area, text WRAPPED by ===.
+- This is plain markdown, never encode URLs/characters/symbols or change the structure of the markdown.
 - Keep the meaning the same. If possible, retain the structure of the paragraphs. Ensure the re-written text's word count is near to the original text.
 - Response with the rewritten text only, do not include additional context, explanation, or extra wording, just the re-written text itself.
 - Respond in the same language variety or dialect of the text.
@@ -48,7 +51,9 @@ export const basePrompt = `
 - Do not change location names that does have related languages, such as strange name that you don't know, then don't change them.
 - Preserve code block content if necessary.
 - Do not change URLs or make it encoded because this is markdown.
+`;
 
+export const inputPrompt = `
 ## Input
 
 ===CONTENT-START===
@@ -70,7 +75,7 @@ export const extraPrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] = [
 
 ## Custom Instructions
 
-\`\`\`{{instructions}}\`\`\`
+{{instructions}}
 `,
 	},
 ];

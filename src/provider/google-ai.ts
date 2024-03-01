@@ -9,15 +9,12 @@ import { request } from 'obsidian';
 
 export async function handleTextGoogleGenAI({
 	plugin,
-	userMessage,
-	customAiModel = '',
+	messages,
+	model,
 }: ProviderTextAPIProps) {
 	const { settings } = plugin;
 
 	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
-
-	const modelName =
-		customAiModel.length > 0 ? customAiModel : providerSettings.model;
 
 	const body: GenerateContentRequest = {
 		contents: [
@@ -25,7 +22,7 @@ export async function handleTextGoogleGenAI({
 				role: 'user',
 				parts: [
 					{
-						text: userMessage,
+						text: `${messages.system}\n\n${messages.user}`,
 					},
 				],
 			},
@@ -39,7 +36,7 @@ export async function handleTextGoogleGenAI({
 	const url = `${getAPIHost(
 		providerSettings.baseUrl,
 		DEFAULT_HOST[settings.aiProvider],
-	)}/v1beta/models/${modelName}:generateContent?key=${providerSettings.apiKey}`;
+	)}/v1beta/models/${model}:generateContent?key=${providerSettings.apiKey}`;
 
 	const response = await request({
 		url,
