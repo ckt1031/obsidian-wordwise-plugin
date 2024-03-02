@@ -45,6 +45,7 @@ export default class SettingsExportImport {
 		return {
 			rawUri,
 			imgUri,
+			encodedDataString: data,
 		};
 	}
 

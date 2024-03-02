@@ -7,7 +7,8 @@ import { wrapAPITestComponent } from './components/test-api';
 import { APIProvider, settingTabProviderConfiguations } from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
-import { ExportSettingsQrCodeModal } from './modals/qr-code';
+import ImportSettingsModal from './modals/import-settings';
+import ExportSettingsQrCodeModal from './modals/qr-code';
 import { ForageStorage } from './utils/storage';
 
 export class SettingTab extends PluginSettingTab {
@@ -104,10 +105,15 @@ export class SettingTab extends PluginSettingTab {
 						);
 				}
 
+				const model =
+					typeof config.defaultModel === 'string'
+						? config.defaultModel
+						: config.defaultModel.id;
+
 				new Setting(containerEl)
 					.setName(`${provider} language model`)
 					.setDesc(
-						`Model to be used, defaults to ${config.defaultModel}, see ${provider} Models for more info`,
+						`Model to be used, defaults to ${model}, see ${provider} Models for more info`,
 					)
 					.addDropdown(async (dropDown) => {
 						let models = config.models;
@@ -232,11 +238,11 @@ export class SettingTab extends PluginSettingTab {
 				}),
 			);
 
+		new Setting(containerEl).setName('Text Generation Logging').setHeading();
+
 		new Setting(containerEl)
-			.setName('Enable text generation log')
-			.setDesc(
-				'Enable text generation log, which will log all the generated text to the storage',
-			)
+			.setName('Enable')
+			.setDesc('Enable to log all the generated text to the storage')
 			.addToggle((toggle) =>
 				toggle
 					.setValue(settings.enableGenerationLogging)
@@ -247,40 +253,52 @@ export class SettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('Export settings')
-			.setDesc('Export settings as a QR code.')
+			.setName('Import/Export')
+			.setDesc('Import or export the text generation logs')
+			.addButton((button) => {
+				button.setButtonText('Import').onClick(async () => {
+					const input = document.createElement('input');
+					input.type = 'file';
+					input.accept = 'application/json';
+					input.onchange = async (event) => {
+						const target = event.target as HTMLInputElement;
+						const file = target.files?.[0];
+
+						if (file) {
+							const reader = new FileReader();
+							reader.onload = async (e) => {
+								const content = e.target?.result;
+								if (typeof content === 'string') {
+									const logs = JSON.parse(content);
+									await new ForageStorage().setTextGenerationLogs(logs);
+									new Notice('Text generation logs imported successfully');
+								}
+							};
+							reader.readAsText(file);
+						}
+					};
+					input.click();
+				});
+			})
 			.addButton((button) => {
 				button.setButtonText('Export').onClick(async () => {
-					new ExportSettingsQrCodeModal(this.plugin).open();
-				});
-			});
+					const logs = await new ForageStorage().getTextGenerationLogs();
+					const blob = new Blob([JSON.stringify(logs)], {
+						type: 'application/json',
+					});
 
-		new Setting(containerEl)
-			.setName('Reset settings')
-			.setDesc('This will reset all settings to their default values')
-			.addButton((button) => {
-				button.setTooltip('Irrevisible action, please be careful!');
-				button.setButtonText('Reset').onClick(async () => {
-					if (button.buttonEl.textContent === 'Reset') {
-						// Are you sure? (seconds), give 5 seconds, loop 5 times
-						for (let i = 0; i < 5; i++) {
-							button.setButtonText(`Are you sure to reset? (${5 - i})`);
-							button.setDisabled(true);
-							sleep(1000);
-						}
+					const url = URL.createObjectURL(blob);
 
-						button.setDisabled(false);
-						button.setButtonText('Are you sure to reset?');
+					const a = document.createElement('a');
+					a.href = url;
 
-						setTimeout(() => {
-							button.setButtonText('Reset');
-						}, 5000);
-					} else {
-						// This has already been clicked once, so reset the settings
-						await plugin.resetSettings();
-						new Notice('Resetting settings to default values');
-						this.restartSettingsTab(plugin);
-					}
+					const vaultName = this.plugin.app.vault.getName();
+					const nowMS = new Date().getTime();
+
+					a.download = `${plugin.manifest.id}-text-generation-logs-${vaultName}-${nowMS}.json`;
+					a.click();
+
+					URL.revokeObjectURL(url);
 				});
 			});
 
@@ -351,5 +369,50 @@ export class SettingTab extends PluginSettingTab {
 					});
 				});
 		}
+
+		new Setting(containerEl).setName('Danger Zone').setHeading();
+
+		new Setting(containerEl)
+			.setName('Import/Export settings')
+			.setDesc('Import/Export settings as a QR code or RAW URL.')
+			.addButton((button) => {
+				button.setButtonText('Import').onClick(async () => {
+					new ImportSettingsModal(this.plugin).open();
+				});
+			})
+			.addButton((button) => {
+				button.setButtonText('Export').onClick(async () => {
+					new ExportSettingsQrCodeModal(this.plugin).open();
+				});
+			});
+
+		new Setting(containerEl)
+			.setName('Reset settings')
+			.setDesc('This will reset all settings to their default values')
+			.addButton((button) => {
+				button.setTooltip('Irrevisible action, please be careful!');
+				button.setButtonText('Reset').onClick(async () => {
+					if (button.buttonEl.textContent === 'Reset') {
+						// Are you sure? (seconds), give 5 seconds, loop 5 times
+						for (let i = 0; i < 5; i++) {
+							button.setButtonText(`Are you sure to reset? (${5 - i})`);
+							button.setDisabled(true);
+							sleep(1000);
+						}
+
+						button.setDisabled(false);
+						button.setButtonText('Are you sure to reset?');
+
+						setTimeout(() => {
+							button.setButtonText('Reset');
+						}, 5000);
+					} else {
+						// This has already been clicked once, so reset the settings
+						await plugin.resetSettings();
+						new Notice('Resetting settings to default values');
+						this.restartSettingsTab(plugin);
+					}
+				});
+			});
 	}
 }

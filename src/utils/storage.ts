@@ -26,6 +26,16 @@ export class ForageStorage {
 		return success ? output.data : [];
 	}
 
+	async setTextGenerationLogs(logs: TextGenerationLog[]) {
+		const result = await safeParseAsync(array(TextGenerationLogSchema), logs);
+
+		if (!result.success) return;
+
+		await localforage.setItem(this.keys.TEXT_GENERATIONS, {
+			data: result.output,
+		});
+	}
+
 	async deleteSingleTextGenerationLog(id: string) {
 		const data = await localforage.getItem(this.keys.TEXT_GENERATIONS);
 
