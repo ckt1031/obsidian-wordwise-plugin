@@ -1,5 +1,5 @@
 import WordWisePlugin from '@/main';
-import { exportQrCodeUri } from '@/utils/settings-sharing';
+import SettingsExportImport from '@/utils/settings-sharing';
 import { Modal, Notice } from 'obsidian';
 
 export class ExportSettingsQrCodeModal extends Modal {
@@ -13,10 +13,9 @@ export class ExportSettingsQrCodeModal extends Modal {
 	async onOpen() {
 		const { contentEl } = this;
 
-		const { rawUri, imgUri } = await exportQrCodeUri(
+		const { rawUri, imgUri } = await new SettingsExportImport(
 			this.plugin,
-			this.app.vault.getName(),
-		);
+		).exportQrCodeUri();
 
 		const div1 = contentEl.createDiv();
 		div1.createEl('p', {
@@ -37,7 +36,7 @@ export class ExportSettingsQrCodeModal extends Modal {
 			},
 		);
 
-		if (imgUri !== '') {
+		if (imgUri && imgUri.length > 0) {
 			const div3 = contentEl.createDiv();
 			div3.createEl(
 				'img',

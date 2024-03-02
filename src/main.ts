@@ -1,27 +1,36 @@
 import { Editor, Notice, Plugin, addIcon } from 'obsidian';
 
+import localforage from 'localforage';
 import { mergeDeepRight } from 'rambda';
 import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
 import { DEFAULT_SETTINGS } from './config';
 import AiIcon from './icons/ai.svg';
+import { moveConfig } from './migrations/localforage';
 import TextGenerationLogModal from './modals/generation-logs';
 import { getCommands } from './prompts';
-import { runCommand } from './run-command';
 import { SettingTab } from './settings-tab';
 import {
 	type ObfuscatedPluginSettings,
 	ObfuscatedPluginSettingsSchema,
 	type PluginSettings,
 } from './types';
+import { runCommand } from './utils/handle-command';
 import { log } from './utils/logging';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
-import { importQrCodeUri } from './utils/settings-sharing';
+import SettingsExportImport from './utils/settings-sharing';
 
 export default class WordWisePlugin extends Plugin {
 	settings: PluginSettings;
 
 	async onload() {
+		await moveConfig(this);
+
+		// Initialize localForage
+		localforage.config({
+			name: `${this.manifest.id}-${this.app.vault.getName()}`,
+		});
+
 		await this.loadSettings();
 
 		addIcon('openai', AiIcon);
@@ -94,7 +103,8 @@ export default class WordWisePlugin extends Plugin {
 		this.registerObsidianProtocolHandler(
 			this.manifest.id,
 			async (inputParams) => {
-				const parsed = importQrCodeUri(inputParams, this.app.vault.getName());
+				const settingsImport = new SettingsExportImport(this);
+				const parsed = await settingsImport.importQrCodeUri(inputParams);
 				if (parsed.status === 'error') {
 					new Notice(parsed.message);
 				} else if (parsed.result) {

@@ -12,13 +12,9 @@ enum StorageKey {
 	TEXT_GENERATIONS = 'text-generations',
 }
 
-const forageStore = localforage.createInstance({
-	name: 'WordWise',
-});
-
 export class ForageStorage {
 	async getTextGenerationLogs() {
-		const data = await forageStore.getItem(StorageKey.TEXT_GENERATIONS);
+		const data = await localforage.getItem(StorageKey.TEXT_GENERATIONS);
 
 		const { success, output } = await safeParseAsync(
 			object({
@@ -31,7 +27,7 @@ export class ForageStorage {
 	}
 
 	async deleteSingleTextGenerationLog(id: string) {
-		const data = await forageStore.getItem(StorageKey.TEXT_GENERATIONS);
+		const data = await localforage.getItem(StorageKey.TEXT_GENERATIONS);
 
 		const { success, output } = await safeParseAsync(
 			object({
@@ -49,13 +45,13 @@ export class ForageStorage {
 
 		if (!result.success) return;
 
-		await forageStore.setItem(StorageKey.TEXT_GENERATIONS, {
+		await localforage.setItem(StorageKey.TEXT_GENERATIONS, {
 			data: result.output,
 		});
 	}
 
 	async addTextGenerationLog(log: TextGenerationLog) {
-		const data = await forageStore.getItem(StorageKey.TEXT_GENERATIONS);
+		const data = await localforage.getItem(StorageKey.TEXT_GENERATIONS);
 
 		const { success, output } = await safeParseAsync(
 			object({
@@ -65,7 +61,7 @@ export class ForageStorage {
 		);
 
 		if (!success) {
-			await forageStore.setItem(StorageKey.TEXT_GENERATIONS, {
+			await localforage.setItem(StorageKey.TEXT_GENERATIONS, {
 				data: [log],
 			});
 			return;
@@ -78,7 +74,7 @@ export class ForageStorage {
 
 		if (!result.success) return;
 
-		await forageStore.setItem(StorageKey.TEXT_GENERATIONS, {
+		await localforage.setItem(StorageKey.TEXT_GENERATIONS, {
 			data: result.output,
 		});
 	}
@@ -87,7 +83,7 @@ export class ForageStorage {
 	 * Get the specified provider's model list from the storage
 	 */
 	async getModels(provider: APIProvider) {
-		const data = await forageStore.getItem(`${provider}-models`);
+		const data = await localforage.getItem(`${provider}-models`);
 
 		const { success, output } = await safeParseAsync(OpenAIModelsSchema, data);
 
@@ -97,6 +93,6 @@ export class ForageStorage {
 	async setModels(provider: APIProvider, value: OpenAIModels['data']) {
 		const _data = { data: value };
 		const { success, output } = await safeParseAsync(OpenAIModelsSchema, _data);
-		if (success) await forageStore.setItem(`${provider}-models`, output);
+		if (success) await localforage.setItem(`${provider}-models`, output);
 	}
 }

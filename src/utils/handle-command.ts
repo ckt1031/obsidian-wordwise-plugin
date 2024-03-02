@@ -1,15 +1,15 @@
 import { type Editor, Notice } from 'obsidian';
 
+import { CommandActions, CommandNames } from '@/config';
+import WordWisePlugin from '@/main';
+import AskForInstructionModal from '@/modals/ask-for-instruction';
+import { TextGenerationLog } from '@/types';
 import Mustache from 'mustache';
 import { nanoid } from 'nanoid';
-import { CommandActions, CommandNames } from './config';
-import WordWisePlugin from './main';
-import AskForInstructionModal from './modals/ask-for-instruction';
-import { getCommands, inputPrompt } from './prompts';
-import { TextGenerationLog } from './types';
-import { callTextAPI } from './utils/call-api';
-import { log } from './utils/logging';
-import { ForageStorage } from './utils/storage';
+import { getCommands, inputPrompt } from '../prompts';
+import { callTextAPI } from './call-api';
+import { log } from './logging';
+import { ForageStorage } from './storage';
 
 export async function runCommand(
 	editor: Editor,
@@ -40,7 +40,11 @@ export async function runCommand(
 			const modal = new AskForInstructionModal(plugin);
 			modal.open();
 			instructions = await modal.promise;
-			if (!instructions || instructions === '') return;
+
+			// Check if instruction is empty
+			if (!instructions || instructions.length > 0) {
+				throw new Error('No instruction provided');
+			}
 		}
 
 		const customModel = plugin.settings.customAiModel;
@@ -99,12 +103,11 @@ export async function runCommand(
 		const endTime = Date.now(); // Capture end time
 		const timeUsed = ((endTime - startTime) / 1000).toFixed(2); // Calculate time used in seconds
 
-		log(
-			plugin,
-			`Replaced selection with result: ${result} (Time taken: ${timeUsed}s)`,
-		);
+		const successMessage = `Text generated in ${timeUsed}s`;
 
-		new Notice(`Text generated in ${timeUsed}s`);
+		log(plugin, `${successMessage}:\n\n${result}`);
+
+		new Notice(successMessage);
 	} catch (error) {
 		if (error instanceof Error) {
 			log(plugin, error);
