@@ -1,5 +1,6 @@
 import { DEFAULT_SETTINGS } from '@/config';
 import type { ObfuscatedPluginSettings, PluginSettings } from '@/types';
+import { Notice } from 'obsidian';
 
 /**
  * Security Reminder
@@ -34,7 +35,10 @@ const deobfuscateConfig = (
 
 		return JSON.parse(deobfuscatedConfig) as PluginSettings;
 	} catch (e) {
-		console.error(e);
+		new Notice(
+			'Error while deobfuscating the plugin settings. Please check the console for more information.',
+		);
+		console.error('Error while deobfuscating the plugin settings:', e);
 		return null;
 	}
 };

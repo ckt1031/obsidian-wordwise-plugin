@@ -8,13 +8,13 @@ import {
 import localforage from 'localforage';
 import { array, object, safeParseAsync } from 'valibot';
 
-enum StorageKey {
-	TEXT_GENERATIONS = 'text-generations',
-}
-
 export class ForageStorage {
+	private readonly keys = {
+		TEXT_GENERATIONS: 'text-generations',
+	};
+
 	async getTextGenerationLogs() {
-		const data = await localforage.getItem(StorageKey.TEXT_GENERATIONS);
+		const data = await localforage.getItem(this.keys.TEXT_GENERATIONS);
 
 		const { success, output } = await safeParseAsync(
 			object({
@@ -27,7 +27,7 @@ export class ForageStorage {
 	}
 
 	async deleteSingleTextGenerationLog(id: string) {
-		const data = await localforage.getItem(StorageKey.TEXT_GENERATIONS);
+		const data = await localforage.getItem(this.keys.TEXT_GENERATIONS);
 
 		const { success, output } = await safeParseAsync(
 			object({
@@ -45,13 +45,13 @@ export class ForageStorage {
 
 		if (!result.success) return;
 
-		await localforage.setItem(StorageKey.TEXT_GENERATIONS, {
+		await localforage.setItem(this.keys.TEXT_GENERATIONS, {
 			data: result.output,
 		});
 	}
 
 	async addTextGenerationLog(log: TextGenerationLog) {
-		const data = await localforage.getItem(StorageKey.TEXT_GENERATIONS);
+		const data = await localforage.getItem(this.keys.TEXT_GENERATIONS);
 
 		const { success, output } = await safeParseAsync(
 			object({
@@ -61,7 +61,7 @@ export class ForageStorage {
 		);
 
 		if (!success) {
-			await localforage.setItem(StorageKey.TEXT_GENERATIONS, {
+			await localforage.setItem(this.keys.TEXT_GENERATIONS, {
 				data: [log],
 			});
 			return;
@@ -74,7 +74,7 @@ export class ForageStorage {
 
 		if (!result.success) return;
 
-		await localforage.setItem(StorageKey.TEXT_GENERATIONS, {
+		await localforage.setItem(this.keys.TEXT_GENERATIONS, {
 			data: result.output,
 		});
 	}

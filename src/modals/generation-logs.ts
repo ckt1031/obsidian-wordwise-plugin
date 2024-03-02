@@ -5,19 +5,25 @@ import type WordWisePlugin from '@/main';
 import { TextGenerationLog } from '@/types';
 import { ForageStorage } from '@/utils/storage';
 import dayjs from 'dayjs';
+import Fuse from 'fuse.js';
 
 export default class TextGenerationLogModal extends Modal {
-	private enabled: boolean;
-	private logs: TextGenerationLog[];
 	private readonly plugin: WordWisePlugin;
 
 	private forageStore: ForageStorage;
+
+	private enabled: boolean;
+	private logs: TextGenerationLog[];
+
+	private textLogDiv: HTMLDivElement;
 
 	// Action sync function or async function
 	constructor(plugin: WordWisePlugin) {
 		super(plugin.app);
 		this.plugin = plugin;
+
 		this.forageStore = new ForageStorage();
+		this.textLogDiv = createDiv('scroll-container');
 	}
 
 	// Called when the modal is opened
@@ -44,8 +50,9 @@ export default class TextGenerationLogModal extends Modal {
 		this.logs = logs;
 	}
 
-	showLog(id: string) {
+	renderLoggDetailView(id: string) {
 		const { titleEl, contentEl } = this;
+
 		const log = this.logs.find((l) => l.id === id);
 
 		if (!log) {
@@ -55,14 +62,12 @@ export default class TextGenerationLogModal extends Modal {
 
 		contentEl.empty();
 
-		titleEl.setText(
-			`Log: ${dayjs(log.generatedAt).format('YYYY-MM-DD HH:mm:ss')}`,
-		);
+		titleEl.setText(dayjs(log.generatedAt).format('YYYY-MM-DD HH:mm:ss'));
 
 		// Add a button to go back to the list
 		const backButton = contentEl.createEl('button', { text: 'Back to List' });
 
-		backButton.onclick = () => this.showList();
+		backButton.onclick = () => this.renderIndexView();
 
 		// Add delete button
 		const deleteButton = contentEl.createEl('button', {
@@ -81,7 +86,7 @@ export default class TextGenerationLogModal extends Modal {
 			await this.forageStore.deleteSingleTextGenerationLog(id);
 			this.logs = this.logs.filter((l) => l.id !== id);
 			new Notice('Log deleted');
-			this.showList();
+			this.renderIndexView();
 		};
 
 		// Make text in <code> inside p tag
@@ -116,30 +121,61 @@ export default class TextGenerationLogModal extends Modal {
 		});
 	}
 
-	showList() {
+	renderLogList(displayingLogs: TextGenerationLog[]) {
+		// Clear the container
+		this.textLogDiv.empty();
+
+		// create a scrollable container
+		// create a list of logs
+		for (const log of displayingLogs) {
+			this.textLogDiv.createEl('p', {
+				text: dayjs(log.generatedAt).format('YYYY-MM-DD HH:mm:ss'),
+				cls: 'log-item',
+			}).onclick = () => this.renderLoggDetailView(log.id);
+		}
+	}
+
+	renderIndexView() {
 		const { titleEl, contentEl } = this;
 
-		this.contentEl.empty();
+		contentEl.empty();
 
 		titleEl.setText('Text Generation Logs');
 
+		const searchInputBox = contentEl.createEl('input', {
+			type: 'text',
+			placeholder: 'Search logs...',
+			cls: 'log-search-box',
+		});
+
 		const displayingLogs = this.logs;
 
-		// .slice(
-		// 	(this.page - 1) * this.perPage,
-		// 	this.page * this.perPage,
-		// );
+		const fuse = new Fuse(displayingLogs, {
+			keys: [
+				'id',
+				'generatedAt',
+				'orginalText',
+				'generatedText',
+				'customInstruction',
+			],
+		});
 
-		// create a scrollable container
-		const scrollContainer = contentEl.createDiv('scroll-container');
+		searchInputBox.onchange = (e) => {
+			const queryText = (e.target as HTMLInputElement).value;
 
-		// create a list of logs
-		for (const log of displayingLogs) {
-			scrollContainer.createEl('p', {
-				text: dayjs(log.generatedAt).format('YYYY-MM-DD HH:mm:ss'),
-				cls: 'log-item',
-			}).onclick = () => this.showLog(log.id);
-		}
+			if (queryText === '') {
+				this.renderLogList(displayingLogs);
+				return;
+			}
+
+			const searchResults = fuse.search(queryText);
+
+			this.renderLogList(searchResults.map((r) => r.item));
+		};
+
+		this.contentEl.appendChild(this.textLogDiv);
+
+		this.renderLogList(displayingLogs);
 	}
 
 	onOpen() {
@@ -157,7 +193,7 @@ export default class TextGenerationLogModal extends Modal {
 			return;
 		}
 
-		this.showList();
+		this.renderIndexView();
 	}
 
 	onClose() {
