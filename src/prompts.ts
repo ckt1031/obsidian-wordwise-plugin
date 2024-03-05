@@ -39,12 +39,13 @@ export const systemPrompt = `
 ## Base Instructions
 
 - Remain headings if given.
+- Leverage LATEX for mathematical expressions, mhchem \`\ce\` for chemistry, use single $ for inline sentence ($1+1=2$), but double \`$$\` for line separation.
 - Change text in the ##Input area, text WRAPPED by ===.
 - This is plain markdown, never encode URLs/characters/symbols or change the structure of the markdown.
 - Keep the meaning the same. If possible, retain the structure of the paragraphs. Ensure the re-written text's word count is near to the original text.
 - Response with the rewritten text only, do not include additional context, explanation, or extra wording, just the re-written text itself.
 - Respond in the same language variety or dialect of the text.
-- Keep the suitable markdown compounds if present, such as images, URLs, checkbox, and Obsidian backlinks [[xxx]] and specified triple backtick boxes (also maintain its language identifier, unless its content is code).
+- Keep the suitable markdown compounds if present, such as images, URLs, checkbox, and Obsidian backlinks \`[[xxx]]\` and specified triple backtick boxes (also maintain its language identifier, unless its content is code).
 
 ## Special Reminder
 
@@ -106,7 +107,7 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			data: `
 ## Tasks
 
-- Proofread and correct the spelling and grammar mistakes of the following text delimited by triple backticks.
+- Proofread and correct the spelling and grammar mistakes.
 - Make as few changes as possible. Only correct any spelling or grammar mistakes if the original text has spelling or grammar mistakes. Do not make any writing improvements.
 - If the original text has no spelling or grammar mistakes, simply repeat the original text.
 `,
@@ -118,8 +119,7 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			data: `
 ## Tasks
 
-- Write a shorter version from input text.
-- Make the text shorter, and keeping the text clear, easy to understand, and well put together.
+- Write a shorter version, keep the text clear, easy to understand, and well put together.
 - Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
 `,
 		},
@@ -130,16 +130,13 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			data: `
 ## Tasks
 
-- Write a longer version.
-- Making the text longer, and keeping the text clear, easy to understand, and well put together.
+- Write a longer version, keep the text clear, easy to understand, and well put together.
 - Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
 - Keep the meaning the same if possible. Ensure the rewritten text's word count is more than twice the original text but no more than 4 times the original text.
-- Output the answer without additional context, explanation, or extra wording, just the lengthened text itself. Don't use any punctuation, especially no quotes or backticks, around the text.
-- Respond in the same language variety or dialect of the text.
 `,
 		},
 		{
-			name: CommandNames.HighlightMainPoint,
+			name: CommandNames.IntelligentBold,
 			icon: HighlightMainPointIcon,
 			action: CommandActions.DirectReplacement,
 			data: `

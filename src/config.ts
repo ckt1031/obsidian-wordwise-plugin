@@ -135,7 +135,7 @@ export enum CommandNames {
 	MakeShorter = 'Make Shorter',
 	MakeLonger = 'Make Longer',
 	Paraphrase = 'Paraphrase',
-	HighlightMainPoint = 'Highlight Main Point',
+	IntelligentBold = 'Intelligent Bold',
 
 	// Extra Commands
 	CustomInstructions = 'Custom Instructions',
