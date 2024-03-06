@@ -4,11 +4,11 @@ import { CommandActions, CommandNames } from '@/config';
 import WordWisePlugin from '@/main';
 import AskForInstructionModal from '@/modals/ask-for-instruction';
 import { TextGenerationLog } from '@/types';
-import Mustache from 'mustache';
 import { nanoid } from 'nanoid';
 import { getCommands, inputPrompt } from '../prompts';
 import { callTextAPI } from './call-api';
 import { log } from './logging';
+import { mustacheRender } from './mustache';
 import { ForageStorage } from './storage';
 
 export async function runCommand(
@@ -58,13 +58,17 @@ export async function runCommand(
 			`Generating text with ${command} (${plugin.settings.aiProvider})...`,
 		);
 
-		const userMessage: string = Mustache.render(
+		console.log(input);
+
+		const userMessage: string = mustacheRender(
 			`${actionData.taskPrompt}\n\n${inputPrompt}`,
 			{
 				input,
 				instructions,
 			},
 		);
+
+		console.log(userMessage);
 
 		const startTime = Date.now(); // Capture start time
 

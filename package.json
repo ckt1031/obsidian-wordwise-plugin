@@ -24,7 +24,6 @@
     "dayjs": "1.11.10",
     "fuse.js": "^7.0.0",
     "localforage": "1.10.0",
-    "mustache": "4.2.0",
     "nanoid": "5.0.6",
     "openai": "4.28.4",
     "qrcode": "1.5.3",
@@ -35,7 +34,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.5.3",
-    "@types/mustache": "4.2.5",
     "@types/node": "20.11.24",
     "@types/qrcode": "1.5.5",
     "builtin-modules": "3.3.0",
