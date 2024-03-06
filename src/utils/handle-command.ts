@@ -68,8 +68,6 @@ export async function runCommand(
 			},
 		);
 
-		console.log(userMessage);
-
 		const startTime = Date.now(); // Capture start time
 
 		const result = await callTextAPI({

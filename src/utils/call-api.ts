@@ -22,11 +22,7 @@ export async function callTextAPI({
 
 	log(
 		plugin,
-		`Sending request to ${apiProvider} with prompt in JSON:\n\n${JSON.stringify(
-			messages,
-			null,
-			2,
-		)}`,
+		`Sending request to ${apiProvider} with prompt:\n\n${messages.system}\n\n${messages.user}`,
 	);
 
 	if (
