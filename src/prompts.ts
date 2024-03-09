@@ -8,8 +8,8 @@ import MakeLongerIcon from './icons/make-longer.svg';
 import MakeShorterIcon from './icons/make-shorter.svg';
 import ParaphraseIcon from './icons/paraphrase.svg';
 import SimplifyIcon from './icons/simplify-text.svg';
-import { ComandProps, type Prompt, PromptSchema } from './types';
-import { type PluginSettings } from './types';
+import { type ComandProps, type Prompt, PromptSchema } from './types';
+import type { PluginSettings } from './types';
 
 export function getCommands(settings: PluginSettings): ComandProps[] {
 	const localCustomPrompts = settings.customPrompts;

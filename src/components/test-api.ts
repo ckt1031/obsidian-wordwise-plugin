@@ -1,7 +1,7 @@
-import WordWisePlugin from '@/main';
+import type WordWisePlugin from '@/main';
 import { callTextAPI } from '@/utils/call-api';
 import { log } from '@/utils/logging';
-import { Notice, TextComponent, setIcon, setTooltip } from 'obsidian';
+import { Notice, type TextComponent, setIcon, setTooltip } from 'obsidian';
 
 type Props = {
 	text: TextComponent;

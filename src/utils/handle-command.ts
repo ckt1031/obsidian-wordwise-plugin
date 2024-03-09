@@ -1,9 +1,9 @@
 import { type Editor, Notice } from 'obsidian';
 
-import { CommandActions, CommandNames } from '@/config';
-import WordWisePlugin from '@/main';
+import { CommandActions, type CommandNames } from '@/config';
+import type WordWisePlugin from '@/main';
 import AskForInstructionModal from '@/modals/ask-for-instruction';
-import { TextGenerationLog } from '@/types';
+import type { TextGenerationLog } from '@/types';
 import { nanoid } from 'nanoid';
 import { getCommands, inputPrompt } from '../prompts';
 import { callTextAPI } from './call-api';

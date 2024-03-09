@@ -1,8 +1,8 @@
-import { APIProvider, OPENROUTER_MODELS } from '@/config';
+import { type APIProvider, OPENROUTER_MODELS } from '@/config';
 import {
-	OpenAIModels,
+	type OpenAIModels,
 	OpenAIModelsSchema,
-	TextGenerationLog,
+	type TextGenerationLog,
 	TextGenerationLogSchema,
 } from '@/types';
 import localforage from 'localforage';

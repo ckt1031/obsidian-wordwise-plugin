@@ -1,4 +1,4 @@
-import { Editor, Notice, Plugin, addIcon } from 'obsidian';
+import { type Editor, Notice, Plugin, addIcon } from 'obsidian';
 
 import localforage from 'localforage';
 import { mergeDeepRight } from 'rambda';

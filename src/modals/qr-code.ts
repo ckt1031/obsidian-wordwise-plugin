@@ -1,4 +1,4 @@
-import WordWisePlugin from '@/main';
+import type WordWisePlugin from '@/main';
 import SettingsExportImport from '@/utils/settings-sharing';
 import { Modal, Notice } from 'obsidian';
 

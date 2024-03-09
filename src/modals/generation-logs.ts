@@ -2,7 +2,7 @@ import { Modal, Notice } from 'obsidian';
 
 import { CommandNames } from '@/config';
 import type WordWisePlugin from '@/main';
-import { TextGenerationLog } from '@/types';
+import type { TextGenerationLog } from '@/types';
 import { ForageStorage } from '@/utils/storage';
 import dayjs from 'dayjs';
 import Fuse from 'fuse.js';

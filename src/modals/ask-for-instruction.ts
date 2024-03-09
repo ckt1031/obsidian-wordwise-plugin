@@ -1,4 +1,4 @@
-import WordWisePlugin from '@/main';
+import type WordWisePlugin from '@/main';
 import type { TextAreaComponent } from 'obsidian';
 import { Modal, Setting } from 'obsidian';
 

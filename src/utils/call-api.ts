@@ -3,7 +3,7 @@ import { handleTextAnthropicAI } from '@/provider/anthropic';
 import { handleTextCohere } from '@/provider/cohere';
 import { handleTextGoogleGenAI } from '@/provider/google-ai';
 import { handleTextOpenAI } from '@/provider/openai';
-import { type CallTextAPIProps } from '@/types';
+import type { CallTextAPIProps } from '@/types';
 import { log } from './logging';
 
 export async function callTextAPI({

@@ -1,4 +1,4 @@
-import WordWisePlugin from '@/main';
+import type WordWisePlugin from '@/main';
 import localforage from 'localforage';
 
 export async function moveConfig(plugin: WordWisePlugin) {

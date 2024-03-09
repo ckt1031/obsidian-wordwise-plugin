@@ -1,4 +1,4 @@
-import WordWisePlugin from '@/main';
+import type WordWisePlugin from '@/main';
 import { Modal, Setting } from 'obsidian';
 
 export default class ConfirmModal extends Modal {

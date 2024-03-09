@@ -1,10 +1,10 @@
 import { APIProvider, OPENROUTER_MODELS } from '@/config';
-import WordWisePlugin from '@/main';
+import type WordWisePlugin from '@/main';
 import ConfirmModal from '@/modals/confirm';
 import { getOpenAIModels } from '@/provider/openai';
 import { log } from '@/utils/logging';
 import { ForageStorage } from '@/utils/storage';
-import { DropdownComponent, Notice, setIcon, setTooltip } from 'obsidian';
+import { type DropdownComponent, Notice, setIcon, setTooltip } from 'obsidian';
 
 type Props = {
 	dropDown: DropdownComponent;

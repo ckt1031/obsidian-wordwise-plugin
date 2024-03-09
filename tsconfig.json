@@ -7,10 +7,7 @@
 		"inlineSourceMap": true,
 		"inlineSources": true,
 		"isolatedModules": true,
-		"lib": [
-			"DOM",
-			"es2021"
-		],
+		"lib": ["DOM", "es2021"],
 		"module": "ESNext",
 		"target": "ESNext",
 		"moduleResolution": "Node",
@@ -23,22 +20,11 @@
 		"noImplicitThis": true,
 		"resolveJsonModule": true,
 		"strictNullChecks": true,
-		"types": [
-			"vitest/importMeta"
-		],
+		"types": ["vitest/importMeta"],
 		"paths": {
-			"@/*": [
-				"src/*"
-			]
+			"@/*": ["src/*"]
 		}
 	},
-	"include": [
-		"**/*.ts",
-		"*.mjs",
-		"src/custom.d.ts"
-	],
-	"exclude": [
-		"node_modules",
-		"**/*.spec.ts"
-	]
+	"include": ["**/*.ts", "*.mjs", "src/custom.d.ts"],
+	"exclude": ["node_modules", "**/*.spec.ts"]
 }

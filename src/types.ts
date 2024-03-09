@@ -10,7 +10,7 @@ import {
 	union,
 } from 'valibot';
 import { APIProvider, CommandActions, CommandNames } from './config';
-import WordWisePlugin from './main';
+import type WordWisePlugin from './main';
 
 export const PromptSchema = object({
 	name: union([string(), enum_(CommandNames)]),

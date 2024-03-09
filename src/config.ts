@@ -1,4 +1,4 @@
-import { OpenAIModels, type PluginSettings } from './types';
+import type { OpenAIModels, PluginSettings } from './types';
 
 /**
  * Reference: https://platform.openai.com/docs/models/overview

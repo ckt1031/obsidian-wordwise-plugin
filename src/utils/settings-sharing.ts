@@ -1,4 +1,4 @@
-import WordWisePlugin from '@/main';
+import type WordWisePlugin from '@/main';
 import type { PluginSettings } from '@/types';
 import QRCode from 'qrcode';
 
