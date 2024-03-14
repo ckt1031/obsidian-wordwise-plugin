@@ -1,7 +1,7 @@
 import { DEFAULT_HOST } from '@/config';
 import type { ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
-import type { GenerateRequest, Generation } from 'cohere-ai/api';
+import type { ChatRequest, Generation } from 'cohere-ai/api';
 import { request } from 'obsidian';
 import snakecaseKeys from 'snakecase-keys';
 
@@ -14,18 +14,20 @@ export async function handleTextCohere({
 
 	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 
-	const body: GenerateRequest = {
-		prompt: `${messages.system}\n\n${messages.user}`,
+	const body: ChatRequest = {
 		model,
-		numGenerations: 1,
+		message: `${messages.system}\n\n${messages.user}`,
 		temperature: settings.advancedSettings ? settings.temperature : 0.5,
 		maxTokens: settings.advancedSettings ? settings.maxTokens : 2000,
+		frequencyPenalty: settings.advancedSettings
+			? settings.frequencyPenalty
+			: 0.0,
 	};
 
 	const url = `${getAPIHost(
 		providerSettings.baseUrl,
 		DEFAULT_HOST[settings.aiProvider],
-	)}/v1/generate`;
+	)}/v1/chat`;
 
 	const response = await request({
 		url,

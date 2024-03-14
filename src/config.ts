@@ -45,14 +45,15 @@ export const ANTHROPIC_MODELS = [
 ];
 
 /**
- * Reference: https://docs.cohere.com/reference/generate
- * Updated: 2024-02-05
+ * Reference: https://docs.cohere.com/docs/models
+ * Updated: 2024-03-14
  */
 export const COHERE_MODELS = [
 	'command',
 	'command-nightly',
 	'command-light',
 	'command-light-nightly',
+	'command-r',
 ];
 
 /**
