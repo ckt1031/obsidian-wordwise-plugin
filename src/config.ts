@@ -33,11 +33,12 @@ export const OPENAI_MODELS = [
 
 /**
  * Reference: https://docs.anthropic.com/claude/docs/models-overview
- * Updated: 2024-03-05
+ * Updated: 2024-03-14
  */
 export const ANTHROPIC_MODELS = [
 	'claude-3-opus-20240229',
 	'claude-3-sonnet-20240229',
+	'claude-3-haiku-20240307',
 	'claude-2.0',
 	'claude-2.1',
 	'claude-instant-1.1',
