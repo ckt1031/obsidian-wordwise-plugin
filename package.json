@@ -20,7 +20,7 @@
 	"dependencies": {
 		"@anthropic-ai/sdk": "0.17.2",
 		"@google/generative-ai": "0.3.0",
-		"cohere-ai": "7.7.7",
+		"cohere-ai": "7.8.0",
 		"dayjs": "1.11.10",
 		"fuse.js": "^7.0.0",
 		"localforage": "1.10.0",
