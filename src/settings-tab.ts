@@ -146,6 +146,8 @@ export class SettingTab extends PluginSettingTab {
 			}
 		}
 
+		new Setting(containerEl).setName('Advanced Model Parameters').setHeading();
+
 		new Setting(containerEl)
 			.setName('Advanced mode')
 			.setDesc(
@@ -225,18 +227,6 @@ export class SettingTab extends PluginSettingTab {
 						}),
 				);
 		}
-
-		new Setting(containerEl)
-			.setName('Debug mode')
-			.setDesc(
-				'Enable debug mode, which will log more information to the console',
-			)
-			.addToggle((toggle) =>
-				toggle.setValue(settings.debugMode).onChange(async (value) => {
-					settings.debugMode = value;
-					await plugin.saveSettings();
-				}),
-			);
 
 		new Setting(containerEl).setName('Text Generation Logging').setHeading();
 
@@ -371,6 +361,18 @@ export class SettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl).setName('Danger Zone').setHeading();
+
+		new Setting(containerEl)
+			.setName('Debug mode')
+			.setDesc(
+				'Enable debug mode, which will log more information to the console',
+			)
+			.addToggle((toggle) =>
+				toggle.setValue(settings.debugMode).onChange(async (value) => {
+					settings.debugMode = value;
+					await plugin.saveSettings();
+				}),
+			);
 
 		new Setting(containerEl)
 			.setName('Import/Export settings')
