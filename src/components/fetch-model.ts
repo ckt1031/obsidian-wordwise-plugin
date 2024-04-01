@@ -1,6 +1,7 @@
 import { APIProvider, OPENROUTER_MODELS } from '@/config';
 import type WordWisePlugin from '@/main';
 import ConfirmModal from '@/modals/confirm';
+import { getGoogleGenAIModels } from '@/provider/google-ai';
 import { getOpenAIModels } from '@/provider/openai';
 import { log } from '@/utils/logging';
 import { ForageStorage } from '@/utils/storage';
@@ -69,6 +70,10 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 			switch (settings.aiProvider) {
 				case APIProvider.OpenRouter: {
 					models = await getOpenAIModels({ plugin });
+					break;
+				}
+				case APIProvider.GoogleGemini: {
+					models = await getGoogleGenAIModels({ plugin });
 					break;
 				}
 				case APIProvider.Custom:

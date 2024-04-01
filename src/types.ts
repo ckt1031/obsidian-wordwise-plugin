@@ -27,11 +27,33 @@ export const CustomPromptSchema = object({
 	data: string(),
 });
 
+export const GoogleGenAIModelsSchema = object({
+	models: array(
+		object({
+			name: string(),
+			// version: string(),
+			displayName: string(),
+			// description: string(),
+			// inputTokenLimit: number(),
+			// outputTokenLimit: number(),
+			supportedGenerationMethods: array(string()),
+			// temperature: number(),
+			// topP: number(),
+			// topK: number(),
+		}),
+	),
+});
+
 export const OpenAIModelsSchema = object({
 	data: array(object({ id: string(), name: optional(string()) })),
 });
 
+export type GoogleGenAIModels = Output<typeof GoogleGenAIModelsSchema>;
 export type OpenAIModels = Output<typeof OpenAIModelsSchema>;
+export type UniformModels = {
+	id: string;
+	name?: string | undefined;
+}[];
 
 export const PluginSettingsSchema = object({
 	/** Date that helps migration */

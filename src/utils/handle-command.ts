@@ -40,11 +40,6 @@ export async function runCommand(
 			const modal = new AskForInstructionModal(plugin);
 			modal.open();
 			instructions = await modal.promise;
-
-			// Check if instruction is empty
-			if (!instructions || instructions.length > 0) {
-				throw new Error('No instruction provided');
-			}
 		}
 
 		const customModel = plugin.settings.customAiModel;

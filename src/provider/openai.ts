@@ -1,5 +1,9 @@
 import { APIProvider, DEFAULT_HOST } from '@/config';
-import { OpenAIModelsSchema, type ProviderTextAPIProps } from '@/types';
+import {
+	OpenAIModelsSchema,
+	type ProviderTextAPIProps,
+	type UniformModels,
+} from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import { Notice, request } from 'obsidian';
 import type {
@@ -15,7 +19,7 @@ const OpenRouterHeaders = {
 
 export async function getOpenAIModels({
 	plugin,
-}: Pick<ProviderTextAPIProps, 'plugin'>) {
+}: Pick<ProviderTextAPIProps, 'plugin'>): Promise<UniformModels> {
 	const { settings } = plugin;
 	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 

@@ -119,6 +119,7 @@ export class SettingTab extends PluginSettingTab {
 						let models = config.models;
 						// Only in advanced mode or provider is OpenRouter OR Custom
 						if (
+							provider === APIProvider.GoogleGemini ||
 							provider === APIProvider.OpenRouter ||
 							provider === APIProvider.Custom
 						) {

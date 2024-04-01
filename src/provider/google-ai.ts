@@ -1,11 +1,57 @@
 import { DEFAULT_HOST } from '@/config';
-import type { ProviderTextAPIProps } from '@/types';
+import {
+	GoogleGenAIModelsSchema,
+	type ProviderTextAPIProps,
+	type UniformModels,
+} from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import type {
 	GenerateContentRequest,
 	GenerateContentResponse,
 } from '@google/generative-ai';
 import { request } from 'obsidian';
+import { parseAsync } from 'valibot';
+
+export async function getGoogleGenAIModels({
+	plugin,
+}: Pick<ProviderTextAPIProps, 'plugin'>): Promise<UniformModels> {
+	const { settings } = plugin;
+	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
+
+	const host = getAPIHost(
+		providerSettings.baseUrl,
+		DEFAULT_HOST[settings.aiProvider],
+	);
+
+	const url = `${host}/v1/models?key=${providerSettings.apiKey}`;
+
+	const headers: Record<string, string> = {
+		'Content-Type': 'application/json',
+	};
+
+	const response = await request({
+		url,
+		method: 'GET',
+		headers: headers,
+	});
+
+	const allModels = (
+		await parseAsync(GoogleGenAIModelsSchema, JSON.parse(response))
+	).models;
+
+	const list: UniformModels = [];
+
+	for (const model of allModels) {
+		if (model.supportedGenerationMethods.includes('generateContent')) {
+			list.push({
+				id: model.name.replace('models/', ''),
+				name: model.displayName,
+			});
+		}
+	}
+
+	return list;
+}
 
 export async function handleTextGoogleGenAI({
 	plugin,
@@ -36,7 +82,7 @@ export async function handleTextGoogleGenAI({
 	const url = `${getAPIHost(
 		providerSettings.baseUrl,
 		DEFAULT_HOST[settings.aiProvider],
-	)}/v1beta/models/${model}:generateContent?key=${providerSettings.apiKey}`;
+	)}/v1/models/${model}:generateContent?key=${providerSettings.apiKey}`;
 
 	const response = await request({
 		url,
