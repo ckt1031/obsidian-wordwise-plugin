@@ -123,7 +123,7 @@ export async function handleTextOpenAI({
 							role: 'system' as const,
 							content: messages.system,
 						},
-				  ]
+					]
 				: []),
 			{
 				role: 'user' as const,
