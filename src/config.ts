@@ -241,7 +241,7 @@ export const settingTabProviderConfiguations = {
 	[APIProvider.GoogleGemini]: {
 		defaultHost: DEFAULT_HOST[APIProvider.GoogleGemini],
 		docs: 'https://ai.google.dev/models/gemini',
-		defaultModel: 'gemini-pro',
+		defaultModel: '',
 		models: [],
 	},
 	[APIProvider.Cohere]: {

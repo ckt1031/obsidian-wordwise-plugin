@@ -31,8 +31,8 @@ export default class ConfirmModal extends Modal {
 					.setButtonText('Confirm')
 					.setCta()
 					.onClick(async () => {
-						this.close();
 						this.resolve(true);
+						this.close();
 					}),
 			)
 			.addButton((btn) =>
@@ -40,8 +40,8 @@ export default class ConfirmModal extends Modal {
 					.setButtonText('Cancel')
 					.setCta()
 					.onClick(async () => {
-						this.close();
 						this.resolve(false);
+						this.close();
 					}),
 			);
 	}

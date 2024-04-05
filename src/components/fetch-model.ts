@@ -14,7 +14,6 @@ type Props = {
 
 // Main function to wrap the password component
 export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
-	// Create a new hider element
 	const fetchButton = dropDown.selectEl.insertAdjacentElement(
 		'beforebegin',
 		document.createElement('button'),
@@ -48,6 +47,10 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 		switch (plugin.settings.aiProvider) {
 			case APIProvider.OpenRouter: {
 				await setModels(APIProvider.OpenRouter, OPENROUTER_MODELS);
+				break;
+			}
+			case APIProvider.GoogleGemini: {
+				await setModels(APIProvider.GoogleGemini, []);
 				break;
 			}
 			case APIProvider.Custom: {

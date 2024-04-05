@@ -1,4 +1,4 @@
-import { type APIProvider, OPENROUTER_MODELS } from '@/config';
+import type { APIProvider } from '@/config';
 import {
 	type OpenAIModels,
 	OpenAIModelsSchema,
@@ -97,7 +97,7 @@ export class ForageStorage {
 
 		const { success, output } = await safeParseAsync(OpenAIModelsSchema, data);
 
-		return success ? output.data : OPENROUTER_MODELS;
+		return success ? output.data : [];
 	}
 
 	async setModels(provider: APIProvider, value: OpenAIModels['data']) {
