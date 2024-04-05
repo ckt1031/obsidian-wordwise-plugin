@@ -14,21 +14,30 @@ export const AZURE_OPENAI_MODELS = [
 
 /**
  * Reference: https://platform.openai.com/docs/models/overview
- * Updated: 2024-02-19
+ * Updated: 2024-04-05
  */
 export const OPENAI_MODELS = [
+	// GPT-3.5
 	'gpt-3.5-turbo',
 	'gpt-3.5-turbo-1106',
 	'gpt-3.5-turbo-0125',
-	'gpt-3.5-turbo-16k',
+
+	// GPT-4 8K
 	'gpt-4',
 	'gpt-4-0613',
+
+	// GPT-4 32K
 	'gpt-4-32k',
 	'gpt-4-32k-0613',
-	'gpt-4-turbo-preview',
+
+	// GPT-4 Turbo 128K (Text Only)
 	'gpt-4-vision-preview',
-	'gpt-4-1106-preview',
 	'gpt-4-0125-preview',
+	'gpt-4-1106-preview',
+
+	// GPT-4 Turbo 128K (Vision + Text)
+	'gpt-4-turbo-preview',
+	'gpt-4-1106-vision-preview',
 ];
 
 /**
@@ -47,19 +56,20 @@ export const ANTHROPIC_MODELS = [
 
 /**
  * Reference: https://docs.cohere.com/docs/models
- * Updated: 2024-03-14
+ * Updated: 2024-04-05
  */
 export const COHERE_MODELS = [
+	'command-r-plus',
+	'command-r',
 	'command',
 	'command-nightly',
 	'command-light',
 	'command-light-nightly',
-	'command-r',
 ];
 
 /**
  * Reference: https://docs.perplexity.ai/docs/model-cards
- * Updated: 2024-02-26
+ * Updated: 2024-04-05
  */
 export const PERPLEXITY_MODELS = [
 	'sonar-small-chat',
@@ -68,11 +78,12 @@ export const PERPLEXITY_MODELS = [
 	'sonar-medium-online',
 	'mistral-7b-instruct',
 	'mixtral-8x7b-instruct',
+	'codellama-70b-instruct',
 ];
 
 /**
  * Reference: https://openrouter.ai/docs#quick-start
- * Updated: 2024-02-21
+ * Updated: 2024-04-05
  *
  * Since there is too many models, this will not hard code all models.
  * We will fetch the models from the API to local storage and use it from there.
@@ -90,19 +101,7 @@ export const OPENROUTER_MODELS: OpenAIModels['data'] = [
 		id: 'google/gemini-pro',
 		name: 'Google: Gemini Pro (preview)',
 	},
-	{
-		id: 'anthropic/claude-2',
-		name: 'Anthropic: Claude v2',
-	},
-	{
-		id: 'anthropic/claude-instant-1',
-		name: 'Anthropic: Claude Instant v1',
-	},
 ];
-
-// Ref: https://ai.google.dev/models/gemini
-// Updated on 2024-02-21
-export const GOOGLE_AI_MODELS = ['gemini-pro', 'gemini-pro-vision'];
 
 export enum APIProvider {
 	/** https://openai.com */
@@ -243,7 +242,7 @@ export const settingTabProviderConfiguations = {
 		defaultHost: DEFAULT_HOST[APIProvider.GoogleGemini],
 		docs: 'https://ai.google.dev/models/gemini',
 		defaultModel: 'gemini-pro',
-		models: GOOGLE_AI_MODELS,
+		models: [],
 	},
 	[APIProvider.Cohere]: {
 		defaultHost: DEFAULT_HOST[APIProvider.Cohere],
