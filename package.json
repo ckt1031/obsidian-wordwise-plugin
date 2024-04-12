@@ -29,7 +29,7 @@
 		"qrcode": "1.5.3",
 		"rambda": "9.2.0",
 		"slugify": "1.6.6",
-		"snakecase-keys": "7.0.0",
+		"snakecase-keys": "8.0.0",
 		"valibot": "0.30.0"
 	},
 	"devDependencies": {
