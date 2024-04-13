@@ -7,10 +7,7 @@ import {
 import { getAPIHost } from '@/utils/get-url-host';
 import isV1Needed from '@/utils/is-v1-needed';
 import { Notice, request } from 'obsidian';
-import type {
-	ChatCompletion,
-	ChatCompletionCreateParams,
-} from 'openai/resources/chat/completions';
+import type OpenAI from 'openai';
 import { parseAsync } from 'valibot';
 
 const OpenRouterHeaders = {
@@ -68,7 +65,12 @@ export async function getOpenAIModels({
 		headers: headers,
 	});
 
-	const models = JSON.parse(response);
+	const models: OpenAI.Models.ModelsPage = JSON.parse(response);
+
+	if (settings.aiProvider === APIProvider.OpenAI) {
+		// Only allow model ame starting with gpt
+		models.data = models.data.filter((model) => model.id.startsWith('gpt'));
+	}
 
 	return (await parseAsync(OpenAIModelsSchema, models)).data;
 }
@@ -107,8 +109,8 @@ export async function handleTextOpenAI({
 	}
 
 	let body:
-		| ChatCompletionCreateParams
-		| Omit<ChatCompletionCreateParams, 'model'> = {
+		| OpenAI.ChatCompletionCreateParams
+		| Omit<OpenAI.ChatCompletionCreateParams, 'model'> = {
 		stream: false,
 		model,
 		temperature: settings.advancedSettings ? settings.temperature : 0.5,
@@ -185,7 +187,7 @@ export async function handleTextOpenAI({
 		body: JSON.stringify(body),
 	});
 
-	const { choices }: ChatCompletion = JSON.parse(response);
+	const { choices }: OpenAI.ChatCompletion = JSON.parse(response);
 
 	return choices[0].message.content;
 }

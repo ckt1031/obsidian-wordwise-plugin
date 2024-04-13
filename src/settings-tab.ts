@@ -121,6 +121,8 @@ export class SettingTab extends PluginSettingTab {
 						if (
 							provider === APIProvider.GoogleGemini ||
 							provider === APIProvider.OpenRouter ||
+							provider === APIProvider.Cohere ||
+							provider === APIProvider.OpenAI ||
 							provider === APIProvider.Custom
 						) {
 							wrapFetchModelComponent({

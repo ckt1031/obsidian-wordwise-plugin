@@ -56,16 +56,10 @@ export const ANTHROPIC_MODELS = [
 
 /**
  * Reference: https://docs.cohere.com/docs/models
- * Updated: 2024-04-05
+ * Updated: 2024-04-13
+ * Model fetching is available from the API.
  */
-export const COHERE_MODELS = [
-	'command-r-plus',
-	'command-r',
-	'command',
-	'command-nightly',
-	'command-light',
-	'command-light-nightly',
-];
+export const COHERE_MODELS = ['command-r-plus', 'command-r', 'command'];
 
 /**
  * Reference: https://docs.perplexity.ai/docs/model-cards

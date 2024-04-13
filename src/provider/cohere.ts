@@ -1,9 +1,57 @@
 import { DEFAULT_HOST } from '@/config';
-import type { ProviderTextAPIProps } from '@/types';
+import type { ProviderTextAPIProps, UniformModels } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
-import type { ChatRequest, Generation } from 'cohere-ai/api';
+import type {
+	ChatRequest,
+	ListModelsResponse,
+	NonStreamedChatResponse,
+} from 'cohere-ai/api';
 import { request } from 'obsidian';
 import snakecaseKeys from 'snakecase-keys';
+
+export async function getCohereModels({
+	plugin,
+}: Pick<ProviderTextAPIProps, 'plugin'>): Promise<UniformModels> {
+	const { settings } = plugin;
+	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
+
+	const host = getAPIHost(
+		providerSettings.baseUrl,
+		DEFAULT_HOST[settings.aiProvider],
+	);
+
+	const url = `${host}/v1/models`;
+
+	const headers: Record<string, string> = {
+		'Content-Type': 'application/json',
+		Authorization: `Bearer ${providerSettings.apiKey}`,
+	};
+
+	const response = await request({
+		url,
+		method: 'GET',
+		headers: headers,
+	});
+
+	const allModels = JSON.parse(response) as ListModelsResponse;
+
+	const list: UniformModels = [];
+
+	for (const model of allModels.models) {
+		const endpoint = model.endpoints ?? [];
+
+		if (!endpoint.includes('chat') || !model.name) {
+			continue;
+		}
+
+		list.push({
+			id: model.name,
+			name: model.name,
+		});
+	}
+
+	return list;
+}
 
 export async function handleTextCohere({
 	plugin,
@@ -42,7 +90,9 @@ export async function handleTextCohere({
 		),
 	});
 
-	const { generations }: Generation = JSON.parse(response);
+	console.log(response);
 
-	return generations[0].text;
+	const { text }: NonStreamedChatResponse = JSON.parse(response);
+
+	return text;
 }

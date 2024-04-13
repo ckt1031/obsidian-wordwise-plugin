@@ -1,6 +1,7 @@
 import { APIProvider, OPENROUTER_MODELS } from '@/config';
 import type WordWisePlugin from '@/main';
 import ConfirmModal from '@/modals/confirm';
+import { getCohereModels } from '@/provider/cohere';
 import { getGoogleGenAIModels } from '@/provider/google-ai';
 import { getOpenAIModels } from '@/provider/openai';
 import { log } from '@/utils/logging';
@@ -44,22 +45,12 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 
 		if (!result) return;
 
-		switch (plugin.settings.aiProvider) {
-			case APIProvider.OpenRouter: {
-				await setModels(APIProvider.OpenRouter, OPENROUTER_MODELS);
-				break;
-			}
-			case APIProvider.GoogleGemini: {
-				await setModels(APIProvider.GoogleGemini, []);
-				break;
-			}
-			case APIProvider.Custom: {
-				await setModels(APIProvider.Custom, []);
-				break;
-			}
-			default:
-				throw new Error(`Unknown API Provider: ${plugin.settings.aiProvider}`);
+		if (plugin.settings.aiProvider === APIProvider.OpenRouter) {
+			await setModels(APIProvider.OpenRouter, OPENROUTER_MODELS);
+		} else {
+			await setModels(plugin.settings.aiProvider, []);
 		}
+
 		new Notice('Models reset successfully, please refresh the plugin.');
 	});
 
@@ -71,7 +62,13 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 			const { settings } = plugin;
 
 			switch (settings.aiProvider) {
-				case APIProvider.OpenRouter: {
+				case APIProvider.Cohere: {
+					models = await getCohereModels({ plugin });
+					break;
+				}
+				case APIProvider.Custom:
+				case APIProvider.OpenRouter:
+				case APIProvider.OpenAI: {
 					models = await getOpenAIModels({ plugin });
 					break;
 				}
@@ -79,9 +76,6 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 					models = await getGoogleGenAIModels({ plugin });
 					break;
 				}
-				case APIProvider.Custom:
-					models = await getOpenAIModels({ plugin });
-					break;
 				default:
 					throw new Error(`Unknown API Provider: ${settings.aiProvider}`);
 			}
