@@ -1,6 +1,7 @@
 import { DEFAULT_HOST } from '@/config';
 import type { ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
+import isV1Needed from '@/utils/is-v1-needed';
 import type {
 	Message,
 	MessageCreateParams,
@@ -32,10 +33,14 @@ export async function handleTextAnthropicAI({
 		temperature: settings.advancedSettings ? settings.temperature : 0.5,
 	};
 
-	const url = `${getAPIHost(
+	const urlHost = getAPIHost(
 		providerSettings.baseUrl,
 		DEFAULT_HOST[settings.aiProvider],
-	)}/v1/messages`;
+	);
+
+	const versionPath = isV1Needed(urlHost) ? '/v1' : '';
+
+	const url = `${urlHost}${versionPath}/messages`;
 
 	const response = await request({
 		url,

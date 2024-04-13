@@ -5,6 +5,7 @@ import {
 	type UniformModels,
 } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
+import isV1Needed from '@/utils/is-v1-needed';
 import { Notice, request } from 'obsidian';
 import type {
 	ChatCompletion,
@@ -166,11 +167,16 @@ export async function handleTextOpenAI({
 			break;
 	}
 
-	const host = getAPIHost(
+	const urlHost = getAPIHost(
 		providerSettings.baseUrl,
 		DEFAULT_HOST[settings.aiProvider],
 	);
-	const url = `${host}${path}`;
+
+	if (!isV1Needed(urlHost)) {
+		path = path.replace('/v1', '');
+	}
+
+	const url = `${urlHost}${path}`;
 
 	const response = await request({
 		url,
