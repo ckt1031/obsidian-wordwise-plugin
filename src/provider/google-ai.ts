@@ -23,7 +23,7 @@ export async function getGoogleGenAIModels({
 		DEFAULT_HOST[settings.aiProvider],
 	);
 
-	const url = `${host}/v1/models?key=${providerSettings.apiKey}`;
+	const url = `${host}/v1beta/models?key=${providerSettings.apiKey}`;
 
 	const headers: Record<string, string> = {
 		'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ export async function handleTextGoogleGenAI({
 	const url = `${getAPIHost(
 		providerSettings.baseUrl,
 		DEFAULT_HOST[settings.aiProvider],
-	)}/v1/models/${model}:generateContent?key=${providerSettings.apiKey}`;
+	)}/v1beta/models/${model}:generateContent?key=${providerSettings.apiKey}`;
 
 	const response = await request({
 		url,
