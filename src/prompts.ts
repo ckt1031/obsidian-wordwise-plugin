@@ -14,25 +14,27 @@ import type { PluginSettings } from './types';
 export function getCommands(settings: PluginSettings): ComandProps[] {
 	const localCustomPrompts = settings.customPrompts;
 
+	const internalPrompts = settings.disableNativeCommands
+		? []
+		: [...extraPrompts, ...nativePrompts];
+
 	// Add basePromptEnding to all prompts ending
-	return [...extraPrompts, ...nativePrompts, ...localCustomPrompts].map(
-		(prompt) => {
-			let action = CommandActions.DirectReplacement;
+	return [...internalPrompts, ...localCustomPrompts].map((prompt) => {
+		let action = CommandActions.DirectReplacement;
 
-			// Check if prompt has Prompt type
-			if ('action' in prompt && safeParse(PromptSchema, prompt)) {
-				action = prompt.action as CommandActions;
-			}
+		// Check if prompt has Prompt type
+		if ('action' in prompt && safeParse(PromptSchema, prompt)) {
+			action = prompt.action as CommandActions;
+		}
 
-			return {
-				name: prompt.name,
-				icon: prompt.icon,
-				action,
-				taskPrompt: prompt.data,
-				systemPrompt,
-			};
-		},
-	);
+		return {
+			name: prompt.name,
+			icon: prompt.icon,
+			action,
+			taskPrompt: prompt.data,
+			systemPrompt,
+		};
+	});
 }
 
 export const systemPrompt = `

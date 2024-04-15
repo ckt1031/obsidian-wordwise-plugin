@@ -152,7 +152,7 @@ export const DEFAULT_HOST = {
 };
 
 export const DEFAULT_SETTINGS: PluginSettings = {
-	dataSchemeDate: new Date('2024-02-22').toISOString(),
+	dataSchemeDate: new Date('2024-04-15').toISOString(),
 
 	aiProvider: APIProvider.OpenAI,
 	aiProviderConfig: {
@@ -198,19 +198,20 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 			model: '',
 		},
 	},
-
 	advancedSettings: false,
 	customAiModel: '',
 	maxTokens: 2000,
 	temperature: 0.5,
 	presencePenalty: 0,
 	frequencyPenalty: 0,
-
 	enableGenerationLogging: false,
-
 	debugMode: false,
-
 	customPrompts: [],
+	disableNativeCommands: false,
+	customPromptsFileBased: {
+		enabled: false,
+		filePath: 'Wordwise',
+	},
 };
 
 export const settingTabProviderConfiguations = {

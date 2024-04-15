@@ -152,6 +152,20 @@ export class SettingTab extends PluginSettingTab {
 		new Setting(containerEl).setName('Advanced Model Parameters').setHeading();
 
 		new Setting(containerEl)
+			.setName('Disable native commands')
+			.setDesc(
+				'Disable the native commands provided by the plugin, this will only work if you have a custom prompt setup',
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(settings.disableNativeCommands)
+					.onChange(async (value) => {
+						settings.disableNativeCommands = value;
+						await plugin.saveSettings();
+					}),
+			);
+
+		new Setting(containerEl)
 			.setName('Advanced mode')
 			.setDesc(
 				'Configure advanced model settings, enable this in order to send extra parameters to the API',
@@ -361,6 +375,36 @@ export class SettingTab extends PluginSettingTab {
 						}
 					});
 				});
+		}
+
+		new Setting(containerEl)
+			.setName('File based custom prompts')
+			.setDesc(
+				'Enable file based custom prompts, this will use the prompts from the file specified below',
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(settings.customPromptsFileBased.enabled)
+					.onChange(async (value) => {
+						settings.customPromptsFileBased.enabled = value;
+						await plugin.saveSettings();
+						this.restartSettingsTab(plugin);
+					}),
+			);
+
+		if (settings.customPromptsFileBased.enabled) {
+			new Setting(containerEl)
+				.setName('File path')
+				.setDesc('Path to the file containing the custom prompts')
+				.addText((text) =>
+					text
+						.setPlaceholder('Enter the file path')
+						.setValue(settings.customPromptsFileBased.filePath)
+						.onChange(async (value) => {
+							settings.customPromptsFileBased.filePath = value;
+							await plugin.saveSettings();
+						}),
+				);
 		}
 
 		new Setting(containerEl).setName('Danger Zone').setHeading();

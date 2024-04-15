@@ -118,6 +118,12 @@ export const PluginSettingsSchema = object({
 	debugMode: boolean(),
 
 	customPrompts: array(CustomPromptSchema),
+
+	disableNativeCommands: boolean(),
+	customPromptsFileBased: object({
+		enabled: boolean(),
+		filePath: string(),
+	}),
 });
 
 export type PluginSettings = Output<typeof PluginSettingsSchema>;
