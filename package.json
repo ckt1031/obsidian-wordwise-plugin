@@ -18,7 +18,7 @@
 		"lint-staged": "lint-staged"
 	},
 	"dependencies": {
-		"@anthropic-ai/sdk": "0.20.4",
+		"@anthropic-ai/sdk": "0.24.2",
 		"@google/generative-ai": "0.6.0",
 		"cohere-ai": "7.9.4",
 		"dayjs": "1.11.10",
