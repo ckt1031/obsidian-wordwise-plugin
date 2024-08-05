@@ -1,6 +1,6 @@
 import { type Editor, Notice } from 'obsidian';
 
-import { CommandActions, type CommandNames } from '@/config';
+import { CommandActions, type CommandNames, CustomBehavior } from '@/config';
 import type WordWisePlugin from '@/main';
 import AskForInstructionModal from '@/modals/ask-for-instruction';
 import type { TextGenerationLog } from '@/types';
@@ -95,7 +95,19 @@ export async function runCommand(
 			await new ForageStorage().addTextGenerationLog(loggingBody);
 		}
 
-		editor.replaceSelection(result);
+		const get = editor.getCursor();
+
+		switch (plugin.settings.customBehavior) {
+			case CustomBehavior.InsertFirst:
+				// Insert the generated text at the beginning of the editor
+				editor.replaceRange(result, { line: get.line, ch: 0 });
+				break;
+			case CustomBehavior.InsertLast:
+				editor.replaceRange(result, { line: get.line + 1, ch: 0 });
+				break;
+			default:
+				editor.replaceSelection(result);
+		}
 
 		const endTime = Date.now(); // Capture end time
 		const timeUsed = ((endTime - startTime) / 1000).toFixed(2); // Calculate time used in seconds

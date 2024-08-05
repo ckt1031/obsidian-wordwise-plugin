@@ -1,5 +1,10 @@
 import * as v from 'valibot';
-import { APIProvider, CommandActions, CommandNames } from './config';
+import {
+	APIProvider,
+	CommandActions,
+	CommandNames,
+	CustomBehavior,
+} from './config';
 import type WordWisePlugin from './main';
 
 export const PromptSchema = v.object({
@@ -114,6 +119,9 @@ export const PluginSettingsSchema = v.object({
 		enabled: v.boolean(),
 		filePath: v.string(),
 	}),
+
+	// Custom Behavior
+	customBehavior: v.enum_(CustomBehavior),
 });
 
 export type PluginSettings = v.InferInput<typeof PluginSettingsSchema>;

@@ -109,6 +109,12 @@ export const OPENROUTER_MODELS: OpenAIModels['data'] = [
 	},
 ];
 
+export enum CustomBehavior {
+	InsertFirst = 'Insert First',
+	InsertLast = 'Insert Last',
+	Replace = 'Replace',
+}
+
 export enum APIProvider {
 	/** https://openai.com */
 	OpenAI = 'OpenAI',
@@ -224,6 +230,9 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 		enabled: false,
 		filePath: 'Wordwise',
 	},
+
+	// Custom Behavior
+	customBehavior: CustomBehavior.Replace,
 };
 
 export const settingTabProviderConfiguations = {

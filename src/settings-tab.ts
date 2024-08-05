@@ -4,7 +4,11 @@ import { Notice, PluginSettingTab, Setting } from 'obsidian';
 import { wrapFetchModelComponent } from './components/fetch-model';
 import { wrapPasswordComponent } from './components/password';
 import { wrapAPITestComponent } from './components/test-api';
-import { APIProvider, settingTabProviderConfiguations } from './config';
+import {
+	APIProvider,
+	CustomBehavior,
+	settingTabProviderConfiguations,
+} from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
 import ImportSettingsModal from './modals/import-settings';
@@ -148,6 +152,24 @@ export class SettingTab extends PluginSettingTab {
 					});
 			}
 		}
+
+		new Setting(containerEl)
+			.setName('Override Generation Behavior')
+			.setDesc(
+				'Override the default behavior of the plugin, such as replace or insert the generated text',
+			)
+			.addDropdown((dropDown) => {
+				// Add all the API Providers, use value as option value
+				for (const value of Object.values(CustomBehavior)) {
+					dropDown.addOption(value, value);
+				}
+
+				dropDown.setValue(settings.customBehavior);
+				dropDown.onChange(async (value) => {
+					settings.customBehavior = value as CustomBehavior;
+					await plugin.saveSettings();
+				});
+			});
 
 		new Setting(containerEl).setName('Advanced Model Parameters').setHeading();
 
