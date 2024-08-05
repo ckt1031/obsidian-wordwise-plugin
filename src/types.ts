@@ -1,42 +1,32 @@
-import {
-	type Output,
-	array,
-	boolean,
-	enum_,
-	number,
-	object,
-	optional,
-	string,
-	union,
-} from 'valibot';
+import * as v from 'valibot';
 import { APIProvider, CommandActions, CommandNames } from './config';
 import type WordWisePlugin from './main';
 
-export const PromptSchema = object({
-	name: union([string(), enum_(CommandNames)]),
-	icon: optional(string()),
-	action: enum_(CommandActions),
-	data: string(),
+export const PromptSchema = v.object({
+	name: v.union([v.string(), v.enum_(CommandNames)]),
+	icon: v.optional(v.string()),
+	action: v.enum_(CommandActions),
+	data: v.string(),
 });
 
-export type Prompt = Output<typeof PromptSchema>;
+export type Prompt = v.InferInput<typeof PromptSchema>;
 
-export const CustomPromptSchema = object({
-	name: string(),
-	icon: optional(string()),
-	data: string(),
+export const CustomPromptSchema = v.object({
+	name: v.string(),
+	icon: v.optional(v.string()),
+	data: v.string(),
 });
 
-export const GoogleGenAIModelsSchema = object({
-	models: array(
-		object({
-			name: string(),
+export const GoogleGenAIModelsSchema = v.object({
+	models: v.array(
+		v.object({
+			name: v.string(),
 			// version: string(),
-			displayName: string(),
+			displayName: v.string(),
 			// description: string(),
 			// inputTokenLimit: number(),
 			// outputTokenLimit: number(),
-			supportedGenerationMethods: array(string()),
+			supportedGenerationMethods: v.array(v.string()),
 			// temperature: number(),
 			// topP: number(),
 			// topK: number(),
@@ -44,96 +34,96 @@ export const GoogleGenAIModelsSchema = object({
 	),
 });
 
-export const OpenAIModelsSchema = object({
-	data: array(object({ id: string(), name: optional(string()) })),
+export const OpenAIModelsSchema = v.object({
+	data: v.array(v.object({ id: v.string(), name: v.optional(v.string()) })),
 });
 
-export type GoogleGenAIModels = Output<typeof GoogleGenAIModelsSchema>;
-export type OpenAIModels = Output<typeof OpenAIModelsSchema>;
+export type GoogleGenAIModels = v.InferInput<typeof GoogleGenAIModelsSchema>;
+export type OpenAIModels = v.InferInput<typeof OpenAIModelsSchema>;
 export type UniformModels = {
 	id: string;
 	name?: string | undefined;
 }[];
 
-export const PluginSettingsSchema = object({
+export const PluginSettingsSchema = v.object({
 	/** Date that helps migration */
-	dataSchemeDate: string(),
+	dataSchemeDate: v.string(),
 
-	aiProvider: enum_(APIProvider),
-	aiProviderConfig: object({
-		[APIProvider.OpenAI]: object({
-			apiKey: string(),
-			baseUrl: string(),
-			model: string(),
+	aiProvider: v.enum_(APIProvider),
+	aiProviderConfig: v.object({
+		[APIProvider.OpenAI]: v.object({
+			apiKey: v.string(),
+			baseUrl: v.string(),
+			model: v.string(),
 		}),
-		[APIProvider.AzureOpenAI]: object({
-			apiKey: string(),
-			baseUrl: string(),
-			model: string(),
-			apiVersion: string(),
+		[APIProvider.AzureOpenAI]: v.object({
+			apiKey: v.string(),
+			baseUrl: v.string(),
+			model: v.string(),
+			apiVersion: v.string(),
 		}),
-		[APIProvider.GoogleGemini]: object({
-			apiKey: string(),
-			baseUrl: string(),
-			model: string(),
+		[APIProvider.GoogleGemini]: v.object({
+			apiKey: v.string(),
+			baseUrl: v.string(),
+			model: v.string(),
 		}),
-		[APIProvider.Anthropic]: object({
-			apiKey: string(),
-			baseUrl: string(),
-			model: string(),
+		[APIProvider.Anthropic]: v.object({
+			apiKey: v.string(),
+			baseUrl: v.string(),
+			model: v.string(),
 		}),
-		[APIProvider.Cohere]: object({
-			apiKey: string(),
-			baseUrl: string(),
-			model: string(),
+		[APIProvider.Cohere]: v.object({
+			apiKey: v.string(),
+			baseUrl: v.string(),
+			model: v.string(),
 		}),
-		[APIProvider.OpenRouter]: object({
-			apiKey: string(),
-			baseUrl: string(),
-			model: string(),
+		[APIProvider.OpenRouter]: v.object({
+			apiKey: v.string(),
+			baseUrl: v.string(),
+			model: v.string(),
 		}),
-		[APIProvider.PerplexityAI]: object({
-			apiKey: string(),
-			baseUrl: string(),
-			model: string(),
+		[APIProvider.PerplexityAI]: v.object({
+			apiKey: v.string(),
+			baseUrl: v.string(),
+			model: v.string(),
 		}),
-		[APIProvider.Custom]: object({
-			apiKey: string(),
-			baseUrl: string(),
-			model: string(),
+		[APIProvider.Custom]: v.object({
+			apiKey: v.string(),
+			baseUrl: v.string(),
+			model: v.string(),
 		}),
 	}),
 
-	advancedSettings: boolean(),
-	customAiModel: string(),
-	maxTokens: number(),
-	temperature: number(),
-	presencePenalty: number(),
-	frequencyPenalty: number(),
+	advancedSettings: v.boolean(),
+	customAiModel: v.string(),
+	maxTokens: v.number(),
+	temperature: v.number(),
+	presencePenalty: v.number(),
+	frequencyPenalty: v.number(),
 
 	/** Log the text to storage to trace usage and original text */
-	enableGenerationLogging: boolean(),
+	enableGenerationLogging: v.boolean(),
 
 	/** Enable logging */
-	debugMode: boolean(),
+	debugMode: v.boolean(),
 
-	customPrompts: array(CustomPromptSchema),
+	customPrompts: v.array(CustomPromptSchema),
 
-	disableNativeCommands: boolean(),
-	customPromptsFileBased: object({
-		enabled: boolean(),
-		filePath: string(),
+	disableNativeCommands: v.boolean(),
+	customPromptsFileBased: v.object({
+		enabled: v.boolean(),
+		filePath: v.string(),
 	}),
 });
 
-export type PluginSettings = Output<typeof PluginSettingsSchema>;
+export type PluginSettings = v.InferInput<typeof PluginSettingsSchema>;
 
-export const ObfuscatedPluginSettingsSchema = object({
-	_NOTICE: string(),
-	z: string(),
+export const ObfuscatedPluginSettingsSchema = v.object({
+	_NOTICE: v.string(),
+	z: v.string(),
 });
 
-export type ObfuscatedPluginSettings = Output<
+export type ObfuscatedPluginSettings = v.InferInput<
 	typeof ObfuscatedPluginSettingsSchema
 >;
 
@@ -157,18 +147,18 @@ export interface ComandProps {
 	systemPrompt: string;
 }
 
-export const TextGenerationLogSchema = object({
-	id: string(),
+export const TextGenerationLogSchema = v.object({
+	id: v.string(),
 
-	by: string(),
-	model: string(),
-	provider: enum_(APIProvider),
-	generatedAt: string(),
+	by: v.string(),
+	model: v.string(),
+	provider: v.enum_(APIProvider),
+	generatedAt: v.string(),
 
-	customInstruction: optional(string()),
+	customInstruction: v.optional(v.string()),
 
-	orginalText: string(),
-	generatedText: string(),
+	orginalText: v.string(),
+	generatedText: v.string(),
 });
 
-export type TextGenerationLog = Output<typeof TextGenerationLogSchema>;
+export type TextGenerationLog = v.InferInput<typeof TextGenerationLogSchema>;

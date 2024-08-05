@@ -55,5 +55,11 @@ export async function handleTextAnthropicAI({
 
 	const json: Message = JSON.parse(response);
 
-	return json.content[0].text;
+	const content = json.content[0];
+
+	if (content.type === 'tool_use') {
+		throw new Error('No text generated');
+	}
+
+	return content.text;
 }
