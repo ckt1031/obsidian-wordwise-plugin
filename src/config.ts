@@ -14,7 +14,7 @@ export const AZURE_OPENAI_MODELS = [
 
 /**
  * Reference: https://platform.openai.com/docs/models/overview
- * Updated: 2024-04-05
+ * Updated: 2024-08-05
  */
 export const OPENAI_MODELS = [
 	// GPT-3.5
@@ -24,11 +24,11 @@ export const OPENAI_MODELS = [
 
 	// GPT-4 8K
 	'gpt-4',
-	'gpt-4-0613',
+	// 'gpt-4-0613',
 
 	// GPT-4 32K
 	'gpt-4-32k',
-	'gpt-4-32k-0613',
+	// 'gpt-4-32k-0613',
 
 	// GPT-4 Turbo 128K (Text Only)
 	'gpt-4-vision-preview',
@@ -38,28 +38,44 @@ export const OPENAI_MODELS = [
 	// GPT-4 Turbo 128K (Vision + Text)
 	'gpt-4-turbo-preview',
 	'gpt-4-1106-vision-preview',
+
+	'gpt-4-turbo',
+	'gpt-4-turbo-2024-04-09',
+
+	// GPT-4o
+	'gpt-4o',
+	'gpt-4o-2024-05-13',
+
+	'gpt-4o-mini',
+	'gpt-4o-mini-2024-07-18',
 ];
 
 /**
  * Reference: https://docs.anthropic.com/claude/docs/models-overview
- * Updated: 2024-03-14
+ * Updated: 2024-08-05
  */
 export const ANTHROPIC_MODELS = [
+	'claude-3-5-sonnet-20240620',
 	'claude-3-opus-20240229',
 	'claude-3-sonnet-20240229',
 	'claude-3-haiku-20240307',
-	'claude-2.0',
-	'claude-2.1',
-	'claude-instant-1.1',
-	'claude-instant-1.2',
+	// 'claude-2.0',
+	// 'claude-2.1',
+	// 'claude-instant-1.1',
+	// 'claude-instant-1.2',
 ];
 
 /**
  * Reference: https://docs.cohere.com/docs/models
- * Updated: 2024-04-13
+ * Updated: 2024-08-05
  * Model fetching is available from the API.
  */
-export const COHERE_MODELS = ['command-r-plus', 'command-r', 'command'];
+export const COHERE_MODELS = [
+	'command-r-plus',
+	'command-r',
+	'command',
+	'c4ai-aya-23',
+];
 
 /**
  * Reference: https://docs.perplexity.ai/docs/model-cards
@@ -84,16 +100,12 @@ export const PERPLEXITY_MODELS = [
  */
 export const OPENROUTER_MODELS: OpenAIModels['data'] = [
 	{
+		id: 'openai/gpt-4o-mini',
+		name: 'OpenAI: GPT-4o Mini',
+	},
+	{
 		id: 'openai/gpt-3.5-turbo',
 		name: 'OpenAI: GPT-3.5 Turbo',
-	},
-	{
-		id: 'openai/gpt-4',
-		name: 'OpenAI: GPT-4',
-	},
-	{
-		id: 'google/gemini-pro',
-		name: 'Google: Gemini Pro (preview)',
 	},
 ];
 
@@ -159,7 +171,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 		[APIProvider.OpenAI]: {
 			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.OpenAI],
-			model: 'gpt-3.5-turbo',
+			model: 'gpt-4o-mini',
 		},
 		[APIProvider.AzureOpenAI]: {
 			apiKey: '',
@@ -170,22 +182,22 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 		[APIProvider.GoogleGemini]: {
 			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.GoogleGemini],
-			model: 'gemini-pro',
+			model: 'gemini-1.5-flash',
 		},
 		[APIProvider.Anthropic]: {
 			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.Anthropic],
-			model: 'claude-2.1',
+			model: 'claude-3-5-sonnet-20240620',
 		},
 		[APIProvider.Cohere]: {
 			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.Cohere],
-			model: 'command',
+			model: 'command-r-plus',
 		},
 		[APIProvider.OpenRouter]: {
 			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.OpenRouter],
-			model: 'openai/gpt-3.5-turbo',
+			model: 'openai/gpt-4o-mini',
 		},
 		[APIProvider.PerplexityAI]: {
 			apiKey: '',
@@ -218,7 +230,7 @@ export const settingTabProviderConfiguations = {
 	[APIProvider.OpenAI]: {
 		defaultHost: DEFAULT_HOST[APIProvider.OpenAI],
 		docs: 'https://platform.openai.com/docs/introduction',
-		defaultModel: 'gpt-3.5-turbo',
+		defaultModel: 'gpt-4o-mini',
 		models: OPENAI_MODELS,
 	},
 	[APIProvider.AzureOpenAI]: {
@@ -230,19 +242,19 @@ export const settingTabProviderConfiguations = {
 	[APIProvider.Anthropic]: {
 		defaultHost: DEFAULT_HOST[APIProvider.Anthropic],
 		docs: 'https://docs.anthropic.com/claude/reference/getting-started-with-the-api',
-		defaultModel: 'claude-2.1',
+		defaultModel: 'claude-3-5-sonnet-20240620',
 		models: ANTHROPIC_MODELS,
 	},
 	[APIProvider.GoogleGemini]: {
 		defaultHost: DEFAULT_HOST[APIProvider.GoogleGemini],
 		docs: 'https://ai.google.dev/models/gemini',
-		defaultModel: '',
+		defaultModel: 'gemini-1.5-flash',
 		models: [],
 	},
 	[APIProvider.Cohere]: {
 		defaultHost: DEFAULT_HOST[APIProvider.Cohere],
 		docs: 'https://docs.cohere.com/reference/versioning',
-		defaultModel: 'command',
+		defaultModel: 'command-r-plus',
 		models: COHERE_MODELS,
 	},
 	[APIProvider.OpenRouter]: {
