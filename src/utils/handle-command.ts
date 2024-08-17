@@ -40,6 +40,8 @@ export async function runCommand(
 			const to = editor.getCursor('to');
 			const context = editor.getLine(from.line);
 			input = `${context.substring(0, from.ch)}|||${input}|||${context.substring(to.ch)}`;
+		} else {
+			input = `|||${input}|||`;
 		}
 
 		console.log(input);
