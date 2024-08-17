@@ -37,7 +37,7 @@
 		"@types/node": "22.1.0",
 		"@types/qrcode": "1.5.5",
 		"builtin-modules": "4.0.0",
-		"esbuild": "0.23.0",
+		"esbuild": "0.23.1",
 		"husky": "9.1.4",
 		"lint-staged": "15.2.8",
 		"obsidian": "1.6.6",
