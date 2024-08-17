@@ -1,28 +1,48 @@
-import { type Editor, Notice } from 'obsidian';
+import { Notice } from 'obsidian';
 
 import { CommandActions, type CommandNames, CustomBehavior } from '@/config';
 import type WordWisePlugin from '@/main';
 import AskForInstructionModal from '@/modals/ask-for-instruction';
 import type { TextGenerationLog } from '@/types';
 import { nanoid } from 'nanoid';
+import optionsMenu from '../menus/optionsMenu';
 import { getCommands, inputPrompt } from '../prompts';
+import type { EnhancedEditor } from '../types';
 import { callTextAPI } from './call-api';
 import { log } from './logging';
 import { mustacheRender } from './mustache';
 import { ForageStorage } from './storage';
 
+function markdownListToArray(markdownList: string): string[] {
+	return markdownList
+		.split('\n') // Split the input string by newlines
+		.map((line) => line.trim()) // Trim whitespace from each line
+		.filter((line) => line.length > 0) // Filter out empty lines
+		.map((line) => line.replace(/^[-*]\s+|\d+\.\s+/, '')); // Remove markdown list markers
+}
+
 export async function runCommand(
-	editor: Editor,
+	editor: EnhancedEditor,
 	plugin: WordWisePlugin,
 	command: CommandNames | string,
 ) {
 	try {
-		const input = editor.getSelection();
+		let input = editor.getSelection();
 
 		if (input.length === 0) {
 			new Notice('No input selected');
 			return;
 		}
+
+		const get = editor.getCursor();
+		if (command === 'Find Synonym') {
+			const from = editor.getCursor('from');
+			const to = editor.getCursor('to');
+			const context = editor.getLine(from.line);
+			input = `${context.substring(0, from.ch)}|||${input}|||${context.substring(to.ch)}`;
+		}
+
+		console.log(input);
 
 		log(plugin, `Running command: ${command}`);
 
@@ -95,8 +115,6 @@ export async function runCommand(
 			await new ForageStorage().addTextGenerationLog(loggingBody);
 		}
 
-		const get = editor.getCursor();
-
 		switch (plugin.settings.customBehavior) {
 			case CustomBehavior.InsertFirst:
 				// Insert the generated text at the beginning of the editor
@@ -106,7 +124,14 @@ export async function runCommand(
 				editor.replaceRange(result, { line: get.line + 1, ch: 0 });
 				break;
 			default:
-				editor.replaceSelection(result);
+				if (command === 'Find Synonym') {
+					//console.log(userMessage);
+					!document.querySelector('.menu.optionContainer')
+						? optionsMenu(editor, markdownListToArray(result))
+						: true;
+				} else {
+					editor.replaceSelection(result);
+				}
 		}
 
 		const endTime = Date.now(); // Capture end time
