@@ -21,7 +21,7 @@
 		"@anthropic-ai/sdk": "0.25.0",
 		"@google/generative-ai": "0.16.0",
 		"cohere-ai": "7.11.2",
-		"dayjs": "1.11.12",
+		"dayjs": "1.11.13",
 		"fuse.js": "7.0.0",
 		"localforage": "1.10.0",
 		"nanoid": "5.0.7",
