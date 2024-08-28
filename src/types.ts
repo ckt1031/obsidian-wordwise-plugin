@@ -1,3 +1,4 @@
+import type { Editor, Menu } from 'obsidian';
 import * as v from 'valibot';
 import {
 	APIProvider,
@@ -170,3 +171,20 @@ export const TextGenerationLogSchema = v.object({
 });
 
 export type TextGenerationLog = v.InferInput<typeof TextGenerationLogSchema>;
+
+export interface Coords {
+	top: number;
+	left: number;
+	right: number;
+	bottom: number;
+}
+
+export type EnhancedMenu = Menu & { dom: HTMLElement };
+
+export type EnhancedEditor = Editor & {
+	cursorCoords: (where: boolean, mode: string) => Coords;
+	coordsAtPos: (where: number) => Coords;
+	cm: CodeMirror.Editor & { coordsAtPos: (where: number) => Coords };
+	hasFocus: () => boolean;
+	getSelection: () => string;
+};

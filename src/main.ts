@@ -1,4 +1,4 @@
-import { type Editor, Notice, Plugin, addIcon } from 'obsidian';
+import { Notice, Plugin, addIcon } from 'obsidian';
 
 import localforage from 'localforage';
 import { mergeDeepRight } from 'rambda';
@@ -15,6 +15,7 @@ import {
 	ObfuscatedPluginSettingsSchema,
 	type PluginSettings,
 } from './types';
+import type { EnhancedEditor } from './types';
 import { runCommand } from './utils/handle-command';
 import { log } from './utils/logging';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
@@ -46,14 +47,15 @@ export default class WordWisePlugin extends Plugin {
 				id: slugify(command.name),
 				name: command.name,
 				icon: command.icon ? iconName : AiIcon,
-				editorCallback: (editor) => runCommand(editor, this, command.name),
+				editorCallback: (editor: EnhancedEditor) =>
+					runCommand(editor, this, command.name),
 			});
 		}
 
 		const commands = [
 			{
 				name: 'Check Text Generation Logs',
-				onClick: async (_editor: Editor) => {
+				onClick: async (_editor: EnhancedEditor) => {
 					const modal = new TextGenerationLogModal(this);
 
 					await modal.initStates();
@@ -67,12 +69,12 @@ export default class WordWisePlugin extends Plugin {
 			this.addCommand({
 				id: slugify(command.name),
 				name: command.name,
-				editorCallback: (editor) => command.onClick(editor),
+				editorCallback: (editor: EnhancedEditor) => command.onClick(editor),
 			});
 		}
 
 		this.registerEvent(
-			this.app.workspace.on('editor-menu', (menu, editor) => {
+			this.app.workspace.on('editor-menu', (menu, editor: EnhancedEditor) => {
 				menu.addItem((item) => {
 					item.setTitle(`${this.manifest.name} Commands`).setIcon('brain-cog');
 

@@ -135,13 +135,14 @@ export enum APIProvider {
 }
 
 export enum CommandNames {
-	ImproveWriting = 'Improve Writing',
+	FindSynonym = 'Find Synonym',
 	FixGrammar = 'Fix Grammar',
-	SimplifyText = 'Simplify Text',
-	MakeShorter = 'Make Shorter',
-	MakeLonger = 'Make Longer',
-	Paraphrase = 'Paraphrase',
+	ImproveWriting = 'Improve Writing',
 	IntelligentBold = 'Intelligent Bold',
+	MakeLonger = 'Make Longer',
+	MakeShorter = 'Make Shorter',
+	Paraphrase = 'Paraphrase',
+	SimplifyText = 'Simplify Text',
 
 	// Extra Commands
 	CustomInstructions = 'Custom Instructions',

@@ -1,6 +1,7 @@
 import { safeParse } from 'valibot';
 import { CommandActions, CommandNames } from './config';
 import CustomInstructions from './icons/custom-instructions.svg';
+import FindSynonymIcon from './icons/find-synonym.svg';
 import FixGrammarIcon from './icons/fix-grammar.svg';
 import HighlightMainPointIcon from './icons/highlight-mainpoint.svg';
 import ImproveWritingIcon from './icons/improve-writing.svg';
@@ -40,12 +41,14 @@ export function getCommands(settings: PluginSettings): ComandProps[] {
 export const systemPrompt = `
 ## Base Instructions
 
-- Remain headings if given.
-- Leverage LATEX for mathematical expressions, mhchem \`\ce\` for chemistry, use single $ for inline sentence ($1+1=2$), but double \`$$\` for line separation.
-- Change text in the ##Input area, text WRAPPED by ===.
-- This is plain markdown, never encode URLs/characters/symbols or change the structure of the markdown.
+- The ##Input area is WRAPPED by ===. The input shows you the context for the words you need to change. The context is important to understand the meaning of the words.
+- The actual words you must change are WRAPPED in three pipe characters |||like this|||.
+- When producing the output, you must omit the wrapping pipe characters.
 - Keep the meaning the same. If possible, retain the structure of the paragraphs. Ensure the re-written text's word count is near to the original text.
 - Response with the rewritten text only, do not include additional context, explanation, or extra wording, just the re-written text itself.
+- Preserve headings if given.
+- Leverage LATEX for mathematical expressions, mhchem \`\ce\` for chemistry, use single $ for inline sentence ($1+1=2$), but double \`$$\` for line separation.
+- This is plain markdown, never encode URLs/characters/symbols or change the structure of the markdown.
 - Respond in the same language variety or dialect of the text.
 - Keep the suitable markdown compounds if present, such as images, URLs, checkbox, and Obsidian backlinks \`[[xxx]]\` and specified triple backtick boxes (also maintain its language identifier, unless its content is code).
 
@@ -86,6 +89,32 @@ export const extraPrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] = [
 export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 	[
 		{
+			name: CommandNames.FindSynonym,
+			icon: FindSynonymIcon,
+			action: CommandActions.DirectReplacement,
+			data: `
+## Tasks
+
+- Find four synonyms for the words wrapped in three pipe characters.
+- Your synonyms may be single words or short phrases. Ensure that they fit naturally into the sentence and maintain the original text's tone and style.
+- Use the same capitalization as the input text.
+- If possible, avoid synonyms that are too obscure or complex. Prefer words that are easy to understand.
+- Output the synonyms in a markdown list format, with each suggestion as a bullet point.
+`,
+		},
+		{
+			name: CommandNames.FixGrammar,
+			icon: FixGrammarIcon,
+			action: CommandActions.DirectReplacement,
+			data: `
+		## Tasks
+		
+		- Proofread and correct the spelling and grammar mistakes.
+		- Make as few changes as possible. Only correct any spelling or grammar mistakes if the original text has spelling or grammar mistakes. Do not make any writing improvements.
+		- If the original text has no spelling or grammar mistakes, simply repeat the original text.
+		`,
+		},
+		{
 			name: CommandNames.ImproveWriting,
 			icon: ImproveWritingIcon,
 			action: CommandActions.DirectReplacement,
@@ -103,16 +132,29 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 `,
 		},
 		{
-			name: CommandNames.FixGrammar,
-			icon: FixGrammarIcon,
+			name: CommandNames.IntelligentBold,
+			icon: HighlightMainPointIcon,
 			action: CommandActions.DirectReplacement,
 			data: `
-## Tasks
-
-- Proofread and correct the spelling and grammar mistakes.
-- Make as few changes as possible. Only correct any spelling or grammar mistakes if the original text has spelling or grammar mistakes. Do not make any writing improvements.
-- If the original text has no spelling or grammar mistakes, simply repeat the original text.
-`,
+		## Tasks
+		
+		- Bold the most **important ideas, words, stats, numbers, or sentences**.
+		- Keep the bolding clear and simple. Do not make it messy or confusing.
+		- **Avoid bolding too much text**. If everything is worth bolded, then nothing stands out.
+		- NEVER bolding headings or whole paragraphs, never change or bold the backstick wrapped content.
+		`,
+		},
+		{
+			name: CommandNames.MakeLonger,
+			icon: MakeLongerIcon,
+			action: CommandActions.DirectReplacement,
+			data: `
+		## Tasks
+		
+		- Write a longer version, keep the text clear, easy to understand, and well put together.
+		- Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
+		- Keep the meaning the same if possible. Ensure the rewritten text's word count is more than twice the original text but no more than 4 times the original text.
+		`,
 		},
 		{
 			name: CommandNames.MakeShorter,
@@ -123,31 +165,6 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 
 - Write a shorter version, keep the text clear, easy to understand, and well put together.
 - Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
-`,
-		},
-		{
-			name: CommandNames.MakeLonger,
-			icon: MakeLongerIcon,
-			action: CommandActions.DirectReplacement,
-			data: `
-## Tasks
-
-- Write a longer version, keep the text clear, easy to understand, and well put together.
-- Choose simple words and phrases to write the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
-- Keep the meaning the same if possible. Ensure the rewritten text's word count is more than twice the original text but no more than 4 times the original text.
-`,
-		},
-		{
-			name: CommandNames.IntelligentBold,
-			icon: HighlightMainPointIcon,
-			action: CommandActions.DirectReplacement,
-			data: `
-## Tasks
-
-- Bold the most **important ideas, words, stats, numbers, or sentences**.
-- Keep the bolding clear and simple. Do not make it messy or confusing.
-- **Avoid bolding too much text**. If everything is worth bolded, then nothing stands out.
-- NEVER bolding headings or whole paragraphs, never change or bold the backstick wrapped content.
 `,
 		},
 		{
