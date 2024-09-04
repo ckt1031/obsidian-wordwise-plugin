@@ -34,7 +34,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
-		"@types/node": "22.5.1",
+		"@types/node": "22.5.4",
 		"@types/qrcode": "1.5.5",
 		"builtin-modules": "4.0.0",
 		"esbuild": "0.23.1",
