@@ -18,33 +18,33 @@
 		"lint-staged": "lint-staged"
 	},
 	"dependencies": {
-		"@anthropic-ai/sdk": "0.27.2",
-		"@google/generative-ai": "0.17.1",
-		"cohere-ai": "7.13.0",
+		"@anthropic-ai/sdk": "0.27.3",
+		"@google/generative-ai": "0.20.0",
+		"cohere-ai": "7.14.0",
 		"dayjs": "1.11.13",
 		"front-matter": "^4.0.2",
 		"fuse.js": "7.0.0",
 		"localforage": "1.10.0",
 		"nanoid": "5.0.7",
-		"openai": "4.58.0",
+		"openai": "4.65.0",
 		"qrcode": "1.5.4",
 		"rambda": "9.3.0",
 		"slugify": "1.6.6",
 		"snakecase-keys": "8.0.1",
-		"valibot": "0.41.0"
+		"valibot": "0.42.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.8.3",
-		"@types/node": "22.5.4",
+		"@biomejs/biome": "1.9.2",
+		"@types/node": "22.7.4",
 		"@types/qrcode": "1.5.5",
 		"builtin-modules": "4.0.0",
-		"esbuild": "0.23.1",
-		"husky": "9.1.5",
+		"esbuild": "0.24.0",
+		"husky": "9.1.6",
 		"lint-staged": "15.2.10",
-		"obsidian": "1.6.6",
+		"obsidian": "1.7.2",
 		"tslib": "2.7.0",
-		"typescript": "5.5.4",
-		"vitest": "2.0.5"
+		"typescript": "5.6.2",
+		"vitest": "2.1.1"
 	},
 	"lint-staged": {
 		"*.{js,ts,mjs,cjs}": ["biome check && tsc"]
