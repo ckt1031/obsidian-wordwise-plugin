@@ -9,12 +9,14 @@ import { log } from './logging';
 export async function callTextAPI({
 	plugin,
 	messages,
+	provider,
+	model: _model,
 }: CallTextAPIProps): Promise<string | null | undefined> {
 	const { settings } = plugin;
 
-	const apiProvider = settings.aiProvider;
+	const apiProvider = provider ?? settings.aiProvider;
 
-	let model = settings.aiProviderConfig[settings.aiProvider].model;
+	let model = _model ?? settings.aiProviderConfig[settings.aiProvider].model;
 
 	if (settings.customAiModel.length > 0 && settings.advancedSettings) {
 		model = settings.customAiModel;

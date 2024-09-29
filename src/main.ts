@@ -36,7 +36,9 @@ export default class WordWisePlugin extends Plugin {
 
 		addIcon('openai', AiIcon);
 
-		for (const command of getCommands(this.settings)) {
+		const allCommands = await getCommands(this);
+
+		for (const command of allCommands) {
 			// slugify and remove spaces
 			const iconName = command.name.toLowerCase().replaceAll(/\s/g, '-');
 
@@ -80,7 +82,7 @@ export default class WordWisePlugin extends Plugin {
 
 					const subMenu = item.setSubmenu();
 
-					for (const command of getCommands(this.settings)) {
+					for (const command of allCommands) {
 						// slugify and remove spaces
 						const iconName = command.name.toLowerCase().replaceAll(/\s/g, '-');
 

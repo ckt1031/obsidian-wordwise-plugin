@@ -9,48 +9,69 @@ import MakeLongerIcon from './icons/make-longer.svg';
 import MakeShorterIcon from './icons/make-shorter.svg';
 import ParaphraseIcon from './icons/paraphrase.svg';
 import SimplifyIcon from './icons/simplify-text.svg';
+import type WordWisePlugin from './main';
+import { getAllFolderBasedPrompt } from './prompts-file-based';
 import { type ComandProps, type Prompt, PromptSchema } from './types';
-import type { PluginSettings } from './types';
 
-export function getCommands(settings: PluginSettings): ComandProps[] {
-	const localCustomPrompts = settings.customPrompts;
+export async function getCommands(
+	plugin: WordWisePlugin,
+): Promise<ComandProps[]> {
+	const settings = plugin.settings;
+
+	// Saved in config.json
+	const configCustomPrompts = settings.customPrompts;
 
 	const internalPrompts = settings.disableNativeCommands
 		? []
 		: [...extraPrompts, ...nativePrompts];
 
+	const folderPrompts = await getAllFolderBasedPrompt(plugin);
+
 	// Add basePromptEnding to all prompts ending
-	return [...internalPrompts, ...localCustomPrompts].map((prompt) => {
-		let action = CommandActions.DirectReplacement;
+	return [...internalPrompts, ...configCustomPrompts, ...folderPrompts].map(
+		(prompt) => {
+			let action = CommandActions.DirectReplacement;
 
-		// Check if prompt has Prompt type
-		if ('action' in prompt && safeParse(PromptSchema, prompt)) {
-			action = prompt.action as CommandActions;
-		}
+			// Check if prompt has Prompt type
+			if ('action' in prompt && safeParse(PromptSchema, prompt)) {
+				action = prompt.action as CommandActions;
+			}
 
-		return {
-			name: prompt.name,
-			icon: prompt.icon,
-			action,
-			taskPrompt: prompt.data,
-			systemPrompt,
-		};
-	});
+			return {
+				name: prompt.name,
+				icon: prompt.icon,
+				action,
+				taskPrompt: prompt.data,
+				systemPrompt:
+					'systemPrompt' in prompt
+						? (prompt.systemPrompt as string)
+						: systemPrompt,
+				isFilePrompt: 'isFilePrompt' in prompt ? prompt.isFilePrompt : false,
+				filePath: 'filePath' in prompt ? prompt.filePath : undefined,
+				customDefinedModel: 'model' in prompt ? prompt.model : undefined,
+				customDefinedProvider:
+					'provider' in prompt ? prompt.provider : undefined,
+			};
+		},
+	);
 }
 
+// - Respond in the same language variety or dialect of the text.
 export const systemPrompt = `
 ## Base Instructions
 
-- The ##Input area is WRAPPED by ===. The input shows you the context for the words you need to change. The context is important to understand the meaning of the words.
-- The actual words you must change are WRAPPED in three pipe characters |||like this|||.
-- When producing the output, you must omit the wrapping pipe characters.
-- Keep the meaning the same. If possible, retain the structure of the paragraphs. Ensure the re-written text's word count is near to the original text.
-- Response with the rewritten text only, do not include additional context, explanation, or extra wording, just the re-written text itself.
-- Preserve headings if given.
-- Leverage LATEX for mathematical expressions, mhchem \`\ce\` for chemistry, use single $ for inline sentence ($1+1=2$), but double \`$$\` for line separation.
-- This is plain markdown, never encode URLs/characters/symbols or change the structure of the markdown.
-- Respond in the same language variety or dialect of the text.
-- Keep the suitable markdown compounds if present, such as images, URLs, checkbox, and Obsidian backlinks \`[[xxx]]\` and specified triple backtick boxes (also maintain its language identifier, unless its content is code).
+- Write your output in Markdown format, using appropriate syntax for typesetting and formatting.
+- Keep the same original language variety or dialect as the input text.
+- Preserve relevant and necessary Markdown elements such as images, URLs, tags, checkboxes, \`[[backlinks]]\`, and triple backtick code blocks (with language ID, unless it's plain text). Do not remove them without explicit instructions.
+- Maintain the distinction between tags (#tag) and headings (## Heading). Do not create tags if they do not exist in the input or remove them randomly.
+- Preserve any existing tags in the input text. Do not remove them or convert them into headings, unless there is a specific need to do so. Tags are used for grouping and categorizing information in Obsidian, so it's important to keep them if they exist.
+- Do not randomly change the heading structure, even in cases where tags are present below headings. Only make changes to the heading structure if it is necessary for clarity or organization.
+- For math, use LaTeX enclosed in single $ for inline equations ($1+1=2$) and double \`$$\` for separate line equations. Always add at least one \`$\` wrapper for LaTeX to ensure proper rendering in Obsidian. Do not use LaTeX in headings.
+- For chemistry, use the mhchem \`\ce\` command.
+- Do not change names of locations, people, or unknown terms.
+- If a \`cardlink\` code block is present, preserve it as a URL box.
+- Respond with only the re-written text, without any comments, extra context, or triple code block delimiter with \`input\` language code.
+- If the input contains Obsidian quote boxes in the format of \`> [!xxx]\`, where \`xxx\` is the title of the quote box, preserve them as they are. If \`[!xxx]+\` is used, it means the quote box is extended and shows content by default. If \`[!xxx]-\` is used, it means the quote box is collapsed and does not show content by default. Only a positive (\`+\`) or negative (\`-\`) sign is accepted after the title; do not add any extra symbols. If no sign is present, the quote box will have no default extend or hide behavior.
 
 ## Special Reminder
 
@@ -59,13 +80,7 @@ export const systemPrompt = `
 - Do not change URLs or make it encoded because this is markdown.
 `;
 
-export const inputPrompt = `
-## Input
-
-===CONTENT-START===
-{{input}}
-===CONTENT-END===
-`;
+export const inputPrompt = '{{input}}';
 
 export const extraPrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] = [
 	{

@@ -22,6 +22,7 @@
 		"@google/generative-ai": "0.17.1",
 		"cohere-ai": "7.13.0",
 		"dayjs": "1.11.13",
+		"front-matter": "^4.0.2",
 		"fuse.js": "7.0.0",
 		"localforage": "1.10.0",
 		"nanoid": "5.0.7",

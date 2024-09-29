@@ -51,6 +51,13 @@ export type UniformModels = {
 	name?: string | undefined;
 }[];
 
+export const FilePromptPropertiesSchema = v.object({
+	name: v.string(),
+	model: v.optional(v.string()),
+	provider: v.enum_(APIProvider),
+	systemPrompt: v.optional(v.string()),
+});
+
 export const PluginSettingsSchema = v.object({
 	/** Date that helps migration */
 	dataSchemeDate: v.string(),
@@ -116,9 +123,10 @@ export const PluginSettingsSchema = v.object({
 	customPrompts: v.array(CustomPromptSchema),
 
 	disableNativeCommands: v.boolean(),
-	customPromptsFileBased: v.object({
+
+	customPromptsFromFolder: v.object({
 		enabled: v.boolean(),
-		filePath: v.string(),
+		path: v.string(),
 	}),
 
 	// Custom Behavior
@@ -142,6 +150,8 @@ export interface CallTextAPIProps {
 		system: string;
 		user: string;
 	};
+	model?: string;
+	provider?: APIProvider;
 }
 
 export interface ProviderTextAPIProps extends CallTextAPIProps {
@@ -152,8 +162,12 @@ export interface ComandProps {
 	name: string;
 	icon: string | undefined;
 	action: CommandActions;
-	taskPrompt: string;
+	taskPrompt: string | undefined;
 	systemPrompt: string;
+	isFilePrompt?: boolean;
+	filePath?: string;
+	customDefinedModel?: string;
+	customDefinedProvider?: APIProvider;
 }
 
 export const TextGenerationLogSchema = v.object({

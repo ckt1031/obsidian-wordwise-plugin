@@ -86,7 +86,7 @@ export class SettingTab extends PluginSettingTab {
 						)
 						.addText((text) =>
 							text
-								.setPlaceholder(config.defaultHost)
+								.setPlaceholder('https://api.example.com/v1')
 								.setValue(settings.aiProviderConfig[provider].baseUrl)
 								.onChange(async (value) => {
 									// Update the Base URL
@@ -404,30 +404,30 @@ export class SettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName('File based custom prompts')
+			.setName('File based custom prompts (Experimental)')
 			.setDesc(
 				'Enable file based custom prompts, this will use the prompts from the file specified below',
 			)
 			.addToggle((toggle) =>
 				toggle
-					.setValue(settings.customPromptsFileBased.enabled)
+					.setValue(settings.customPromptsFromFolder.enabled)
 					.onChange(async (value) => {
-						settings.customPromptsFileBased.enabled = value;
+						settings.customPromptsFromFolder.enabled = value;
 						await plugin.saveSettings();
 						this.restartSettingsTab(plugin);
 					}),
 			);
 
-		if (settings.customPromptsFileBased.enabled) {
+		if (settings.customPromptsFromFolder.enabled) {
 			new Setting(containerEl)
 				.setName('File path')
 				.setDesc('Path to the file containing the custom prompts')
 				.addText((text) =>
 					text
 						.setPlaceholder('Enter the file path')
-						.setValue(settings.customPromptsFileBased.filePath)
+						.setValue(settings.customPromptsFromFolder.path)
 						.onChange(async (value) => {
-							settings.customPromptsFileBased.filePath = value;
+							settings.customPromptsFromFolder.path = value;
 							await plugin.saveSettings();
 						}),
 				);

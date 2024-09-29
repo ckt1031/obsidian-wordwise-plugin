@@ -227,9 +227,9 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	debugMode: false,
 	customPrompts: [],
 	disableNativeCommands: false,
-	customPromptsFileBased: {
+	customPromptsFromFolder: {
 		enabled: false,
-		filePath: 'Wordwise',
+		path: 'Wordwise',
 	},
 
 	// Custom Behavior

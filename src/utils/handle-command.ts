@@ -3,6 +3,7 @@ import { Notice } from 'obsidian';
 import { CommandActions, type CommandNames, CustomBehavior } from '@/config';
 import type WordWisePlugin from '@/main';
 import AskForInstructionModal from '@/modals/ask-for-instruction';
+import { getFolderBasedPrompt } from '@/prompts-file-based';
 import type { TextGenerationLog } from '@/types';
 import { nanoid } from 'nanoid';
 import optionsMenu from '../menus/optionsMenu';
@@ -35,20 +36,17 @@ export async function runCommand(
 		}
 
 		const get = editor.getCursor();
+
 		if (command === 'Find Synonym') {
 			const from = editor.getCursor('from');
 			const to = editor.getCursor('to');
 			const context = editor.getLine(from.line);
 			input = `${context.substring(0, from.ch)}|||${input}|||${context.substring(to.ch)}`;
-		} else {
-			input = `|||${input}|||`;
 		}
-
-		console.log(input);
 
 		log(plugin, `Running command: ${command}`);
 
-		const actionData = getCommands(plugin.settings).find(
+		const actionData = (await getCommands(plugin)).find(
 			(p) => p.name === command,
 		);
 
@@ -75,10 +73,19 @@ export async function runCommand(
 			`Generating text with ${command} (${plugin.settings.aiProvider})...`,
 		);
 
-		console.log(input);
+		let taskPrompt = actionData.taskPrompt;
+
+		if (actionData.isFilePrompt && actionData.filePath) {
+			const _data = await getFolderBasedPrompt(plugin, actionData.filePath);
+			taskPrompt = _data?.data;
+		}
+
+		if (!taskPrompt) {
+			throw new Error(`No task prompt found for command ${command}`);
+		}
 
 		const userMessage: string = mustacheRender(
-			`${actionData.taskPrompt}\n\n${inputPrompt}`,
+			`${taskPrompt}\n\n${inputPrompt}`,
 			{
 				input,
 				instructions,
@@ -93,6 +100,8 @@ export async function runCommand(
 				system: actionData.systemPrompt,
 				user: userMessage,
 			},
+			model: actionData.customDefinedModel,
+			provider: actionData.customDefinedProvider,
 		});
 
 		if (!result) {
