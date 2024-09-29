@@ -74,7 +74,11 @@ export class SettingTab extends PluginSettingTab {
 							});
 					});
 
-				if (settings.advancedSettings || provider === APIProvider.AzureOpenAI) {
+				if (
+					settings.advancedSettings ||
+					provider === APIProvider.AzureOpenAI ||
+					provider === APIProvider.Custom
+				) {
 					new Setting(containerEl)
 						.setName(`${provider} endpoint base url`)
 						.setDesc(
