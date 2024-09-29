@@ -31,6 +31,21 @@ jobs:
               env:
                   SETTINGS_OBFUSCATE_KEY: ${{ secrets.SETTINGS_OBFUSCATE_KEY }}
 
+            # Get the version number and put it in a variable
+            - name: Get version info
+              id: version
+              run: |
+                  echo "name=$(git describe --abbrev=0 --tags)" >> $GITHUB_OUTPUT
+
+            - name: Prepare manifest file
+              run: |
+                    if [[ "${{ contains(steps.version.outputs.name, '-beta') }}" == 'true' ]]; then
+                        cp manifest-beta.json manifest.json
+                    else
+                        echo "Pass"
+                    fi
+              shell: bash
+
             - name: Release
               if: startsWith(github.ref, 'refs/tags/')
               uses: softprops/action-gh-release@v2
@@ -40,4 +55,4 @@ jobs:
                       manifest.json
                       styles.css
                   draft: false
-                  prerelease: false
+                  prerelease: ${{ endsWith(github.ref, '-beta') }}
