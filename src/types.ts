@@ -53,6 +53,7 @@ export type UniformModels = {
 
 export const FilePromptPropertiesSchema = v.object({
 	name: v.string(),
+	disabled: v.optional(v.boolean()),
 	model: v.optional(v.string()),
 	provider: v.optional(v.enum_(APIProvider)),
 	systemPrompt: v.optional(v.string()),

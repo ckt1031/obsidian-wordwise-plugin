@@ -59,6 +59,8 @@ function readFile(fileContent: string, needBody = false) {
 
 	const attributes = prompt.output;
 
+	if (attributes.disabled) return undefined;
+
 	return {
 		name: attributes.name,
 		// systemPrompt: attributes.systemPrompt || '',
