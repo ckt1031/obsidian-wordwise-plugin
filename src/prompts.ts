@@ -122,11 +122,15 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			icon: FixGrammarIcon,
 			action: CommandActions.DirectReplacement,
 			data: `
-		## Tasks
-		
-		- Proofread and correct the spelling and grammar mistakes.
-		- Make as few changes as possible. Only correct any spelling or grammar mistakes if the original text has spelling or grammar mistakes. Do not make any writing improvements.
-		- If the original text has no spelling or grammar mistakes, simply repeat the original text.
+## Task Instructions: Fix Grammar
+
+Proofread and correct any grammatical or spelling mistakes in the given text, focusing on the following aspects:
+
+- Fix grammatical errors, such as incorrect verb tenses, subject-verb agreement, pronoun usage, and sentence structure.
+- Correct any spelling mistakes.
+- Do not make any changes to the content, tone, style, or word length of the text.
+- Do not make any writing improvements or change words beyond fixing the errors.
+- If there are no grammar or spelling mistakes in the text, leave the content unchanged and return the original text as is.
 		`,
 		},
 		{
@@ -134,16 +138,23 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			icon: ImproveWritingIcon,
 			action: CommandActions.DirectReplacement,
 			data: `
-## Tasks
+## Task Instructions: Text Improvement
 
-- Improve writing of the text.
-- Remain the tone.
-- Fix the factual inaccuracy.
-- Reduce duplicated ideas and wordings, keep writing simple and concise.
-- Make the text clearer, easier to understand, and well put together by correcting grammar, spelling, choosing the most suitable punctuation marks, and selecting the best tone and style based on the topic and purpose of the text.
-- Choose simple words and phrases to improve the text. Avoid ones that are too hard or confusing. Write the text like a real person would. Keep your tone balanced, not too casual or too formal, to match what the text is meant to do.
-- Do not use advanced or strange words that are not suitable for simple writings. You may use terminology or specialized words if it is necessary.
-- Keep everything fluent and highly readable. If a word, phrase, or part of the text is already clear and effective, leave it as it is, unchanged.
+Improve the writing of the given text, focusing on the following aspects:
+
+- Enhance clarity and readability while maintaining a tone suitable for personal notes.
+- Do not make any changes to the content within quote boxes. Leave the quoted content as it is, unless if there are potential improvements or errors within the quote box.
+- Re-write headings, if possible, to make them more appropriate for the content.
+- Reduce duplicated wordings and improve the overall flow of the text.
+- Correct any factual inaccuracies, grammar, or spelling errors.
+- Choose the most appropriate punctuation and simple, familiar words that best fit the topic and purpose.
+- Adjust the tone and style to be well-suited for the content.
+- Preserve the original meaning and paragraph structure whenever possible.
+- Aim for a similar word count, only increasing it if necessary for clarity or coherence.
+- Avoid using complex or awkward words that don't fit in simple writing and personal notes.
+- Use specialized terminology when needed, especially for scientific or technological content, but do not overuse it.
+- Ensure that the improved writing sounds natural and appropriate for personal notes. Avoid using overly advanced English words or an excessively informal tone that may seem strange in the context of personal notes. Unless the situation calls for it, try to write from a personal perspective to maintain a relatable and authentic voice.
+- If a word, phrase, or part of the text is already clear and effective, leave it unchanged.
 `,
 		},
 		{
@@ -151,12 +162,17 @@ export const nativePrompts: (Omit<Prompt, 'name'> & { name: CommandNames })[] =
 			icon: HighlightMainPointIcon,
 			action: CommandActions.DirectReplacement,
 			data: `
-		## Tasks
-		
-		- Bold the most **important ideas, words, stats, numbers, or sentences**.
-		- Keep the bolding clear and simple. Do not make it messy or confusing.
-		- **Avoid bolding too much text**. If everything is worth bolded, then nothing stands out.
-		- NEVER bolding headings or whole paragraphs, never change or bold the backstick wrapped content.
+## Task Instructions: Bold
+
+Identify and bold the most essential and significant information in the given text, focusing on the following aspects:
+
+- Highlight the main ideas, key terms, important phrases, or crucial numbers by making them bold.
+- Be selective and avoid excessive bolding, as it can make the text appear cluttered and difficult to read.
+- Do not bold entire paragraphs, as it defeats the purpose of emphasizing specific information.
+- Avoid bolding any words within headings or code blocks, as it may interfere with formatting and readability.
+- If the main ideas are already clear or the content is very short, do not add any bold formatting.
+- When bolding words or phrases, use double asterisks (\`**\`) on either side of the text, like this: **bolded text**.
+- Ensure that the bolded text does not disrupt the flow or grammatical structure of the sentences.
 		`,
 		},
 		{
