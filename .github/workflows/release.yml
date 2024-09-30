@@ -55,4 +55,4 @@ jobs:
                       manifest.json
                       styles.css
                   draft: false
-                  prerelease: ${{ endsWith(github.ref, '-beta') }}
+                  prerelease: ${{ contains(steps.version.outputs.name, '-beta') }}
