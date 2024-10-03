@@ -1,50 +1,18 @@
 import type { OpenAIModels, PluginSettings } from './types';
 
 /**
- * Reference: https://platform.openai.com/docs/models/overview
- * Updated: 2024-02-19
+ * Reference: https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models#gpt-4o-and-gpt-4-turbo
+ * Updated: 2024-10-03
  */
-export const AZURE_OPENAI_MODELS = [
-	'gpt-4',
-	'gpt-4-32k',
-	'gpt-4-vision',
-	'gpt-35-turbo',
-	'gpt-35-turbo-16k',
-];
+export const AZURE_OPENAI_MODELS = ['gpt-4o', 'gpt-4o-mini'];
 
 /**
- * Reference: https://platform.openai.com/docs/models/overview
- * Updated: 2024-08-05
+ * Reference: https://platform.openai.com/docs/models
+ * Updated: 2024-10-03
  */
 export const OPENAI_MODELS = [
-	// GPT-3.5
-	'gpt-3.5-turbo',
-	'gpt-3.5-turbo-1106',
-	'gpt-3.5-turbo-0125',
-
-	// GPT-4 8K
-	'gpt-4',
-	// 'gpt-4-0613',
-
-	// GPT-4 32K
-	'gpt-4-32k',
-	// 'gpt-4-32k-0613',
-
-	// GPT-4 Turbo 128K (Text Only)
-	'gpt-4-vision-preview',
-	'gpt-4-0125-preview',
-	'gpt-4-1106-preview',
-
-	// GPT-4 Turbo 128K (Vision + Text)
-	'gpt-4-turbo-preview',
-	'gpt-4-1106-vision-preview',
-
-	'gpt-4-turbo',
-	'gpt-4-turbo-2024-04-09',
-
-	// GPT-4o
 	'gpt-4o',
-	'gpt-4o-2024-05-13',
+	'gpt-4o-2024-08-06',
 
 	'gpt-4o-mini',
 	'gpt-4o-mini-2024-07-18',
@@ -59,36 +27,27 @@ export const ANTHROPIC_MODELS = [
 	'claude-3-opus-20240229',
 	'claude-3-sonnet-20240229',
 	'claude-3-haiku-20240307',
-	// 'claude-2.0',
-	// 'claude-2.1',
-	// 'claude-instant-1.1',
-	// 'claude-instant-1.2',
 ];
 
 /**
  * Reference: https://docs.cohere.com/docs/models
- * Updated: 2024-08-05
+ * Updated: 2024-10-03
  * Model fetching is available from the API.
  */
-export const COHERE_MODELS = [
-	'command-r-plus',
-	'command-r',
-	'command',
-	'c4ai-aya-23',
-];
+export const COHERE_MODELS = ['command-r-plus', 'command-r', 'command'];
 
 /**
- * Reference: https://docs.perplexity.ai/docs/model-cards
- * Updated: 2024-04-05
+ * Reference: https://docs.perplexity.ai/guides/model-cards
+ * Updated: 2024-10-03
  */
 export const PERPLEXITY_MODELS = [
-	'sonar-small-chat',
-	'sonar-small-online',
-	'sonar-medium-chat',
-	'sonar-medium-online',
-	'mistral-7b-instruct',
-	'mixtral-8x7b-instruct',
-	'codellama-70b-instruct',
+	'llama-3.1-sonar-small-128k-online',
+	'llama-3.1-sonar-large-128k-online',
+	'llama-3.1-sonar-huge-128k-online',
+	'llama-3.1-sonar-small-128k-chat',
+	'llama-3.1-sonar-large-128k-chat',
+	'llama-3.1-8b-instruct',
+	'llama-3.1-70b-instruct',
 ];
 
 /**
@@ -183,8 +142,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 		[APIProvider.AzureOpenAI]: {
 			apiKey: '',
 			baseUrl: '',
-			model: 'gpt-35-turbo',
-			apiVersion: '2023-05-15',
+			model: 'gpt-4o-mini',
+			apiVersion: '',
 		},
 		[APIProvider.GoogleGemini]: {
 			apiKey: '',
