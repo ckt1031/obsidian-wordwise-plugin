@@ -11,11 +11,11 @@ import ParaphraseIcon from './icons/paraphrase.svg';
 import SimplifyIcon from './icons/simplify-text.svg';
 import type WordWisePlugin from './main';
 import { getAllFolderBasedPrompt } from './prompts-file-based';
-import { type ComandProps, type Prompt, PromptSchema } from './types';
+import { type CommandProps, type Prompt, PromptSchema } from './types';
 
 export async function getCommands(
 	plugin: WordWisePlugin,
-): Promise<ComandProps[]> {
+): Promise<CommandProps[]> {
 	const settings = plugin.settings;
 
 	// Saved in config.json

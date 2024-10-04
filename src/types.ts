@@ -159,7 +159,7 @@ export interface ProviderTextAPIProps extends CallTextAPIProps {
 	model: string;
 }
 
-export interface ComandProps {
+export interface CommandProps {
 	name: string;
 	icon: string | undefined;
 	action: CommandActions;
@@ -181,6 +181,7 @@ export const TextGenerationLogSchema = v.object({
 
 	customInstruction: v.optional(v.string()),
 
+	// Typo, but it's already in use, so we can't change it
 	orginalText: v.string(),
 	generatedText: v.string(),
 });
