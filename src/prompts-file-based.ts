@@ -12,9 +12,7 @@ export async function getFolderBasedPrompt(
 	if (!exists) return undefined;
 
 	const fileContent = await plugin.app.vault.adapter.read(path);
-	const parsed = readFile(fileContent, true);
-
-	return parsed;
+	return readFile(fileContent, true);
 }
 
 export async function getAllFolderBasedPrompt(plugin: WordWisePlugin) {

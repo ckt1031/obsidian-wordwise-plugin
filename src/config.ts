@@ -195,7 +195,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	customBehavior: CustomBehavior.Replace,
 };
 
-export const settingTabProviderConfiguations = {
+export const settingTabProviderConfigurations = {
 	[APIProvider.OpenAI]: {
 		defaultHost: DEFAULT_HOST[APIProvider.OpenAI],
 		docs: 'https://platform.openai.com/docs/introduction',

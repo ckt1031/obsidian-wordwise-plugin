@@ -1,3 +1,4 @@
+import type CodeMirror from 'codemirror';
 import type { Editor, Menu } from 'obsidian';
 import * as v from 'valibot';
 import {
@@ -44,7 +45,6 @@ export const OpenAIModelsSchema = v.object({
 	data: v.array(v.object({ id: v.string(), name: v.optional(v.string()) })),
 });
 
-export type GoogleGenAIModels = v.InferInput<typeof GoogleGenAIModelsSchema>;
 export type OpenAIModels = v.InferInput<typeof OpenAIModelsSchema>;
 export type UniformModels = {
 	id: string;

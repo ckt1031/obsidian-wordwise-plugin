@@ -1,24 +1,4 @@
-import type { Plugin, SettingTab } from 'obsidian';
-
-interface PluginManifest {
-	author?: string;
-	authorUrl?: string;
-	description?: string;
-	dir?: string;
-	id?: string;
-	isDesktopOnly?: boolean;
-	minAppVersion?: string;
-	name?: string;
-	version?: string;
-}
-
-interface SettingTabI extends SettingTab {
-	containerEl: HTMLElement;
-	id: string;
-	name: string;
-	navEl: HTMLElement;
-	plugin?: Plugin;
-}
+import type {} from 'obsidian';
 
 declare module 'obsidian' {
 	interface App {

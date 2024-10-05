@@ -2,13 +2,13 @@ import { Notice } from 'obsidian';
 
 import { CommandActions, type CommandNames, CustomBehavior } from '@/config';
 import type WordWisePlugin from '@/main';
+import optionsMenu from '@/menus/optionsMenu';
 import AskForInstructionModal from '@/modals/ask-for-instruction';
+import { getCommands, inputPrompt } from '@/prompts';
 import { getFolderBasedPrompt } from '@/prompts-file-based';
 import type { TextGenerationLog } from '@/types';
+import type { EnhancedEditor } from '@/types';
 import { nanoid } from 'nanoid';
-import optionsMenu from '../menus/optionsMenu';
-import { getCommands, inputPrompt } from '../prompts';
-import type { EnhancedEditor } from '../types';
 import { callTextAPI } from './call-api';
 import { log } from './logging';
 import { mustacheRender } from './mustache';
@@ -19,7 +19,7 @@ function markdownListToArray(markdownList: string): string[] {
 		.split('\n') // Split the input string by newlines
 		.map((line) => line.trim()) // Trim whitespace from each line
 		.filter((line) => line.length > 0) // Filter out empty lines
-		.map((line) => line.replace(/^[-*]\s+|\d+\.\s+/, '')); // Remove markdown list markers
+		.map((line) => line.replace(/^[-*]\s+|\d+\.\s+/, '')); // Remove Markdown list markers
 }
 
 export async function runCommand(

@@ -7,7 +7,7 @@ import { wrapAPITestComponent } from './components/test-api';
 import {
 	APIProvider,
 	CustomBehavior,
-	settingTabProviderConfiguations,
+	settingTabProviderConfigurations,
 } from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
@@ -50,12 +50,12 @@ export class SettingTab extends PluginSettingTab {
 				dropDown.onChange(async (value) => {
 					settings.aiProvider = value as APIProvider;
 					await plugin.saveSettings();
-					this.restartSettingsTab(plugin);
+					await this.restartSettingsTab(plugin);
 				});
 			});
 
 		for (const [provider, config] of Object.entries(
-			settingTabProviderConfiguations,
+			settingTabProviderConfigurations,
 		)) {
 			if (settings.aiProvider === provider) {
 				new Setting(containerEl)
@@ -178,9 +178,9 @@ export class SettingTab extends PluginSettingTab {
 		new Setting(containerEl).setName('Advanced Model Parameters').setHeading();
 
 		new Setting(containerEl)
-			.setName('Disable native commands')
+			.setName('Disable pre-defined commands')
 			.setDesc(
-				'Disable the native commands provided by the plugin, this will only work if you have a custom prompt setup',
+				'Disable the pre-defined commands provided by the plugin, this will only work if you have a custom prompt setup',
 			)
 			.addToggle((toggle) =>
 				toggle
@@ -200,7 +200,7 @@ export class SettingTab extends PluginSettingTab {
 				toggle.setValue(settings.advancedSettings).onChange(async (value) => {
 					settings.advancedSettings = value;
 					await plugin.saveSettings();
-					this.restartSettingsTab(plugin);
+					await this.restartSettingsTab(plugin);
 				}),
 			);
 
@@ -381,7 +381,7 @@ export class SettingTab extends PluginSettingTab {
 							for (let i = 0; i < 5; i++) {
 								button.setButtonText(`Are you sure to delete? (${5 - i})`);
 								button.setDisabled(true);
-								sleep(1000);
+								await sleep(1000);
 							}
 
 							button.setDisabled(false);
@@ -406,7 +406,7 @@ export class SettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('File based custom prompts (Experimental)')
 			.setDesc(
-				'Enable file based custom prompts, this will use the prompts from the file specified below',
+				'Enable file based custom prompts, this will load file prompts from the folder path specified below',
 			)
 			.addToggle((toggle) =>
 				toggle
@@ -414,17 +414,17 @@ export class SettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						settings.customPromptsFromFolder.enabled = value;
 						await plugin.saveSettings();
-						this.restartSettingsTab(plugin);
+						await this.restartSettingsTab(plugin);
 					}),
 			);
 
 		if (settings.customPromptsFromFolder.enabled) {
 			new Setting(containerEl)
-				.setName('File path')
-				.setDesc('Path to the file containing the custom prompts')
+				.setName('Folder path')
+				.setDesc('Folder paths containing the files prompts')
 				.addText((text) =>
 					text
-						.setPlaceholder('Enter the file path')
+						.setPlaceholder('Enter the folder path')
 						.setValue(settings.customPromptsFromFolder.path)
 						.onChange(async (value) => {
 							settings.customPromptsFromFolder.path = value;
@@ -465,14 +465,14 @@ export class SettingTab extends PluginSettingTab {
 			.setName('Reset settings')
 			.setDesc('This will reset all settings to their default values')
 			.addButton((button) => {
-				button.setTooltip('Irrevisible action, please be careful!');
+				button.setTooltip('Irreversible action, please be careful!');
 				button.setButtonText('Reset').onClick(async () => {
 					if (button.buttonEl.textContent === 'Reset') {
 						// Are you sure? (seconds), give 5 seconds, loop 5 times
 						for (let i = 0; i < 5; i++) {
 							button.setButtonText(`Are you sure to reset? (${5 - i})`);
 							button.setDisabled(true);
-							sleep(1000);
+							await sleep(1000);
 						}
 
 						button.setDisabled(false);
@@ -485,7 +485,7 @@ export class SettingTab extends PluginSettingTab {
 						// This has already been clicked once, so reset the settings
 						await plugin.resetSettings();
 						new Notice('Resetting settings to default values');
-						this.restartSettingsTab(plugin);
+						await this.restartSettingsTab(plugin);
 					}
 				});
 			});

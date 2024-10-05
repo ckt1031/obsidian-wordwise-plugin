@@ -2,6 +2,8 @@
 
 Welcome to **Obsidian WordWise**, a community project adding AI features into Obsidian to simplify your workflow. This plugin integrates prompts, tools and commands powered by AI to boost productivity and enhance user experience.
 
+Guidelines to create and use file-based prompts in WordWise: [Docs](docs/file-prompts.md).
+
 ## Supported Providers
 
 - [OpenAI](https://openai.com/) - Advanced and powerful.
