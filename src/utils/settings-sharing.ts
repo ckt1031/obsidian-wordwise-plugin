@@ -21,15 +21,15 @@ export default class SettingsExportImport {
 		this.plugin = plugin;
 	}
 
-	private b64_to_utf8(str: string) {
+	private b64_to_utf8(str: string): string {
 		return decodeURIComponent(atob(str));
 	}
 
-	private utf8_to_b64(str: string | number | boolean) {
+	private utf8_to_b64(str: string | number | boolean): string {
 		return btoa(encodeURIComponent(str));
 	}
 
-	private getVaultName() {
+	private getVaultName(): string {
 		return this.plugin.app.vault.getName();
 	}
 
@@ -49,7 +49,9 @@ export default class SettingsExportImport {
 		};
 	}
 
-	public async importQrCodeUri(inputParams: unknown) {
+	public async importQrCodeUri(
+		inputParams: unknown,
+	): Promise<ProcessQrCodeResultType> {
 		const currentVaultName = this.getVaultName();
 		const params = inputParams as UriParams;
 

@@ -15,7 +15,7 @@ export default class TextGenerationLogModal extends Modal {
 	private enabled: boolean;
 	private logs: TextGenerationLog[];
 
-	private textLogDiv: HTMLDivElement;
+	private readonly textLogDiv: HTMLDivElement;
 
 	// Action sync function or async function
 	constructor(plugin: WordWisePlugin) {
@@ -72,7 +72,7 @@ export default class TextGenerationLogModal extends Modal {
 		// Add delete button
 		const deleteButton = contentEl.createEl('button', {
 			text: 'Delete Log',
-			cls: 'log-delet-button',
+			cls: 'log-delete-button',
 		});
 
 		deleteButton.onclick = async () => {

@@ -113,7 +113,7 @@ export default class WordWisePlugin extends Plugin {
 					new Notice(parsed.message);
 				} else if (parsed.result) {
 					this.settings = mergeDeepRight(this.settings, parsed.result);
-					this.saveSettings();
+					await this.saveSettings();
 					new Notice(
 						'Settings imported. Please check the settings tab to verify.',
 					);

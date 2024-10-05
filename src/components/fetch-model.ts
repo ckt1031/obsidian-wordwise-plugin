@@ -66,18 +66,12 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 					models = await getCohereModels({ plugin });
 					break;
 				}
-				case APIProvider.Custom:
-				case APIProvider.OpenRouter:
-				case APIProvider.OpenAI: {
-					models = await getOpenAIModels({ plugin });
-					break;
-				}
 				case APIProvider.GoogleGemini: {
 					models = await getGoogleGenAIModels({ plugin });
 					break;
 				}
 				default:
-					throw new Error(`Unknown API Provider: ${settings.aiProvider}`);
+					models = await getOpenAIModels({ plugin });
 			}
 
 			await setModels(settings.aiProvider, models);

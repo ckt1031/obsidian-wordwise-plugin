@@ -41,7 +41,7 @@ export default class ExportSettingsQrCodeModal extends Modal {
 			'button',
 			{
 				text: 'Copy Data String',
-				cls: 'log-delet-button',
+				cls: 'log-delete-button',
 			},
 			(el) => {
 				el.onclick = async () => {

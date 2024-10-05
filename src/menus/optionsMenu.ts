@@ -2,8 +2,8 @@
 // Very slightly adapted from code by Chetachi Ezikeuzor
 // Original source available at https://github.com/chetachiezikeuzor/Highlightr-Plugin/blob/master/src/ui/highlighterMenu.ts
 
+import type { Coords, EnhancedEditor, EnhancedMenu } from '@/types';
 import { Menu, Notice } from 'obsidian';
-import type { Coords, EnhancedEditor, EnhancedMenu } from '../types';
 
 const optionsMenu = (editor: EnhancedEditor, options: string[]): void => {
 	if (editor?.hasFocus()) {
