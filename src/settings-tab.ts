@@ -178,9 +178,9 @@ export class SettingTab extends PluginSettingTab {
 		new Setting(containerEl).setName('Advanced Model Parameters').setHeading();
 
 		new Setting(containerEl)
-			.setName('Disable native commands')
+			.setName('Disable pre-defined commands')
 			.setDesc(
-				'Disable the native commands provided by the plugin, this will only work if you have a custom prompt setup',
+				'Disable the pre-defined commands provided by the plugin, this will only work if you have a custom prompt setup',
 			)
 			.addToggle((toggle) =>
 				toggle
@@ -406,7 +406,7 @@ export class SettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('File based custom prompts (Experimental)')
 			.setDesc(
-				'Enable file based custom prompts, this will use the prompts from the file specified below',
+				'Enable file based custom prompts, this will load file prompts from the folder path specified below',
 			)
 			.addToggle((toggle) =>
 				toggle
@@ -420,11 +420,11 @@ export class SettingTab extends PluginSettingTab {
 
 		if (settings.customPromptsFromFolder.enabled) {
 			new Setting(containerEl)
-				.setName('File path')
-				.setDesc('Path to the file containing the custom prompts')
+				.setName('Folder path')
+				.setDesc('Folder paths containing the files prompts')
 				.addText((text) =>
 					text
-						.setPlaceholder('Enter the file path')
+						.setPlaceholder('Enter the folder path')
 						.setValue(settings.customPromptsFromFolder.path)
 						.onChange(async (value) => {
 							settings.customPromptsFromFolder.path = value;
