@@ -34,7 +34,7 @@
 		"valibot": "0.42.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.3",
+		"@biomejs/biome": "1.9.4",
 		"@types/node": "22.7.4",
 		"@types/qrcode": "1.5.5",
 		"builtin-modules": "4.0.0",
