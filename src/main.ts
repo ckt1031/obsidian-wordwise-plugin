@@ -10,16 +10,13 @@ import { moveConfig } from './migrations/localforage';
 import TextGenerationLogModal from './modals/generation-logs';
 import { getCommands } from './prompts';
 import { SettingTab } from './settings-tab';
-import {
-	type ObfuscatedPluginSettings,
-	ObfuscatedPluginSettingsSchema,
-	type PluginSettings,
-} from './types';
+import type { ObfuscatedPluginSettings, PluginSettings } from './types';
 import type { EnhancedEditor } from './types';
 import { runCommand } from './utils/handle-command';
 import { log } from './utils/logging';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 import SettingsExportImport from './utils/settings-sharing';
+import { ObfuscatedPluginSettingsSchema } from './zod-schemas';
 
 export default class WordWisePlugin extends Plugin {
 	settings: PluginSettings;

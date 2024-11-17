@@ -1,7 +1,7 @@
 import fm from 'front-matter';
 import * as v from 'valibot';
 import type WordWisePlugin from './main';
-import { FilePromptPropertiesSchema } from './types';
+import { FilePromptPropertiesSchema } from './zod-schemas';
 
 export async function getFolderBasedPrompt(
 	plugin: WordWisePlugin,

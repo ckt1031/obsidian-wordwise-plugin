@@ -1,10 +1,7 @@
 import { DEFAULT_HOST } from '@/config';
-import {
-	GoogleGenAIModelsSchema,
-	type ProviderTextAPIProps,
-	type UniformModels,
-} from '@/types';
+import type { ProviderTextAPIProps, UniformModels } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
+import { GoogleGenAIModelsSchema } from '@/zod-schemas';
 import type {
 	GenerateContentRequest,
 	GenerateContentResponse,

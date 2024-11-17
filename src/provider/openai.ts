@@ -1,11 +1,8 @@
 import { APIProvider, DEFAULT_HOST } from '@/config';
-import {
-	OpenAIModelsSchema,
-	type ProviderTextAPIProps,
-	type UniformModels,
-} from '@/types';
+import type { ProviderTextAPIProps, UniformModels } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import isV1Needed from '@/utils/is-v1-needed';
+import { OpenAIModelsSchema } from '@/zod-schemas';
 import { Notice, request } from 'obsidian';
 import type OpenAI from 'openai';
 import { parseAsync } from 'valibot';

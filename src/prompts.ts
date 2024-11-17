@@ -11,7 +11,8 @@ import ParaphraseIcon from './icons/paraphrase.svg';
 import SimplifyIcon from './icons/simplify-text.svg';
 import type WordWisePlugin from './main';
 import { getAllFolderBasedPrompt } from './prompts-file-based';
-import { type CommandProps, type Prompt, PromptSchema } from './types';
+import type { CommandProps, Prompt } from './types';
+import { PromptSchema } from './zod-schemas';
 
 export async function getCommands(
 	plugin: WordWisePlugin,

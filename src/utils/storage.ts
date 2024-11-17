@@ -1,10 +1,6 @@
 import type { APIProvider } from '@/config';
-import {
-	type OpenAIModels,
-	OpenAIModelsSchema,
-	type TextGenerationLog,
-	TextGenerationLogSchema,
-} from '@/types';
+import type { OpenAIModels, TextGenerationLog } from '@/types';
+import { OpenAIModelsSchema, TextGenerationLogSchema } from '@/zod-schemas';
 import localforage from 'localforage';
 import { array, object, safeParseAsync } from 'valibot';
 
