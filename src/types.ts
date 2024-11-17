@@ -3,9 +3,9 @@ import type { Editor, Menu } from 'obsidian';
 import type * as v from 'valibot';
 import type { APIProvider, CommandActions } from './config';
 import type WordWisePlugin from './main';
+import type { OpenAIModelsSchema } from './schemas/models';
 import type {
 	ObfuscatedPluginSettingsSchema,
-	OpenAIModelsSchema,
 	PluginSettingsSchema,
 	PromptSchema,
 	TextGenerationLogSchema,

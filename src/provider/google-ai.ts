@@ -1,7 +1,7 @@
 import { DEFAULT_HOST } from '@/config';
+import { GoogleGenAIModelsSchema } from '@/schemas/models';
 import type { ProviderTextAPIProps, UniformModels } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
-import { GoogleGenAIModelsSchema } from '@/zod-schemas';
 import type {
 	GenerateContentRequest,
 	GenerateContentResponse,
@@ -32,13 +32,11 @@ export async function getGoogleGenAIModels({
 		headers: headers,
 	});
 
-	const allModels = (
-		await parseAsync(GoogleGenAIModelsSchema, JSON.parse(response))
-	).models;
+	const data = await parseAsync(GoogleGenAIModelsSchema, JSON.parse(response));
 
 	const list: UniformModels = [];
 
-	for (const model of allModels) {
+	for (const model of data.models) {
 		if (model.supportedGenerationMethods.includes('generateContent')) {
 			list.push({
 				id: model.name.replace('models/', ''),

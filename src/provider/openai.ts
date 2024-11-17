@@ -1,8 +1,8 @@
 import { APIProvider, DEFAULT_HOST } from '@/config';
+import { OpenAIModelsSchema } from '@/schemas/models';
 import type { ProviderTextAPIProps, UniformModels } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import isV1Needed from '@/utils/is-v1-needed';
-import { OpenAIModelsSchema } from '@/zod-schemas';
 import { Notice, request } from 'obsidian';
 import type OpenAI from 'openai';
 import { parseAsync } from 'valibot';
@@ -62,14 +62,14 @@ export async function getOpenAIModels({
 		headers: headers,
 	});
 
-	const models: OpenAI.Models.ModelsPage = JSON.parse(response);
+	const models = await parseAsync(OpenAIModelsSchema, JSON.parse(response));
 
 	if (settings.aiProvider === APIProvider.OpenAI) {
 		// Only allow model ame starting with gpt
 		models.data = models.data.filter((model) => model.id.startsWith('gpt'));
 	}
 
-	return (await parseAsync(OpenAIModelsSchema, models)).data;
+	return models.data;
 }
 
 export async function handleTextOpenAI({

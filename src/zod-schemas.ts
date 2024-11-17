@@ -26,10 +26,6 @@ export const ObfuscatedPluginSettingsSchema = v.object({
 	z: v.string(),
 });
 
-export const OpenAIModelsSchema = v.object({
-	data: v.array(v.object({ id: v.string(), name: v.optional(v.string()) })),
-});
-
 export const FilePromptPropertiesSchema = v.object({
 	name: v.string(),
 	disabled: v.optional(v.boolean()),
@@ -117,23 +113,6 @@ export const PluginSettingsSchema = v.object({
 
 	// Custom Behavior
 	customBehavior: v.enum_(CustomBehavior),
-});
-
-export const GoogleGenAIModelsSchema = v.object({
-	models: v.array(
-		v.object({
-			name: v.string(),
-			// version: string(),
-			displayName: v.string(),
-			// description: string(),
-			// inputTokenLimit: number(),
-			// outputTokenLimit: number(),
-			supportedGenerationMethods: v.array(v.string()),
-			// temperature: number(),
-			// topP: number(),
-			// topK: number(),
-		}),
-	),
 });
 
 export const PromptSchema = v.object({
