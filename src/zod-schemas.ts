@@ -82,6 +82,11 @@ export const PluginSettingsSchema = v.object({
 			baseUrl: v.string(),
 			model: v.string(),
 		}),
+		[APIProvider.Ollama]: v.object({
+			apiKey: v.string(),
+			baseUrl: v.string(),
+			model: v.string(),
+		}),
 		[APIProvider.Custom]: v.object({
 			apiKey: v.string(),
 			baseUrl: v.string(),

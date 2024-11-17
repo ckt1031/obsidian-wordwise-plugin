@@ -3,6 +3,7 @@ import type WordWisePlugin from '@/main';
 import ConfirmModal from '@/modals/confirm';
 import { getCohereModels } from '@/provider/cohere';
 import { getGoogleGenAIModels } from '@/provider/google-ai';
+import { getOllamaModels } from '@/provider/ollama';
 import { getOpenAIModels } from '@/provider/openai';
 import { log } from '@/utils/logging';
 import { ForageStorage } from '@/utils/storage';
@@ -68,6 +69,10 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 				}
 				case APIProvider.GoogleGemini: {
 					models = await getGoogleGenAIModels({ plugin });
+					break;
+				}
+				case APIProvider.Ollama: {
+					models = await getOllamaModels({ plugin });
 					break;
 				}
 				default:

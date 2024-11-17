@@ -16,7 +16,7 @@ const context = await esbuild.context({
 	sourcemap: prod ? false : 'inline',
 	treeShaking: true,
 	legalComments: 'none',
-	outfile: 'main.js',
+	outfile: process.env.OUTPUT ?? 'main.js',
 	loader: {
 		'.svg': 'text',
 	},

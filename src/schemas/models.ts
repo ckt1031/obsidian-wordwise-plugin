@@ -25,3 +25,17 @@ export const GoogleGenAIModelsSchema = v.object({
 		}),
 	),
 });
+
+export const OllamaModelsSchema = v.object({
+	models: v.array(
+		v.object({
+			name: v.string(),
+			// modified_at: v.string(),
+			// size: v.number(),
+			details: v.object({
+				parameter_size: v.string(),
+				quantization_level: v.string(),
+			}),
+		}),
+	),
+});

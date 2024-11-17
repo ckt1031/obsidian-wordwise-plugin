@@ -89,6 +89,8 @@ export enum APIProvider {
 	OpenRouter = 'OpenRouter',
 	/** https://docs.perplexity.ai */
 	PerplexityAI = 'Perplexity',
+
+	Ollama = 'Ollama',
 	/** OpenAI Compatible API, such as OneAPI and FastGPT */
 	Custom = 'Custom (OpenAI Compatible)',
 }
@@ -126,6 +128,7 @@ export const DEFAULT_HOST = {
 	[APIProvider.Cohere]: 'https://api.cohere.ai',
 	[APIProvider.OpenRouter]: 'https://openrouter.ai',
 	[APIProvider.PerplexityAI]: 'https://api.perplexity.ai',
+	[APIProvider.Ollama]: 'http://localhost:11434',
 	[APIProvider.Custom]: '',
 };
 
@@ -164,6 +167,11 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.OpenRouter],
 			model: 'openai/gpt-4o-mini',
+		},
+		[APIProvider.Ollama]: {
+			apiKey: '',
+			baseUrl: DEFAULT_HOST[APIProvider.Ollama],
+			model: '',
 		},
 		[APIProvider.PerplexityAI]: {
 			apiKey: '',
@@ -231,6 +239,12 @@ export const settingTabProviderConfigurations = {
 		docs: 'https://openrouter.ai/docs',
 		defaultModel: OPENROUTER_MODELS[0],
 		models: OPENROUTER_MODELS,
+	},
+	[APIProvider.Ollama]: {
+		defaultHost: DEFAULT_HOST[APIProvider.Ollama],
+		docs: 'https://github.com/ollama/ollama/blob/main/docs/api.md#generate-a-chat-completion',
+		defaultModel: '',
+		models: [],
 	},
 	[APIProvider.PerplexityAI]: {
 		defaultHost: DEFAULT_HOST[APIProvider.PerplexityAI],

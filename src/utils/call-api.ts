@@ -2,6 +2,7 @@ import { APIProvider } from '@/config';
 import { handleTextAnthropicAI } from '@/provider/anthropic';
 import { handleTextCohere } from '@/provider/cohere';
 import { handleTextGoogleGenAI } from '@/provider/google-ai';
+import { handleTextOllama } from '@/provider/ollama';
 import { handleTextOpenAI } from '@/provider/openai';
 import type { CallTextAPIProps } from '@/types';
 import { log } from './logging';
@@ -35,6 +36,10 @@ export async function callTextAPI({
 		apiProvider === APIProvider.Custom
 	) {
 		return handleTextOpenAI({ plugin, messages, model });
+	}
+
+	if (apiProvider === APIProvider.Ollama) {
+		return handleTextOllama({ plugin, messages, model });
 	}
 
 	if (apiProvider === APIProvider.Anthropic) {

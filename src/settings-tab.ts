@@ -131,6 +131,7 @@ export class SettingTab extends PluginSettingTab {
 							provider === APIProvider.OpenRouter ||
 							provider === APIProvider.Cohere ||
 							provider === APIProvider.OpenAI ||
+							provider === APIProvider.Ollama ||
 							provider === APIProvider.Custom
 						) {
 							wrapFetchModelComponent({
