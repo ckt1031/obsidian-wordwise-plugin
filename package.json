@@ -25,7 +25,7 @@
 		"front-matter": "^4.0.2",
 		"fuse.js": "7.0.0",
 		"localforage": "1.10.0",
-		"nanoid": "5.0.8",
+		"nanoid": "5.0.9",
 		"openai": "4.72.0",
 		"qrcode": "1.5.4",
 		"rambda": "9.4.0",
