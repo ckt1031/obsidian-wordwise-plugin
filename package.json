@@ -26,7 +26,7 @@
 		"fuse.js": "7.0.0",
 		"localforage": "1.10.0",
 		"nanoid": "5.0.8",
-		"openai": "4.72.0",
+		"openai": "4.76.1",
 		"qrcode": "1.5.4",
 		"rambda": "9.4.0",
 		"slugify": "1.6.6",
