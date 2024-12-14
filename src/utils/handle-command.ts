@@ -4,7 +4,7 @@ import { CommandActions, type CommandNames, CustomBehavior } from '@/config';
 import type WordWisePlugin from '@/main';
 import optionsMenu from '@/menus/optionsMenu';
 import AskForInstructionModal from '@/modals/ask-for-instruction';
-import { getCommands, inputPrompt } from '@/prompts';
+import { getCommands } from '@/prompts';
 import { getFolderBasedPrompt } from '@/prompts-file-based';
 import type { TextGenerationLog } from '@/types';
 import type { EnhancedEditor } from '@/types';
@@ -84,13 +84,9 @@ export async function runCommand(
 			throw new Error(`No task prompt found for command ${command}`);
 		}
 
-		const userMessage: string = mustacheRender(
-			`${taskPrompt}\n\n${inputPrompt}`,
-			{
-				input,
-				instructions,
-			},
-		);
+		const userMessage: string = mustacheRender(`${taskPrompt}\n\n${input}`, {
+			instructions,
+		});
 
 		const startTime = Date.now(); // Capture start time
 

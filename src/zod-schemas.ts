@@ -120,7 +120,7 @@ export const PluginSettingsSchema = v.object({
 	customBehavior: v.enum_(CustomBehavior),
 });
 
-export const PromptSchema = v.object({
+export const CommandSchema = v.object({
 	name: v.union([v.string(), v.enum_(CommandNames)]),
 	icon: v.optional(v.string()),
 	action: v.enum_(CommandActions),

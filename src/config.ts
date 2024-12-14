@@ -99,7 +99,7 @@ export enum CommandNames {
 	FindSynonym = 'Find Synonym',
 	FixGrammar = 'Fix Grammar',
 	ImproveWriting = 'Improve Writing',
-	IntelligentBold = 'Intelligent Bold',
+	Bold = 'Bold Important Ideas',
 	MakeLonger = 'Make Longer',
 	MakeShorter = 'Make Shorter',
 	Paraphrase = 'Paraphrase',

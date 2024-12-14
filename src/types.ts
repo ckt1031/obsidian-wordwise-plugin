@@ -5,19 +5,21 @@ import type { APIProvider, CommandActions } from './config';
 import type WordWisePlugin from './main';
 import type { OpenAIModelsSchema } from './schemas/models';
 import type {
+	CommandSchema,
 	ObfuscatedPluginSettingsSchema,
 	PluginSettingsSchema,
-	PromptSchema,
 	TextGenerationLogSchema,
 } from './zod-schemas';
 
 export type OpenAIModels = v.InferInput<typeof OpenAIModelsSchema>;
-export type UniformModels = {
+
+// Unified types across the plugin
+export type Models = {
 	id: string;
 	name?: string | undefined;
 }[];
 
-export type Prompt = v.InferInput<typeof PromptSchema>;
+export type Command = v.InferInput<typeof CommandSchema>;
 
 export type PluginSettings = v.InferInput<typeof PluginSettingsSchema>;
 

@@ -1,13 +1,13 @@
 import { DEFAULT_HOST } from '@/config';
 import { OllamaModelsSchema } from '@/schemas/models';
-import type { ProviderTextAPIProps, UniformModels } from '@/types';
+import type { Models, ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import { request } from 'obsidian';
 import { parseAsync } from 'valibot';
 
 export async function getOllamaModels({
 	plugin,
-}: Pick<ProviderTextAPIProps, 'plugin'>): Promise<UniformModels> {
+}: Pick<ProviderTextAPIProps, 'plugin'>): Promise<Models> {
 	const { settings } = plugin;
 	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 
@@ -27,7 +27,7 @@ export async function getOllamaModels({
 
 	const data = await parseAsync(OllamaModelsSchema, JSON.parse(response));
 
-	const list: UniformModels = [];
+	const list: Models = [];
 
 	for (const model of data.models) {
 		list.push({
