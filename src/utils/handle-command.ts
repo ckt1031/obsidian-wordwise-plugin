@@ -1,11 +1,11 @@
 import { Notice } from 'obsidian';
 
+import { getCommands } from '@/commands';
+import { getFolderBasedPrompt } from '@/commands';
 import { CommandActions, type CommandNames, CustomBehavior } from '@/config';
 import type WordWisePlugin from '@/main';
 import optionsMenu from '@/menus/optionsMenu';
 import AskForInstructionModal from '@/modals/ask-for-instruction';
-import { getCommands } from '@/prompts';
-import { getFolderBasedPrompt } from '@/prompts-file-based';
 import type { TextGenerationLog } from '@/types';
 import type { EnhancedEditor } from '@/types';
 import { nanoid } from 'nanoid';
