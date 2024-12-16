@@ -8,10 +8,10 @@ import optionsMenu from '@/menus/optionsMenu';
 import AskForInstructionModal from '@/modals/ask-for-instruction';
 import type { TextGenerationLog } from '@/types';
 import type { EnhancedEditor } from '@/types';
+import Mustache from 'mustache';
 import { nanoid } from 'nanoid';
 import { callTextAPI } from './call-api';
 import { log } from './logging';
-import { mustacheRender } from './mustache';
 import { ForageStorage } from './storage';
 
 function markdownListToArray(markdownList: string): string[] {
@@ -84,7 +84,7 @@ export async function runCommand(
 			throw new Error(`No task prompt found for command ${command}`);
 		}
 
-		const systemPrompt: string = mustacheRender(
+		const systemPrompt: string = Mustache.render(
 			`${actionData.systemPrompt}\n\n${taskPrompt}`,
 			{
 				instructions,
