@@ -3,13 +3,13 @@ import type { Editor, Menu } from 'obsidian';
 import type * as v from 'valibot';
 import type { APIProvider, CommandActions } from './config';
 import type WordWisePlugin from './main';
-import type { OpenAIModelsSchema } from './schemas/models';
 import type {
 	CommandSchema,
 	ObfuscatedPluginSettingsSchema,
 	PluginSettingsSchema,
 	TextGenerationLogSchema,
-} from './zod-schemas';
+} from './schemas';
+import type { OpenAIModelsSchema } from './schemas/models';
 
 export type OpenAIModels = v.InferInput<typeof OpenAIModelsSchema>;
 

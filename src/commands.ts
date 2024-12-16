@@ -5,9 +5,9 @@ import { CommandActions } from './config';
 import type WordWisePlugin from './main';
 import { NATIVE_COMMANDS } from './prompts/commands';
 import systemPrompt from './prompts/system';
+import { CommandSchema } from './schemas';
+import { FilePromptPropertiesSchema } from './schemas';
 import type { CommandProps } from './types';
-import { CommandSchema } from './zod-schemas';
-import { FilePromptPropertiesSchema } from './zod-schemas';
 
 export async function getCommands(
 	plugin: WordWisePlugin,
@@ -98,15 +98,15 @@ function readFile(fileContent: string, needBody = false) {
 	const content = fm(fileContent);
 
 	// Ignore if content.attributes is {}
-	if (Object.keys(content.attributes as object).length === 0) return undefined;
+	if (Object.keys(content.attributes as object).length === 0) return;
 
 	const prompt = v.safeParse(FilePromptPropertiesSchema, content.attributes);
 
-	if (!prompt.success) return undefined;
+	if (!prompt.success) return;
 
 	const attributes = prompt.output;
 
-	if (attributes.disabled) return undefined;
+	if (attributes.disabled) return;
 
 	return {
 		name: attributes.name,
