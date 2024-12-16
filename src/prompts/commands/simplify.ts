@@ -1,9 +1,8 @@
 import { CommandActions, CommandNames } from '@/config';
+import SimplifyIcon from '@/icons/simplify-text.svg';
 import type { Command } from '@/types';
-import SimplifyIcon from './icons/simplify-text.svg';
 
 const prompt = `
-- Simplify the following.
 - Make the text clearer and easier to understand by using simple words and phrases. Avoid ones that are too hard or confusing.
 - Keep sentences short and divide long statements into smaller ones. Aim for sentences that are 15 to 20 words long.
 - Write in an active voice and use strong verbs to make your writing more direct and engaging.

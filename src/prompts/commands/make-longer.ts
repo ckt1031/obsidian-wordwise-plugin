@@ -1,6 +1,6 @@
 import { CommandActions, CommandNames } from '@/config';
+import MakeLongerIcon from '@/icons/make-longer.svg';
 import type { Command } from '@/types';
-import MakeLongerIcon from './icons/make-longer.svg';
 
 const prompt = `
 - Write a longer version, keep the text clear, easy to understand, and well put together.

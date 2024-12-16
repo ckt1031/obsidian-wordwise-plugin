@@ -1,6 +1,6 @@
 import { CommandActions, CommandNames } from '@/config';
+import FindSynonymIcon from '@/icons/find-synonym.svg';
 import type { Command } from '@/types';
-import FindSynonymIcon from './icons/find-synonym.svg';
 
 const prompt = `
 - Find four synonyms for the words wrapped in three pipe characters.

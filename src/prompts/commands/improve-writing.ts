@@ -1,10 +1,9 @@
 import { CommandActions, CommandNames } from '@/config';
+import ImproveWritingIcon from '@/icons/improve-writing.svg';
 import type { Command } from '@/types';
-import ImproveWritingIcon from './icons/improve-writing.svg';
 
 const prompt = `
-Improve the writing of the given text, focusing on the following aspects:
-
+- Improve text.
 - Enhance clarity and readability while maintaining a tone suitable for personal notes.
 - Do not make any changes to the content within quote boxes. Leave the quoted content as it is, unless if there are potential improvements or errors within the quote box.
 - Re-write headings, if possible, to make them more appropriate for the content.

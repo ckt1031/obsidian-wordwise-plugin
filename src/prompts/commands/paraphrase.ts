@@ -1,6 +1,6 @@
 import { CommandActions, CommandNames } from '@/config';
+import ParaphraseIcon from '@/icons/paraphrase.svg';
 import type { Command } from '@/types';
-import ParaphraseIcon from './icons/paraphrase.svg';
 
 const prompt = `
 - Reformulate the sentences, changing the structure and using synonyms where appropriate, without distorting the meaning of the text.

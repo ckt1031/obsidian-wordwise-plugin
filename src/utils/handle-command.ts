@@ -84,17 +84,20 @@ export async function runCommand(
 			throw new Error(`No task prompt found for command ${command}`);
 		}
 
-		const userMessage: string = mustacheRender(`${taskPrompt}\n\n${input}`, {
-			instructions,
-		});
+		const systemPrompt: string = mustacheRender(
+			`${actionData.systemPrompt}\n\n${taskPrompt}`,
+			{
+				instructions,
+			},
+		);
 
 		const startTime = Date.now(); // Capture start time
 
 		const result = await callTextAPI({
 			plugin,
 			messages: {
-				system: actionData.systemPrompt,
-				user: userMessage,
+				system: systemPrompt,
+				user: input,
 			},
 			model: actionData.customDefinedModel,
 			provider: actionData.customDefinedProvider,
