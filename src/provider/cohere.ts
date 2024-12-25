@@ -67,9 +67,6 @@ export async function handleTextCohere({
 		message: `${messages.system}\n\n${messages.user}`,
 		temperature: settings.advancedSettings ? settings.temperature : 0.5,
 		maxTokens: settings.advancedSettings ? settings.maxTokens : 2000,
-		frequencyPenalty: settings.advancedSettings
-			? settings.frequencyPenalty
-			: 0.0,
 	};
 
 	const url = `${getAPIHost(

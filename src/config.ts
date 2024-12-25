@@ -188,8 +188,6 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	customAiModel: '',
 	maxTokens: 2000,
 	temperature: 0.5,
-	presencePenalty: 0,
-	frequencyPenalty: 0,
 	enableGenerationLogging: false,
 	debugMode: false,
 	customPrompts: [],

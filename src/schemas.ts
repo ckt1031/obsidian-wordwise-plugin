@@ -98,8 +98,6 @@ export const PluginSettingsSchema = v.object({
 	customAiModel: v.string(),
 	maxTokens: v.number(),
 	temperature: v.number(),
-	presencePenalty: v.number(),
-	frequencyPenalty: v.number(),
 
 	/** Log the text to storage to trace usage and original text */
 	enableGenerationLogging: v.boolean(),

@@ -96,26 +96,17 @@ export async function handleTextOpenAI({
 		}
 	}
 
-	let frequency_penalty = settings.advancedSettings
-		? settings.frequencyPenalty
-		: 0.0;
-
-	if (settings.aiProvider === APIProvider.PerplexityAI) {
-		// Set to 1.0 if frequency penalty is 0
-		frequency_penalty = frequency_penalty === 0 ? 1.0 : frequency_penalty;
-	}
-
 	let body:
 		| OpenAI.ChatCompletionCreateParams
 		| Omit<OpenAI.ChatCompletionCreateParams, 'model'> = {
 		stream: false,
 		model,
-		temperature: settings.advancedSettings ? settings.temperature : 0.5,
-		max_tokens: settings.advancedSettings ? settings.maxTokens : 2000,
-		// presence_penalty: settings.advancedSettings
-		// 	? settings.presencePenalty
-		// 	: 0.0,
-		frequency_penalty,
+		...(settings.advancedSettings && {
+			...(settings.maxTokens > 0 && {
+				max_tokens: settings.maxTokens,
+			}),
+			temperature: settings.temperature,
+		}),
 		messages: [
 			...(messages.system.length > 0
 				? [

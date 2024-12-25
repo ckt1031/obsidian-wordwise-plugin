@@ -237,21 +237,6 @@ export class SettingTab extends PluginSettingTab {
 				);
 
 			new Setting(containerEl)
-				.setName('Frequency penalty')
-				.setDesc(
-					"Decreasing the model's likelihood to repeat the same line verbatim, defaults to 0.0.",
-				)
-				.addSlider((slider) => {
-					slider.setDynamicTooltip();
-					slider.setLimits(-2.0, 2.0, 0.1);
-					slider.setValue(settings.frequencyPenalty);
-					slider.onChange(async (value) => {
-						settings.frequencyPenalty = value;
-						await plugin.saveSettings();
-					});
-				});
-
-			new Setting(containerEl)
 				.setName('Max tokens')
 				.setDesc(
 					'Maximum number of tokens to generate (0 means not specifying in API)',
