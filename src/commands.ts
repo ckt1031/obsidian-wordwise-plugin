@@ -79,8 +79,6 @@ export async function getAllFolderBasedPrompt(plugin: WordWisePlugin) {
 	// Get all files in the folder
 	const files = await plugin.app.vault.adapter.list(path);
 
-	// console.log(files)
-
 	const prompts = [];
 
 	// Read all files

@@ -135,7 +135,6 @@ export async function runCommand(
 				break;
 			default:
 				if (command === 'Find Synonym') {
-					//console.log(userMessage);
 					!document.querySelector('.menu.optionContainer')
 						? optionsMenu(editor, markdownListToArray(result))
 						: true;

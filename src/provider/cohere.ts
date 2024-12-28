@@ -87,8 +87,6 @@ export async function handleTextCohere({
 		),
 	});
 
-	console.log(response);
-
 	const { text }: NonStreamedChatResponse = JSON.parse(response);
 
 	return text;
