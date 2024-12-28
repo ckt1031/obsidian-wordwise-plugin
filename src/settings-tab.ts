@@ -272,8 +272,8 @@ export class SettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('Import/Export')
-			.setDesc('Import or export the text generation logs')
+			.setName('Import and export')
+			.setDesc('Import and export the text generation logs')
 			.addButton((button) => {
 				button.setButtonText('Import').onClick(async () => {
 					const input = document.createElement('input');
@@ -390,9 +390,9 @@ export class SettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName('File based custom prompts (Experimental)')
+			.setName('File prompts')
 			.setDesc(
-				'Enable file based custom prompts, this will load file prompts from the folder path specified below',
+				'Enable file prompts, this will load file prompts from the folder path specified below',
 			)
 			.addToggle((toggle) =>
 				toggle
