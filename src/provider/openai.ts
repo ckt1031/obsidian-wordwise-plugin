@@ -3,7 +3,7 @@ import { OpenAIModelsSchema } from '@/schemas/models';
 import type { Models, ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import isV1Needed from '@/utils/is-v1-needed';
-import { Notice, request } from 'obsidian';
+import { Notice, request, requestUrl } from 'obsidian';
 import type OpenAI from 'openai';
 import { parseAsync } from 'valibot';
 
@@ -108,16 +108,12 @@ export async function handleTextOpenAI({
 			temperature: settings.temperature,
 		}),
 		messages: [
-			...(messages.system.length > 0
-				? [
-						{
-							role: 'system' as const,
-							content: messages.system,
-						},
-					]
-				: []),
 			{
-				role: 'user' as const,
+				role: 'system',
+				content: messages.system,
+			},
+			{
+				role: 'user',
 				content: messages.user,
 			},
 		],
@@ -168,14 +164,18 @@ export async function handleTextOpenAI({
 
 	const url = `${urlHost}${path}`;
 
-	const response = await request({
+	const response = await requestUrl({
 		url,
 		headers,
 		method: 'POST',
 		body: JSON.stringify(body),
 	});
 
-	const { choices }: OpenAI.ChatCompletion = JSON.parse(response);
+	if (response.status !== 200) {
+		throw new Error(response.text);
+	}
+
+	const { choices }: OpenAI.ChatCompletion = JSON.parse(response.text);
 
 	return choices[0].message.content;
 }

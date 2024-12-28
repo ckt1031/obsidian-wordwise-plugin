@@ -6,7 +6,7 @@ import type {
 	Message,
 	MessageCreateParams,
 } from '@anthropic-ai/sdk/resources/messages';
-import { request } from 'obsidian';
+import { requestUrl } from 'obsidian';
 
 export async function handleTextAnthropicAI({
 	plugin,
@@ -21,9 +21,10 @@ export async function handleTextAnthropicAI({
 		messages: [
 			{
 				role: 'user',
-				content: `${messages.system}\n\n${messages.user}`,
+				content: messages.user,
 			},
 		],
+		system: messages.system,
 		model,
 		stream: false,
 		max_tokens:
@@ -42,7 +43,7 @@ export async function handleTextAnthropicAI({
 
 	const url = `${urlHost}${versionPath}/messages`;
 
-	const response = await request({
+	const response = await requestUrl({
 		url,
 		method: 'POST',
 		headers: {
@@ -53,11 +54,13 @@ export async function handleTextAnthropicAI({
 		body: JSON.stringify(body),
 	});
 
-	const json: Message = JSON.parse(response);
+	if (response.status !== 200) {
+		throw new Error(response.text);
+	}
 
-	const content = json.content[0];
+	const content: Message['content'][0] = JSON.parse(response.text).content[0];
 
-	if (content.type === 'tool_use') {
+	if (content.type !== 'text') {
 		throw new Error('No text generated');
 	}
 

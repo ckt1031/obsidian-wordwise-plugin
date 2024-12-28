@@ -6,7 +6,7 @@ import type {
 	GenerateContentRequest,
 	GenerateContentResponse,
 } from '@google/generative-ai';
-import { request } from 'obsidian';
+import { requestUrl } from 'obsidian';
 import { parseAsync } from 'valibot';
 
 export async function getGoogleGenAIModels({
@@ -26,13 +26,20 @@ export async function getGoogleGenAIModels({
 		'Content-Type': 'application/json',
 	};
 
-	const response = await request({
+	const response = await requestUrl({
 		url,
 		method: 'GET',
 		headers: headers,
 	});
 
-	const data = await parseAsync(GoogleGenAIModelsSchema, JSON.parse(response));
+	if (response.status !== 200) {
+		throw new Error(response.text);
+	}
+
+	const data = await parseAsync(
+		GoogleGenAIModelsSchema,
+		JSON.parse(response.text),
+	);
 
 	const list: Models = [];
 
@@ -58,19 +65,24 @@ export async function handleTextGoogleGenAI({
 	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 
 	const body: GenerateContentRequest = {
+		systemInstruction: messages.system,
 		contents: [
 			{
 				role: 'user',
 				parts: [
 					{
-						text: `${messages.system}\n\n${messages.user}`,
+						text: messages.user,
 					},
 				],
 			},
 		],
 		generationConfig: {
-			temperature: settings.advancedSettings ? settings.temperature : 0.5,
-			maxOutputTokens: settings.advancedSettings ? settings.maxTokens : 2000,
+			...(settings.advancedSettings && {
+				...(settings.maxTokens > 0 && {
+					maxOutputTokens: settings.maxTokens,
+				}),
+				temperature: settings.temperature,
+			}),
 		},
 	};
 
@@ -79,7 +91,7 @@ export async function handleTextGoogleGenAI({
 		DEFAULT_HOST[settings.aiProvider],
 	)}/v1beta/models/${model}:generateContent?key=${providerSettings.apiKey}`;
 
-	const response = await request({
+	const response = await requestUrl({
 		url,
 		method: 'POST',
 		headers: {
@@ -88,7 +100,11 @@ export async function handleTextGoogleGenAI({
 		body: JSON.stringify(body),
 	});
 
-	const { candidates }: GenerateContentResponse = JSON.parse(response);
+	if (response.status !== 200) {
+		throw new Error(response.text);
+	}
+
+	const { candidates }: GenerateContentResponse = JSON.parse(response.text);
 
 	if (!candidates || candidates.length === 0) {
 		throw new Error('No response from Google AI');

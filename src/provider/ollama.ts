@@ -2,7 +2,7 @@ import { DEFAULT_HOST } from '@/config';
 import { OllamaModelsSchema } from '@/schemas/models';
 import type { Models, ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
-import { request } from 'obsidian';
+import { requestUrl } from 'obsidian';
 import { parseAsync } from 'valibot';
 
 export async function getOllamaModels({
@@ -20,12 +20,16 @@ export async function getOllamaModels({
 
 	const url = `${urlHost}${path}`;
 
-	const response = await request({
+	const response = await requestUrl({
 		url,
 		method: 'GET',
 	});
 
-	const data = await parseAsync(OllamaModelsSchema, JSON.parse(response));
+	if (response.status !== 200) {
+		throw new Error(response.text);
+	}
+
+	const data = await parseAsync(OllamaModelsSchema, JSON.parse(response.text));
 
 	const list: Models = [];
 
@@ -67,13 +71,17 @@ export async function handleTextOllama({
 
 	const url = `${urlHost}${path}`;
 
-	const response = await request({
+	const response = await requestUrl({
 		url,
 		method: 'POST',
 		body: JSON.stringify(body),
 	});
 
-	const { response: text } = JSON.parse(response);
+	if (response.status !== 200) {
+		throw new Error(response.text);
+	}
+
+	const { response: text } = JSON.parse(response.text);
 
 	if (typeof text !== 'string') {
 		throw new Error('Invalid response');

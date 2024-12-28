@@ -2,11 +2,11 @@ import { DEFAULT_HOST } from '@/config';
 import type { Models, ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import type {
-	ChatRequest,
+	ChatResponse,
 	ListModelsResponse,
-	NonStreamedChatResponse,
+	V2ChatRequest,
 } from 'cohere-ai/api';
-import { request } from 'obsidian';
+import { requestUrl } from 'obsidian';
 import snakecaseKeys from 'snakecase-keys';
 
 export async function getCohereModels({
@@ -27,13 +27,17 @@ export async function getCohereModels({
 		Authorization: `Bearer ${providerSettings.apiKey}`,
 	};
 
-	const response = await request({
+	const response = await requestUrl({
 		url,
 		method: 'GET',
 		headers: headers,
 	});
 
-	const allModels = JSON.parse(response) as ListModelsResponse;
+	if (response.status !== 200) {
+		throw new Error(response.text);
+	}
+
+	const allModels = JSON.parse(response.text) as ListModelsResponse;
 
 	const list: Models = [];
 
@@ -62,11 +66,24 @@ export async function handleTextCohere({
 
 	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 
-	const body: ChatRequest = {
+	const body: V2ChatRequest = {
 		model,
-		message: `${messages.system}\n\n${messages.user}`,
-		temperature: settings.advancedSettings ? settings.temperature : 0.5,
-		maxTokens: settings.advancedSettings ? settings.maxTokens : 2000,
+		messages: [
+			{
+				role: 'system',
+				content: messages.system,
+			},
+			{
+				role: 'user',
+				content: messages.user,
+			},
+		],
+		...(settings.advancedSettings && {
+			...(settings.maxTokens > 0 && {
+				maxTokens: settings.maxTokens,
+			}),
+			temperature: settings.temperature,
+		}),
 	};
 
 	const url = `${getAPIHost(
@@ -74,7 +91,7 @@ export async function handleTextCohere({
 		DEFAULT_HOST[settings.aiProvider],
 	)}/v1/chat`;
 
-	const response = await request({
+	const response = await requestUrl({
 		url,
 		method: 'POST',
 		headers: {
@@ -87,7 +104,15 @@ export async function handleTextCohere({
 		),
 	});
 
-	const { text }: NonStreamedChatResponse = JSON.parse(response);
+	if (response.status !== 200) {
+		throw new Error(response.text);
+	}
 
-	return text;
+	const { message }: ChatResponse = JSON.parse(response.text);
+
+	if (!message.content) {
+		throw new Error('No content found in response');
+	}
+
+	return message.content[0].text;
 }
