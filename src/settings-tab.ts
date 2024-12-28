@@ -35,44 +35,36 @@ export class SettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		new Setting(containerEl)
-			.setName('API provider')
-			.setDesc(
-				'API Provider to be used, available options are OpenAI, Anthropic and Google AI',
-			)
-			.addDropdown((dropDown) => {
-				// Add all the API Providers, use value as option value
-				for (const provider of Object.values(APIProvider)) {
-					dropDown.addOption(provider, provider);
-				}
+		new Setting(containerEl).setName('Provider').addDropdown((dropDown) => {
+			// Add all the API Providers, use value as option value
+			for (const provider of Object.values(APIProvider)) {
+				dropDown.addOption(provider, provider);
+			}
 
-				dropDown.setValue(settings.aiProvider);
-				dropDown.onChange(async (value) => {
-					settings.aiProvider = value as APIProvider;
-					await plugin.saveSettings();
-					await this.restartSettingsTab(plugin);
-				});
+			dropDown.setValue(settings.aiProvider);
+			dropDown.onChange(async (value) => {
+				settings.aiProvider = value as APIProvider;
+				await plugin.saveSettings();
+				await this.restartSettingsTab(plugin);
 			});
+		});
 
 		for (const [provider, config] of Object.entries(
 			settingTabProviderConfigurations,
 		)) {
 			if (settings.aiProvider === provider) {
-				new Setting(containerEl)
-					.setName(`${provider} api key`)
-					.setDesc(`API Key for the ${provider} API`)
-					.addText((text) => {
-						wrapPasswordComponent(text);
-						wrapAPITestComponent({ text, plugin });
-						text
-							.setPlaceholder(`Enter your ${provider} API Key`)
-							.setValue(settings.aiProviderConfig[provider].apiKey)
-							.onChange(async (value) => {
-								// Update the API Key
-								settings.aiProviderConfig[provider].apiKey = value;
-								await plugin.saveSettings();
-							});
-					});
+				new Setting(containerEl).setName('API key').addText((text) => {
+					wrapPasswordComponent(text);
+					wrapAPITestComponent({ text, plugin });
+					text
+						.setPlaceholder(`Enter your ${provider} API Key`)
+						.setValue(settings.aiProviderConfig[provider].apiKey)
+						.onChange(async (value) => {
+							// Update the API Key
+							settings.aiProviderConfig[provider].apiKey = value;
+							await plugin.saveSettings();
+						});
+				});
 
 				if (
 					settings.advancedSettings ||
@@ -80,10 +72,8 @@ export class SettingTab extends PluginSettingTab {
 					provider === APIProvider.Custom
 				) {
 					new Setting(containerEl)
-						.setName(`${provider} endpoint base url`)
-						.setDesc(
-							`Base URL for the ${provider} API. DO NOT include / trailing slash and paths.`,
-						)
+						.setName('API base URL')
+						.setDesc('DO NOT include / trailing slash and paths.')
 						.addText((text) =>
 							text
 								.setPlaceholder('https://api.example.com/v1')
@@ -98,31 +88,20 @@ export class SettingTab extends PluginSettingTab {
 
 				if (provider === APIProvider.AzureOpenAI) {
 					// API Version
-					new Setting(containerEl)
-						.setName(`${provider} api version`)
-						.setDesc(`API Version for the ${provider} API`)
-						.addText((text) =>
-							text
-								.setPlaceholder('2023-05-15')
-								.setValue(settings.aiProviderConfig[provider].apiVersion)
-								.onChange(async (value) => {
-									// Update the API Version
-									settings.aiProviderConfig[provider].apiVersion = value;
-									await plugin.saveSettings();
-								}),
-						);
+					new Setting(containerEl).setName('API version').addText((text) =>
+						text
+							.setPlaceholder('2023-05-15')
+							.setValue(settings.aiProviderConfig[provider].apiVersion)
+							.onChange(async (value) => {
+								// Update the API Version
+								settings.aiProviderConfig[provider].apiVersion = value;
+								await plugin.saveSettings();
+							}),
+					);
 				}
 
-				const model =
-					typeof config.defaultModel === 'string'
-						? config.defaultModel
-						: config.defaultModel.id;
-
 				new Setting(containerEl)
-					.setName(`${provider} language model`)
-					.setDesc(
-						`Model to be used, defaults to ${model}, see ${provider} Models for more info`,
-					)
+					.setName('Model')
 					.addDropdown(async (dropDown) => {
 						let models = config.models;
 						// Only in advanced mode or provider is OpenRouter OR Custom
@@ -160,9 +139,7 @@ export class SettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Override Generation Behavior')
-			.setDesc(
-				'Override the default behavior of the plugin, such as replace or insert the generated text',
-			)
+			.setDesc('Replace or insert the generated text')
 			.addDropdown((dropDown) => {
 				// Add all the API Providers, use value as option value
 				for (const value of Object.values(CustomBehavior)) {
@@ -180,9 +157,7 @@ export class SettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Disable pre-defined commands')
-			.setDesc(
-				'Disable the pre-defined commands provided by the plugin, this will only work if you have a custom prompt setup',
-			)
+			.setDesc('This will only work if you have a custom prompt setup')
 			.addToggle((toggle) =>
 				toggle
 					.setValue(settings.disableNativeCommands)
@@ -194,9 +169,7 @@ export class SettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Advanced mode')
-			.setDesc(
-				'Configure advanced model settings, enable this in order to send extra parameters to the API',
-			)
+			.setDesc('Enable this in order to send extra parameters to the API')
 			.addToggle((toggle) =>
 				toggle.setValue(settings.advancedSettings).onChange(async (value) => {
 					settings.advancedSettings = value;
@@ -209,7 +182,7 @@ export class SettingTab extends PluginSettingTab {
 			new Setting(containerEl)
 				.setName('Temperature')
 				.setDesc(
-					'Temperature for the model, defaults to 0.5 for best suitable results, higher value means more creative but less accurate, lower value means less creative but more accurate.',
+					'Higher value means more creative but less accurate, lower value means less creative but more accurate.',
 				)
 				.addSlider((slider) => {
 					slider.setDynamicTooltip();
@@ -223,9 +196,7 @@ export class SettingTab extends PluginSettingTab {
 
 			new Setting(containerEl)
 				.setName('Custom model id')
-				.setDesc(
-					'Enter custom model ID for your own API, if this is empty, it will follow the selected menu above.',
-				)
+				.setDesc('If this is empty, it will follow the selected menu above.')
 				.addText((text) =>
 					text
 						.setPlaceholder('Enter the model name')
@@ -239,7 +210,7 @@ export class SettingTab extends PluginSettingTab {
 			new Setting(containerEl)
 				.setName('Max tokens')
 				.setDesc(
-					'Maximum number of tokens to generate (0 means not specifying in API)',
+					'Maximum number of tokens to generate (Set to 0 to use the default value)',
 				)
 				.addText((text) =>
 					text
