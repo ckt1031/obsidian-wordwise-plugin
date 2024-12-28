@@ -434,8 +434,8 @@ export class SettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('Import/Export settings')
-			.setDesc('Import/Export settings as a QR code or RAW URL.')
+			.setName('Import and export settings')
+			.setDesc('Import and export settings as a QR code or RAW URL.')
 			.addButton((button) => {
 				button.setButtonText('Import').onClick(async () => {
 					new ImportSettingsModal(this.plugin).open();
