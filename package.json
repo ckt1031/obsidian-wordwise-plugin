@@ -45,7 +45,7 @@
 		"lint-staged": "15.2.11",
 		"obsidian": "1.7.2",
 		"tslib": "2.8.1",
-		"typescript": "5.7.2",
+		"typescript": "5.7.3",
 		"vitest": "2.1.8"
 	},
 	"lint-staged": {
