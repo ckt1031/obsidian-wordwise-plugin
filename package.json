@@ -21,7 +21,7 @@
 		"@anthropic-ai/sdk": "0.32.1",
 		"@google/generative-ai": "0.21.0",
 		"@types/mustache": "^4.2.5",
-		"cohere-ai": "7.15.0",
+		"cohere-ai": "7.15.4",
 		"dayjs": "1.11.13",
 		"front-matter": "^4.0.2",
 		"fuse.js": "7.0.0",
