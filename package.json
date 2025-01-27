@@ -18,7 +18,7 @@
 		"lint-staged": "lint-staged"
 	},
 	"dependencies": {
-		"@anthropic-ai/sdk": "0.32.1",
+		"@anthropic-ai/sdk": "0.36.3",
 		"@google/generative-ai": "0.21.0",
 		"@types/mustache": "^4.2.5",
 		"cohere-ai": "7.15.0",
