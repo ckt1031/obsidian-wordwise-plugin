@@ -69,9 +69,7 @@ export async function runCommand(
 				? customModel
 				: plugin.settings.aiProviderConfig[plugin.settings.aiProvider].model;
 
-		new Notice(
-			`Generating text with ${command} (${plugin.settings.aiProvider})...`,
-		);
+		new Notice(`Generating text with ${command}...`);
 
 		let taskPrompt = actionData.taskPrompt;
 
