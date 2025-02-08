@@ -65,7 +65,14 @@ export async function handleTextGoogleGenAI({
 	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 
 	const body: GenerateContentRequest = {
-		systemInstruction: { text: messages.system },
+		systemInstruction: {
+			role: 'system',
+			parts: [
+				{
+					text: messages.system,
+				},
+			],
+		},
 		contents: [
 			{
 				role: 'user',
