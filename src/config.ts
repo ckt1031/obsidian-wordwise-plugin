@@ -19,14 +19,13 @@ export const OPENAI_MODELS = [
 ];
 
 /**
- * Reference: https://docs.anthropic.com/claude/docs/models-overview
- * Updated: 2024-08-05
+ * Reference: https://docs.anthropic.com/en/docs/about-claude/models
+ * Updated: 2025-02-08
  */
 export const ANTHROPIC_MODELS = [
-	'claude-3-5-sonnet-20240620',
-	'claude-3-opus-20240229',
-	'claude-3-sonnet-20240229',
-	'claude-3-haiku-20240307',
+	'claude-3-5-sonnet-latest',
+	'claude-3-5-haiku-latest',
+	'claude-3-opus-latest',
 ];
 
 /**
@@ -38,16 +37,13 @@ export const COHERE_MODELS = ['command-r-plus', 'command-r', 'command'];
 
 /**
  * Reference: https://docs.perplexity.ai/guides/model-cards
- * Updated: 2024-10-03
+ * Updated: 2025-02-08
  */
 export const PERPLEXITY_MODELS = [
-	'llama-3.1-sonar-small-128k-online',
-	'llama-3.1-sonar-large-128k-online',
-	'llama-3.1-sonar-huge-128k-online',
-	'llama-3.1-sonar-small-128k-chat',
-	'llama-3.1-sonar-large-128k-chat',
-	'llama-3.1-8b-instruct',
-	'llama-3.1-70b-instruct',
+	'sonar',
+	'sonar-reasoning-pro',
+	'sonar-reasoning',
+	'sonar-reasoning-pro',
 ];
 
 /**
@@ -63,8 +59,8 @@ export const OPENROUTER_MODELS: OpenAIModels['data'] = [
 		name: 'OpenAI: GPT-4o Mini',
 	},
 	{
-		id: 'openai/gpt-3.5-turbo',
-		name: 'OpenAI: GPT-3.5 Turbo',
+		id: 'google/gemini-2.0-flash-001',
+		name: 'Google: Gemini 2.0 Flash',
 	},
 ];
 
@@ -151,7 +147,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 		[APIProvider.GoogleGemini]: {
 			apiKey: '',
 			baseUrl: DEFAULT_HOST[APIProvider.GoogleGemini],
-			model: 'gemini-1.5-flash',
+			model: 'gemini-2.0-flash',
 		},
 		[APIProvider.Anthropic]: {
 			apiKey: '',
@@ -211,7 +207,7 @@ export const settingTabProviderConfigurations = {
 	[APIProvider.AzureOpenAI]: {
 		defaultHost: '',
 		docs: 'https://learn.microsoft.com/en-us/azure/ai-services/openai/reference',
-		defaultModel: 'gpt-35-turbo',
+		defaultModel: 'gpt-4o-mini',
 		models: AZURE_OPENAI_MODELS,
 	},
 	[APIProvider.Anthropic]: {
@@ -223,7 +219,7 @@ export const settingTabProviderConfigurations = {
 	[APIProvider.GoogleGemini]: {
 		defaultHost: DEFAULT_HOST[APIProvider.GoogleGemini],
 		docs: 'https://ai.google.dev/models/gemini',
-		defaultModel: 'gemini-1.5-flash',
+		defaultModel: 'gemini-2.0-flash',
 		models: [],
 	},
 	[APIProvider.Cohere]: {
