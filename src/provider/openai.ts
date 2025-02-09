@@ -140,6 +140,10 @@ export async function handleTextOpenAI({
 			// Remove model from body
 			const { model: _, ...newObj } = body;
 			body = newObj;
+			headers = {
+				...headers,
+				'api-key': providerSettings.apiKey,
+			};
 			break;
 		}
 		default:
