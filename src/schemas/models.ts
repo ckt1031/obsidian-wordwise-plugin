@@ -9,6 +9,19 @@ export const OpenAIModelsSchema = v.object({
 	),
 });
 
+export const CohereModelsSchema = v.object({
+	models: v.array(
+		v.object({
+			name: v.string(),
+			endpoints: v.array(v.string()),
+			// finetuned: v.boolean(),
+			// contextLength: v.number(),
+			// tokenizerUrl: v.string(),
+			// defaultEndpoints: v.array(v.string()),
+		}),
+	),
+});
+
 export const GoogleGenAIModelsSchema = v.object({
 	models: v.array(
 		v.object({

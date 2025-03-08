@@ -18,7 +18,6 @@ export async function getAnthropicModels({
 
 	const response = await requestUrl({
 		url,
-		method: 'GET',
 		headers: headers,
 	});
 

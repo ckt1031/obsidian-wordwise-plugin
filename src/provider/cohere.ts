@@ -1,6 +1,7 @@
+import { CohereModelsSchema } from '@/schemas/models';
 import type { Models } from '@/types';
-import type { ListModelsResponse } from 'cohere-ai/api';
 import { requestUrl } from 'obsidian';
+import { parseAsync } from 'valibot';
 import type { ModelRequestProps } from './openai';
 
 export async function getCohereModels({
@@ -16,7 +17,6 @@ export async function getCohereModels({
 
 	const response = await requestUrl({
 		url,
-		method: 'GET',
 		headers: headers,
 	});
 
@@ -24,11 +24,14 @@ export async function getCohereModels({
 		throw new Error(response.text);
 	}
 
-	const allModels = JSON.parse(response.text) as ListModelsResponse;
+	const { models } = await parseAsync(
+		CohereModelsSchema,
+		JSON.parse(response.text),
+	);
 
 	const list: Models = [];
 
-	for (const model of allModels.models) {
+	for (const model of models) {
 		const endpoint = model.endpoints ?? [];
 
 		if (!endpoint.includes('chat') || !model.name) {
