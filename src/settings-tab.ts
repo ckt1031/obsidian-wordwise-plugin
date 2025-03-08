@@ -212,70 +212,6 @@ export class SettingTab extends PluginSettingTab {
 				);
 		}
 
-		new Setting(containerEl).setName('Text Generation Logging').setHeading();
-
-		new Setting(containerEl)
-			.setName('Enable')
-			.setDesc('Enable to log all the generated text to the storage')
-			.addToggle((toggle) =>
-				toggle
-					.setValue(settings.enableGenerationLogging)
-					.onChange(async (value) => {
-						settings.enableGenerationLogging = value;
-						await plugin.saveSettings();
-					}),
-			);
-
-		new Setting(containerEl)
-			.setName('Import and export')
-			.setDesc('Import and export the text generation logs')
-			.addButton((button) => {
-				button.setButtonText('Import').onClick(async () => {
-					const input = document.createElement('input');
-					input.type = 'file';
-					input.accept = 'application/json';
-					input.onchange = async (event) => {
-						const target = event.target as HTMLInputElement;
-						const file = target.files?.[0];
-
-						if (file) {
-							const reader = new FileReader();
-							reader.onload = async (e) => {
-								const content = e.target?.result;
-								if (typeof content === 'string') {
-									const logs = JSON.parse(content);
-									await new ForageStorage().setTextGenerationLogs(logs);
-									new Notice('Text generation logs imported successfully');
-								}
-							};
-							reader.readAsText(file);
-						}
-					};
-					input.click();
-				});
-			})
-			.addButton((button) => {
-				button.setButtonText('Export').onClick(async () => {
-					const logs = await new ForageStorage().getTextGenerationLogs();
-					const blob = new Blob([JSON.stringify(logs)], {
-						type: 'application/json',
-					});
-
-					const url = URL.createObjectURL(blob);
-
-					const a = document.createElement('a');
-					a.href = url;
-
-					const vaultName = this.plugin.app.vault.getName();
-					const nowMS = new Date().getTime();
-
-					a.download = `${plugin.manifest.id}-text-generation-logs-${vaultName}-${nowMS}.json`;
-					a.click();
-
-					URL.revokeObjectURL(url);
-				});
-			});
-
 		new Setting(containerEl).setName('Custom Prompts').setHeading();
 
 		new Setting(containerEl)
@@ -373,6 +309,70 @@ export class SettingTab extends PluginSettingTab {
 						}),
 				);
 		}
+
+		new Setting(containerEl).setName('Text Generation Logging').setHeading();
+
+		new Setting(containerEl)
+			.setName('Enable')
+			.setDesc('Enable to log all the generated text to the storage')
+			.addToggle((toggle) =>
+				toggle
+					.setValue(settings.enableGenerationLogging)
+					.onChange(async (value) => {
+						settings.enableGenerationLogging = value;
+						await plugin.saveSettings();
+					}),
+			);
+
+		new Setting(containerEl)
+			.setName('Import and export')
+			.setDesc('Import and export the text generation logs')
+			.addButton((button) => {
+				button.setButtonText('Import').onClick(async () => {
+					const input = document.createElement('input');
+					input.type = 'file';
+					input.accept = 'application/json';
+					input.onchange = async (event) => {
+						const target = event.target as HTMLInputElement;
+						const file = target.files?.[0];
+
+						if (file) {
+							const reader = new FileReader();
+							reader.onload = async (e) => {
+								const content = e.target?.result;
+								if (typeof content === 'string') {
+									const logs = JSON.parse(content);
+									await new ForageStorage().setTextGenerationLogs(logs);
+									new Notice('Text generation logs imported successfully');
+								}
+							};
+							reader.readAsText(file);
+						}
+					};
+					input.click();
+				});
+			})
+			.addButton((button) => {
+				button.setButtonText('Export').onClick(async () => {
+					const logs = await new ForageStorage().getTextGenerationLogs();
+					const blob = new Blob([JSON.stringify(logs)], {
+						type: 'application/json',
+					});
+
+					const url = URL.createObjectURL(blob);
+
+					const a = document.createElement('a');
+					a.href = url;
+
+					const vaultName = this.plugin.app.vault.getName();
+					const nowMS = new Date().getTime();
+
+					a.download = `${plugin.manifest.id}-text-generation-logs-${vaultName}-${nowMS}.json`;
+					a.click();
+
+					URL.revokeObjectURL(url);
+				});
+			});
 
 		new Setting(containerEl).setName('Danger Zone').setHeading();
 
