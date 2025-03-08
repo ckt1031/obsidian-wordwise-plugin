@@ -22,6 +22,13 @@ function markdownListToArray(markdownList: string): string[] {
 		.map((line) => line.replace(/^[-*]\s+|\d+\.\s+/, '')); // Remove Markdown list markers
 }
 
+export function removeThinkingContent(result: string): string {
+	// Find out \n<think>.+</think>\n and remove it
+	const regex = /\n<think>[^<]+<\/think>\n\n/;
+
+	return result.replace(regex, '');
+}
+
 export async function runCommand(
 	editor: EnhancedEditor,
 	plugin: WordWisePlugin,
@@ -91,7 +98,7 @@ export async function runCommand(
 
 		const startTime = Date.now(); // Capture start time
 
-		const result = await callTextAPI({
+		let result = await callTextAPI({
 			messages: {
 				system: systemPrompt,
 				user: input,
@@ -107,6 +114,10 @@ export async function runCommand(
 		if (!result) {
 			new Notice(`No result from ${plugin.settings.aiProvider}`);
 			return;
+		}
+
+		if (plugin.settings.doNotIncludeThinkingContentToFinalText) {
+			result = removeThinkingContent(result);
 		}
 
 		const loggingBody: TextGenerationLog = {

@@ -116,6 +116,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 			model: '',
 		},
 	},
+	doNotIncludeThinkingContentToFinalText: true,
 	advancedSettings: false,
 	customAiModel: '',
 	maxTokens: 2000,

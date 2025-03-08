@@ -137,6 +137,20 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
+		new Setting(containerEl)
+			.setName('Hide thinking content')
+			.setDesc(
+				'Models with reasoning capabilities may include thinking content in the generated text (<think>...</think>). Enable this to hide it.',
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(settings.doNotIncludeThinkingContentToFinalText)
+					.onChange(async (value) => {
+						settings.doNotIncludeThinkingContentToFinalText = value;
+						await plugin.saveSettings();
+					}),
+			);
+
 		new Setting(containerEl).setName('Advanced Model Parameters').setHeading();
 
 		new Setting(containerEl)

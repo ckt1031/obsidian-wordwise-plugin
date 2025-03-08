@@ -1,5 +1,6 @@
 import type WordWisePlugin from '@/main';
 import { callTextAPI } from '@/utils/call-api';
+import { removeThinkingContent } from '@/utils/handle-command';
 import { log } from '@/utils/logging';
 import { Notice, type TextComponent, setIcon, setTooltip } from 'obsidian';
 
@@ -29,7 +30,7 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 
 		try {
 			const providerSettings = settings.aiProviderConfig[settings.aiProvider];
-			const result = await callTextAPI({
+			let result = await callTextAPI({
 				allSettings: settings,
 				providerSettings,
 
@@ -43,6 +44,15 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 					user: 'Say word hello only.',
 				},
 			});
+
+			if (!result) {
+				new Notice(`No result from ${settings.aiProvider}`);
+				return;
+			}
+
+			if (plugin.settings.doNotIncludeThinkingContentToFinalText) {
+				result = removeThinkingContent(result);
+			}
 
 			log(plugin, result);
 

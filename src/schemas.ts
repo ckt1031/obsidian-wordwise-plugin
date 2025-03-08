@@ -99,6 +99,9 @@ export const PluginSettingsSchema = v.object({
 	maxTokens: v.number(),
 	temperature: v.number(),
 
+	/** Thinking and reasoning from model */
+	doNotIncludeThinkingContentToFinalText: v.boolean(),
+
 	/** Log the text to storage to trace usage and original text */
 	enableGenerationLogging: v.boolean(),
 
