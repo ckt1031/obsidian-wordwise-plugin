@@ -24,17 +24,13 @@ export async function getOpenAIModels({
 }: ModelRequestProps): Promise<Models> {
 	let path = '/v1/models';
 
-	let headers: Record<string, string> = {
+	const headers: Record<string, string> = {
 		'Content-Type': 'application/json',
 		Authorization: `Bearer ${apiKey}`,
 	};
 
 	if (provider === APIProvider.OpenRouter) {
 		path = `/api${path}`;
-		headers = {
-			...headers,
-			...OpenRouterHeaders,
-		};
 	}
 
 	const response = await request({
@@ -45,8 +41,13 @@ export async function getOpenAIModels({
 	const models = await parseAsync(OpenAIModelsSchema, JSON.parse(response));
 
 	if (provider === APIProvider.OpenAI) {
-		// Only allow model ame starting with gpt
-		models.data = models.data.filter((model) => model.id.startsWith('gpt'));
+		// Filter off models with name embed, whisper, tts
+		models.data = models.data.filter(
+			(model) =>
+				!model.id.includes('embed') &&
+				!model.id.includes('whisper') &&
+				!model.id.includes('tts'),
+		);
 	}
 
 	return models.data;
