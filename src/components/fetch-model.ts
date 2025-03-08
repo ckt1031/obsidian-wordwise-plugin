@@ -1,4 +1,4 @@
-import { APIProvider, OPENROUTER_MODELS } from '@/config';
+import { APIProvider } from '@/config';
 import type WordWisePlugin from '@/main';
 import ConfirmModal from '@/modals/confirm';
 import { getCohereModels } from '@/provider/cohere';
@@ -47,7 +47,7 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 		if (!result) return;
 
 		if (plugin.settings.aiProvider === APIProvider.OpenRouter) {
-			await setModels(APIProvider.OpenRouter, OPENROUTER_MODELS);
+			await setModels(APIProvider.OpenRouter, []);
 		} else {
 			await setModels(plugin.settings.aiProvider, []);
 		}

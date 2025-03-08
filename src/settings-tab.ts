@@ -4,15 +4,12 @@ import { Notice, PluginSettingTab, Setting } from 'obsidian';
 import { wrapFetchModelComponent } from './components/fetch-model';
 import { wrapPasswordComponent } from './components/password';
 import { wrapAPITestComponent } from './components/test-api';
-import {
-	APIProvider,
-	CustomBehavior,
-	settingTabProviderConfigurations,
-} from './config';
+import { APIProvider, CustomBehavior } from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
 import ImportSettingsModal from './modals/import-settings';
 import ExportSettingsQrCodeModal from './modals/qr-code';
+import type { OpenAIModels } from './types';
 import { ForageStorage } from './utils/storage';
 
 export class SettingTab extends PluginSettingTab {
@@ -49,9 +46,7 @@ export class SettingTab extends PluginSettingTab {
 			});
 		});
 
-		for (const [provider, config] of Object.entries(
-			settingTabProviderConfigurations,
-		)) {
+		for (const provider of Object.values(APIProvider)) {
 			if (settings.aiProvider === provider) {
 				new Setting(containerEl).setName('API key').addText((text) => {
 					wrapPasswordComponent(text);
@@ -103,7 +98,8 @@ export class SettingTab extends PluginSettingTab {
 				new Setting(containerEl)
 					.setName('Model')
 					.addDropdown(async (dropDown) => {
-						let models = config.models;
+						let models: OpenAIModels['data'] = [];
+
 						// Only in advanced mode or provider is OpenRouter OR Custom
 						if (
 							provider === APIProvider.GoogleGemini ||
