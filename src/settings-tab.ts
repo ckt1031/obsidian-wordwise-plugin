@@ -151,7 +151,22 @@ export class SettingTab extends PluginSettingTab {
 					}),
 			);
 
-		new Setting(containerEl).setName('Advanced Model Parameters').setHeading();
+		new Setting(containerEl).setName('Model Parameters').setHeading();
+
+		new Setting(containerEl)
+			.setName('Temperature')
+			.setDesc(
+				'Higher value means more creative but less accurate, default value is 0.6.',
+			)
+			.addSlider((slider) => {
+				slider.setDynamicTooltip();
+				slider.setLimits(0.0, 1.0, 0.1);
+				slider.setValue(settings.temperature);
+				slider.onChange(async (value) => {
+					settings.temperature = value;
+					await plugin.saveSettings();
+				});
+			});
 
 		new Setting(containerEl)
 			.setName('Disable pre-defined commands')
@@ -178,22 +193,11 @@ export class SettingTab extends PluginSettingTab {
 
 		if (settings.advancedSettings) {
 			new Setting(containerEl)
-				.setName('Temperature')
-				.setDesc(
-					'Higher value means more creative but less accurate, lower value means less creative but more accurate.',
-				)
-				.addSlider((slider) => {
-					slider.setDynamicTooltip();
-					slider.setLimits(0.0, 1.0, 0.1);
-					slider.setValue(settings.temperature);
-					slider.onChange(async (value) => {
-						settings.temperature = value;
-						await plugin.saveSettings();
-					});
-				});
+				.setName('Advanced API Configrations')
+				.setHeading();
 
 			new Setting(containerEl)
-				.setName('Custom model id')
+				.setName('Custom model ID')
 				.setDesc('If this is empty, it will follow the selected menu above.')
 				.addText((text) =>
 					text

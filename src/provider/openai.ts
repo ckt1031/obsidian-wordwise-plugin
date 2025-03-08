@@ -85,12 +85,8 @@ export async function handleTextOpenAI({
 		| Omit<OpenAI.ChatCompletionCreateParams, 'model'> = {
 		stream: false,
 		model,
-		...(allSettings.advancedSettings && {
-			...(allSettings.maxTokens > 0 && {
-				max_tokens: allSettings.maxTokens,
-			}),
-			temperature: allSettings.temperature,
-		}),
+		temperature: allSettings.temperature,
+
 		messages: [
 			{
 				role: 'system',
@@ -101,6 +97,13 @@ export async function handleTextOpenAI({
 				content: messages.user,
 			},
 		],
+
+		// Advanced settings here:
+		...(allSettings.advancedSettings && {
+			...(allSettings.maxTokens > 0 && {
+				max_tokens: allSettings.maxTokens,
+			}),
+		}),
 	};
 
 	let headers: Record<string, string> = {
