@@ -118,12 +118,6 @@ export async function handleTextOpenAI({
 				Authorization: `Bearer ${apiKey}`,
 			};
 			break;
-		case APIProvider.Cohere:
-			path = path.replace('/v1', '/compatibility/v1');
-			break;
-		case APIProvider.GoogleGemini:
-			path = path.replace('/v1', '/v1beta/openai');
-			break;
 		case APIProvider.AzureOpenAI: {
 			path = `/openai/deployments/${model}/chat/completions?api-version=${(providerSettings as PluginSettings['aiProviderConfig'][APIProvider.AzureOpenAI]).apiVersion}`;
 			// Remove model from body
@@ -138,6 +132,12 @@ export async function handleTextOpenAI({
 		default:
 			if (provider === APIProvider.PerplexityAI) {
 				path = path.replace('/v1', '');
+			}
+			if (provider === APIProvider.Cohere) {
+				path = path.replace('/v1', '/compatibility/v1');
+			}
+			if (provider === APIProvider.GoogleGemini) {
+				path = path.replace('/v1', '/v1beta/openai');
 			}
 			headers = {
 				...headers,
