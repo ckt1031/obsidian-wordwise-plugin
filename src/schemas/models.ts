@@ -19,6 +19,16 @@ export const GoogleGenAIModelsSchema = v.object({
 	),
 });
 
+export const AnthropicModelsSchema = v.object({
+	models: v.array(
+		v.object({
+			id: v.string(),
+			type: v.string(),
+			displayName: v.string(),
+		}),
+	),
+});
+
 export const OllamaModelsSchema = v.object({
 	models: v.array(
 		v.object({

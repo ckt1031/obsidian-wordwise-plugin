@@ -9,7 +9,6 @@ import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
 import ImportSettingsModal from './modals/import-settings';
 import ExportSettingsQrCodeModal from './modals/qr-code';
-import type { OpenAIModels } from './types';
 import { ForageStorage } from './utils/storage';
 
 export class SettingTab extends PluginSettingTab {
@@ -98,23 +97,12 @@ export class SettingTab extends PluginSettingTab {
 				new Setting(containerEl)
 					.setName('Model')
 					.addDropdown(async (dropDown) => {
-						let models: OpenAIModels['data'] = [];
+						const models = await new ForageStorage().getModels(provider);
 
-						// Only in advanced mode or provider is OpenRouter OR Custom
-						if (
-							provider === APIProvider.GoogleGemini ||
-							provider === APIProvider.OpenRouter ||
-							provider === APIProvider.Cohere ||
-							provider === APIProvider.OpenAI ||
-							provider === APIProvider.Ollama ||
-							provider === APIProvider.Custom
-						) {
-							wrapFetchModelComponent({
-								dropDown,
-								plugin,
-							});
-							models = await new ForageStorage().getModels(provider);
-						}
+						wrapFetchModelComponent({
+							dropDown,
+							plugin,
+						});
 
 						for (const model of models) {
 							if (typeof model === 'string') {

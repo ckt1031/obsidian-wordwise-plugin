@@ -1,6 +1,7 @@
 import { APIProvider } from '@/config';
 import type WordWisePlugin from '@/main';
 import ConfirmModal from '@/modals/confirm';
+import { getAnthropicModels } from '@/provider/anthropic';
 import { getCohereModels } from '@/provider/cohere';
 import { getGoogleGenAIModels } from '@/provider/google-ai';
 import { getOpenAIModels } from '@/provider/openai';
@@ -13,7 +14,6 @@ type Props = {
 	plugin: WordWisePlugin;
 };
 
-// Main function to wrap the password component
 export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 	const fetchButton = dropDown.selectEl.insertAdjacentElement(
 		'beforebegin',
@@ -70,6 +70,9 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 					models = await getGoogleGenAIModels({ plugin });
 					break;
 				}
+				case APIProvider.Anthropic:
+					models = await getAnthropicModels({ plugin });
+					break;
 				default:
 					models = await getOpenAIModels({ plugin });
 			}

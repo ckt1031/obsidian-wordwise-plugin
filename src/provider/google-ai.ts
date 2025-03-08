@@ -22,15 +22,7 @@ export async function getGoogleGenAIModels({
 
 	const url = `${host}/v1beta/models?key=${providerSettings.apiKey}`;
 
-	const headers: Record<string, string> = {
-		'Content-Type': 'application/json',
-	};
-
-	const response = await requestUrl({
-		url,
-		method: 'GET',
-		headers: headers,
-	});
+	const response = await requestUrl(url);
 
 	if (response.status !== 200) {
 		throw new Error(response.text);
