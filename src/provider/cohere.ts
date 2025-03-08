@@ -1,25 +1,17 @@
-import { DEFAULT_HOST } from '@/config';
-import type { Models, ProviderTextAPIProps } from '@/types';
-import { getAPIHost } from '@/utils/get-url-host';
+import type { Models } from '@/types';
 import type { ListModelsResponse } from 'cohere-ai/api';
 import { requestUrl } from 'obsidian';
+import type { ModelRequestProps } from './openai';
 
 export async function getCohereModels({
-	plugin,
-}: Pick<ProviderTextAPIProps, 'plugin'>): Promise<Models> {
-	const { settings } = plugin;
-	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
-
-	const host = getAPIHost(
-		providerSettings.baseUrl,
-		DEFAULT_HOST[settings.aiProvider],
-	);
-
+	host,
+	apiKey,
+}: ModelRequestProps): Promise<Models> {
 	const url = `${host}/v1/models`;
 
 	const headers: Record<string, string> = {
 		'Content-Type': 'application/json',
-		Authorization: `Bearer ${providerSettings.apiKey}`,
+		Authorization: `Bearer ${apiKey}`,
 	};
 
 	const response = await requestUrl({

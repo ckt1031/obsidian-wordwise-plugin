@@ -1,10 +1,11 @@
-import { APIProvider } from '@/config';
+import { APIProvider, DEFAULT_HOST } from '@/config';
 import type WordWisePlugin from '@/main';
 import ConfirmModal from '@/modals/confirm';
 import { getAnthropicModels } from '@/provider/anthropic';
 import { getCohereModels } from '@/provider/cohere';
 import { getGoogleGenAIModels } from '@/provider/google-ai';
 import { getOpenAIModels } from '@/provider/openai';
+import { getAPIHost } from '@/utils/get-url-host';
 import { log } from '@/utils/logging';
 import { ForageStorage } from '@/utils/storage';
 import { type DropdownComponent, Notice, setIcon, setTooltip } from 'obsidian';
@@ -61,20 +62,40 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 
 			const { settings } = plugin;
 
+			const { baseUrl, apiKey } =
+				settings.aiProviderConfig[settings.aiProvider];
+			const host = getAPIHost(baseUrl, DEFAULT_HOST[settings.aiProvider]);
+
 			switch (settings.aiProvider) {
 				case APIProvider.Cohere: {
-					models = await getCohereModels({ plugin });
+					models = await getCohereModels({
+						host,
+						apiKey,
+						provider: settings.aiProvider,
+					});
 					break;
 				}
 				case APIProvider.GoogleGemini: {
-					models = await getGoogleGenAIModels({ plugin });
+					models = await getGoogleGenAIModels({
+						host,
+						apiKey,
+						provider: settings.aiProvider,
+					});
 					break;
 				}
 				case APIProvider.Anthropic:
-					models = await getAnthropicModels({ plugin });
+					models = await getAnthropicModels({
+						host,
+						apiKey,
+						provider: settings.aiProvider,
+					});
 					break;
 				default:
-					models = await getOpenAIModels({ plugin });
+					models = await getOpenAIModels({
+						host,
+						apiKey,
+						provider: settings.aiProvider,
+					});
 			}
 
 			await setModels(settings.aiProvider, models);

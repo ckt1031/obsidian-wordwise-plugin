@@ -1,27 +1,19 @@
-import { DEFAULT_HOST } from '@/config';
 import { AnthropicModelsSchema } from '@/schemas/models';
-import type { Models, ProviderTextAPIProps } from '@/types';
-import { getAPIHost } from '@/utils/get-url-host';
+import type { Models } from '@/types';
 import { requestUrl } from 'obsidian';
 import { parseAsync } from 'valibot';
+import type { ModelRequestProps } from './openai';
 
 export async function getAnthropicModels({
-	plugin,
-}: Pick<ProviderTextAPIProps, 'plugin'>): Promise<Models> {
-	const { settings } = plugin;
-	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
-
-	const host = getAPIHost(
-		providerSettings.baseUrl,
-		DEFAULT_HOST[settings.aiProvider],
-	);
-
+	host,
+	apiKey,
+}: ModelRequestProps): Promise<Models> {
 	const url = `${host}/v1/models`;
 
 	const headers: Record<string, string> = {
 		'Content-Type': 'application/json',
 		'anthropic-version': '2023-06-01',
-		'x-api-key': providerSettings.apiKey,
+		'x-api-key': apiKey,
 	};
 
 	const response = await requestUrl({

@@ -64,10 +64,10 @@ export async function runCommand(
 
 		const customModel = plugin.settings.customAiModel;
 
-		const model =
-			customModel.length > 0
-				? customModel
-				: plugin.settings.aiProviderConfig[plugin.settings.aiProvider].model;
+		const providerSettings =
+			plugin.settings.aiProviderConfig[plugin.settings.aiProvider];
+
+		const model = customModel.length > 0 ? customModel : providerSettings.model;
 
 		new Notice(`Generating text with ${command}...`);
 
@@ -92,13 +92,16 @@ export async function runCommand(
 		const startTime = Date.now(); // Capture start time
 
 		const result = await callTextAPI({
-			plugin,
 			messages: {
 				system: systemPrompt,
 				user: input,
 			},
-			model: actionData.customDefinedModel,
-			provider: actionData.customDefinedProvider,
+			host: providerSettings.baseUrl,
+			apiKey: providerSettings.apiKey,
+			allSettings: plugin.settings,
+			model: actionData.customDefinedModel ?? model,
+			provider: actionData.customDefinedProvider ?? plugin.settings.aiProvider,
+			providerSettings: providerSettings,
 		});
 
 		if (!result) {

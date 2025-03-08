@@ -1,22 +1,15 @@
 import { handleTextOpenAI } from '@/provider/openai';
 import type { CallTextAPIProps } from '@/types';
-import { log } from './logging';
 
-export async function callTextAPI({
-	plugin,
-	messages,
-	provider,
-	model: requestModel,
-}: CallTextAPIProps): Promise<string | null | undefined> {
-	const { settings } = plugin;
+export async function callTextAPI(
+	props: CallTextAPIProps,
+): Promise<string | null | undefined> {
+	const { model, allSettings, messages } = props;
 
-	const apiProvider = provider ?? settings.aiProvider;
+	let requestModel = model;
 
-	let model =
-		requestModel ?? settings.aiProviderConfig[settings.aiProvider].model;
-
-	if (settings.customAiModel.length > 0 && settings.advancedSettings) {
-		model = settings.customAiModel;
+	if (allSettings.customAiModel.length > 0 && allSettings.advancedSettings) {
+		requestModel = allSettings.customAiModel;
 	}
 
 	if (messages.system.length === 0) {
@@ -28,10 +21,5 @@ export async function callTextAPI({
 		throw new Error('User message is empty');
 	}
 
-	log(
-		plugin,
-		`Sending request to ${apiProvider} with prompt:\nSystem: ${messages.system}\nUser: ${messages.user}`,
-	);
-
-	return handleTextOpenAI({ plugin, messages, model });
+	return handleTextOpenAI({ ...props, model: requestModel });
 }

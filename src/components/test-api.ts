@@ -28,8 +28,16 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 		const { settings } = plugin;
 
 		try {
+			const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 			const result = await callTextAPI({
-				plugin,
+				allSettings: settings,
+				providerSettings,
+
+				host: providerSettings.baseUrl,
+				model: providerSettings.model,
+				apiKey: providerSettings.apiKey,
+
+				provider: settings.aiProvider,
 				messages: {
 					system: '',
 					user: 'Say word hello only.',

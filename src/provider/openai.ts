@@ -1,7 +1,6 @@
-import { APIProvider, DEFAULT_HOST } from '@/config';
+import { APIProvider } from '@/config';
 import { OpenAIModelsSchema } from '@/schemas/models';
-import type { Models, ProviderTextAPIProps } from '@/types';
-import { getAPIHost } from '@/utils/get-url-host';
+import type { Models, PluginSettings, ProviderTextAPIProps } from '@/types';
 import isV1Needed from '@/utils/is-v1-needed';
 import { Notice, request, requestUrl } from 'obsidian';
 import type OpenAI from 'openai';
@@ -12,59 +11,40 @@ const OpenRouterHeaders = {
 	'X-Title': 'Obsidian Wordwise Plugin',
 };
 
+export type ModelRequestProps = {
+	host: string;
+	apiKey: string;
+	provider: APIProvider;
+};
+
 export async function getOpenAIModels({
-	plugin,
-}: Pick<ProviderTextAPIProps, 'plugin'>): Promise<Models> {
-	const { settings } = plugin;
-	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
-
+	host,
+	apiKey,
+	provider,
+}: ModelRequestProps): Promise<Models> {
 	let path = '/v1/models';
-
-	switch (settings.aiProvider) {
-		case APIProvider.OpenRouter:
-			path = `/api${path}`;
-			break;
-		default:
-			break;
-	}
-
-	const host = getAPIHost(
-		providerSettings.baseUrl,
-		DEFAULT_HOST[settings.aiProvider],
-	);
-
-	const url = `${host}${path}`;
 
 	let headers: Record<string, string> = {
 		'Content-Type': 'application/json',
+		Authorization: `Bearer ${apiKey}`,
 	};
 
-	switch (settings.aiProvider) {
-		case APIProvider.OpenRouter:
-			path = `/api${path}`;
-			headers = {
-				...headers,
-				...OpenRouterHeaders,
-				Authorization: `Bearer ${providerSettings.apiKey}`,
-			};
-			break;
-		default:
-			headers = {
-				...headers,
-				Authorization: `Bearer ${providerSettings.apiKey}`,
-			};
-			break;
+	if (provider === APIProvider.OpenRouter) {
+		path = `/api${path}`;
+		headers = {
+			...headers,
+			...OpenRouterHeaders,
+		};
 	}
 
 	const response = await request({
-		url,
-		method: 'GET',
-		headers: headers,
+		url: `${host}${path}`,
+		headers,
 	});
 
 	const models = await parseAsync(OpenAIModelsSchema, JSON.parse(response));
 
-	if (settings.aiProvider === APIProvider.OpenAI) {
+	if (provider === APIProvider.OpenAI) {
 		// Only allow model ame starting with gpt
 		models.data = models.data.filter((model) => model.id.startsWith('gpt'));
 	}
@@ -73,24 +53,28 @@ export async function getOpenAIModels({
 }
 
 export async function handleTextOpenAI({
-	plugin,
-	messages,
+	host,
 	model,
+	provider,
+	messages,
+	apiKey,
+	allSettings,
+	providerSettings,
 }: ProviderTextAPIProps) {
-	const { settings } = plugin;
-
-	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
-
-	if (settings.aiProvider === APIProvider.AzureOpenAI) {
-		const providerSettings = settings.aiProviderConfig[settings.aiProvider];
-
+	if (provider === APIProvider.AzureOpenAI) {
 		// Reject if base URL is not set
 		if (!providerSettings.baseUrl || providerSettings.baseUrl.length === 0) {
 			throw new Error('Base URL is not set');
 		}
 
 		// Validate the API Version YYYY-MM-DD
-		if (!/\d{4}-\d{2}-\d{2}/.test(providerSettings.apiVersion)) {
+		if (
+			!/\d{4}-\d{2}-\d{2}/.test(
+				(
+					providerSettings as PluginSettings['aiProviderConfig'][APIProvider.AzureOpenAI]
+				).apiVersion,
+			)
+		) {
 			new Notice('Invalid API Version, please enter in YYYY-MM-DD format');
 			return;
 		}
@@ -101,11 +85,11 @@ export async function handleTextOpenAI({
 		| Omit<OpenAI.ChatCompletionCreateParams, 'model'> = {
 		stream: false,
 		model,
-		...(settings.advancedSettings && {
-			...(settings.maxTokens > 0 && {
-				max_tokens: settings.maxTokens,
+		...(allSettings.advancedSettings && {
+			...(allSettings.maxTokens > 0 && {
+				max_tokens: allSettings.maxTokens,
 			}),
-			temperature: settings.temperature,
+			temperature: allSettings.temperature,
 		}),
 		messages: [
 			{
@@ -125,13 +109,13 @@ export async function handleTextOpenAI({
 
 	let path = '/v1/chat/completions';
 
-	switch (settings.aiProvider) {
+	switch (provider) {
 		case APIProvider.OpenRouter:
 			path = `/api${path}`;
 			headers = {
 				...headers,
 				...OpenRouterHeaders,
-				Authorization: `Bearer ${providerSettings.apiKey}`,
+				Authorization: `Bearer ${apiKey}`,
 			};
 			break;
 		case APIProvider.Cohere:
@@ -141,8 +125,7 @@ export async function handleTextOpenAI({
 			path = path.replace('/v1', '/v1beta/openai');
 			break;
 		case APIProvider.AzureOpenAI: {
-			const providerSettings = settings.aiProviderConfig[settings.aiProvider];
-			path = `/openai/deployments/${model}/chat/completions?api-version=${providerSettings.apiVersion}`;
+			path = `/openai/deployments/${model}/chat/completions?api-version=${(providerSettings as PluginSettings['aiProviderConfig'][APIProvider.AzureOpenAI]).apiVersion}`;
 			// Remove model from body
 			const { model: _, ...newObj } = body;
 			body = newObj;
@@ -153,26 +136,21 @@ export async function handleTextOpenAI({
 			break;
 		}
 		default:
-			if (settings.aiProvider === APIProvider.PerplexityAI) {
+			if (provider === APIProvider.PerplexityAI) {
 				path = path.replace('/v1', '');
 			}
 			headers = {
 				...headers,
-				Authorization: `Bearer ${providerSettings.apiKey}`,
+				Authorization: `Bearer ${apiKey}`,
 			};
 			break;
 	}
 
-	const urlHost = getAPIHost(
-		providerSettings.baseUrl,
-		DEFAULT_HOST[settings.aiProvider],
-	);
-
-	if (!isV1Needed(urlHost)) {
+	if (!isV1Needed(host)) {
 		path = path.replace('/v1', '');
 	}
 
-	const url = `${urlHost}${path}`;
+	const url = `${host}${path}`;
 
 	const response = await requestUrl({
 		url,

@@ -2,7 +2,6 @@ import type CodeMirror from 'codemirror';
 import type { Editor, Menu } from 'obsidian';
 import type * as v from 'valibot';
 import type { APIProvider, CommandActions } from './config';
-import type WordWisePlugin from './main';
 import type {
 	CommandSchema,
 	ObfuscatedPluginSettingsSchema,
@@ -28,13 +27,17 @@ export type ObfuscatedPluginSettings = v.InferInput<
 >;
 
 export interface CallTextAPIProps {
-	plugin: WordWisePlugin;
 	messages: {
 		system: string;
 		user: string;
 	};
-	model?: string;
-	provider?: APIProvider;
+	model: string;
+	host: string;
+	apiKey: string;
+	provider: APIProvider;
+
+	allSettings: PluginSettings;
+	providerSettings: PluginSettings['aiProviderConfig'][APIProvider];
 }
 
 export interface ProviderTextAPIProps extends CallTextAPIProps {
