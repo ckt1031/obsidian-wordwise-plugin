@@ -1,7 +1,3 @@
-import { APIProvider } from '@/config';
-import { handleTextAnthropicAI } from '@/provider/anthropic';
-import { handleTextCohere } from '@/provider/cohere';
-import { handleTextGoogleGenAI } from '@/provider/google-ai';
 import { handleTextOpenAI } from '@/provider/openai';
 import type { CallTextAPIProps } from '@/types';
 import { log } from './logging';
@@ -36,18 +32,6 @@ export async function callTextAPI({
 		plugin,
 		`Sending request to ${apiProvider} with prompt:\nSystem: ${messages.system}\nUser: ${messages.user}`,
 	);
-
-	if (apiProvider === APIProvider.Anthropic) {
-		return handleTextAnthropicAI({ plugin, messages, model });
-	}
-
-	if (apiProvider === APIProvider.GoogleGemini) {
-		return handleTextGoogleGenAI({ plugin, messages, model });
-	}
-
-	if (apiProvider === APIProvider.Cohere) {
-		return handleTextCohere({ plugin, messages, model });
-	}
 
 	return handleTextOpenAI({ plugin, messages, model });
 }

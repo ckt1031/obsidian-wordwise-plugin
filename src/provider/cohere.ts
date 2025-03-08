@@ -1,13 +1,8 @@
 import { DEFAULT_HOST } from '@/config';
 import type { Models, ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
-import type {
-	ChatResponse,
-	ListModelsResponse,
-	V2ChatRequest,
-} from 'cohere-ai/api';
+import type { ListModelsResponse } from 'cohere-ai/api';
 import { requestUrl } from 'obsidian';
-import snakecaseKeys from 'snakecase-keys';
 
 export async function getCohereModels({
 	plugin,
@@ -55,64 +50,4 @@ export async function getCohereModels({
 	}
 
 	return list;
-}
-
-export async function handleTextCohere({
-	plugin,
-	messages,
-	model,
-}: ProviderTextAPIProps) {
-	const { settings } = plugin;
-
-	const providerSettings = settings.aiProviderConfig[settings.aiProvider];
-
-	const body: V2ChatRequest = {
-		model,
-		messages: [
-			{
-				role: 'system',
-				content: messages.system,
-			},
-			{
-				role: 'user',
-				content: messages.user,
-			},
-		],
-		...(settings.advancedSettings && {
-			...(settings.maxTokens > 0 && {
-				maxTokens: settings.maxTokens,
-			}),
-			temperature: settings.temperature,
-		}),
-	};
-
-	const url = `${getAPIHost(
-		providerSettings.baseUrl,
-		DEFAULT_HOST[settings.aiProvider],
-	)}/v1/chat`;
-
-	const response = await requestUrl({
-		url,
-		method: 'POST',
-		headers: {
-			accept: 'application/json',
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${providerSettings.apiKey}`,
-		},
-		body: JSON.stringify(
-			snakecaseKeys(body as unknown as Record<string, unknown>),
-		),
-	});
-
-	if (response.status !== 200) {
-		throw new Error(response.text);
-	}
-
-	const { message }: ChatResponse = JSON.parse(response.text);
-
-	if (!message.content) {
-		throw new Error('No content found in response');
-	}
-
-	return message.content[0].text;
 }

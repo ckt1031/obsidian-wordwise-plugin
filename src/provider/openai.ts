@@ -134,6 +134,12 @@ export async function handleTextOpenAI({
 				Authorization: `Bearer ${providerSettings.apiKey}`,
 			};
 			break;
+		case APIProvider.Cohere:
+			path = path.replace('/v1', '/compatibility/v1');
+			break;
+		case APIProvider.GoogleGemini:
+			path = path.replace('/v1', '/v1beta/openai');
+			break;
 		case APIProvider.AzureOpenAI: {
 			const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 			path = `/openai/deployments/${model}/chat/completions?api-version=${providerSettings.apiVersion}`;
