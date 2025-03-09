@@ -21,8 +21,11 @@ export enum APIProvider {
 	OpenRouter = 'OpenRouter',
 	/** https://docs.perplexity.ai */
 	PerplexityAI = 'Perplexity',
-
+	/** https://ollama.com */
 	Ollama = 'Ollama',
+	/** https://lmstudio.ai/docs/app/api/endpoints/openai */
+	LMStudio = 'LM Studio',
+
 	/** OpenAI Compatible API, such as OneAPI and FastGPT */
 	Custom = 'Custom (OpenAI Compatible)',
 }
@@ -61,6 +64,7 @@ export const DEFAULT_HOST = {
 	[APIProvider.OpenRouter]: 'https://openrouter.ai',
 	[APIProvider.PerplexityAI]: 'https://api.perplexity.ai',
 	[APIProvider.Ollama]: 'http://localhost:11434',
+	[APIProvider.LMStudio]: 'http://localhost:1234',
 	[APIProvider.Custom]: '',
 };
 
