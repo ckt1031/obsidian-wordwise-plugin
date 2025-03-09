@@ -38,7 +38,7 @@ export class SettingTab extends PluginSettingTab {
 			)) {
 				const display =
 					data.isCustom && data.displayName && data.displayName.length > 0
-						? data.displayName
+						? `Custom: ${data.displayName}`
 						: providerName;
 				dropDown.addOption(providerName, display);
 			}
@@ -151,7 +151,8 @@ export class SettingTab extends PluginSettingTab {
 				if (
 					settings.advancedSettings ||
 					provider === APIProvider.AzureOpenAI ||
-					provider === APIProvider.Custom
+					// provider === APIProvider.Custom
+					settings.aiProviderConfig[provider].isCustom
 				) {
 					new Setting(containerEl)
 						.setName('API base URL')

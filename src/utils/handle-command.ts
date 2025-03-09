@@ -76,7 +76,10 @@ export async function runCommand(
 
 		const model = customModel.length > 0 ? customModel : providerSettings.model;
 
-		new Notice(`Generating text with ${command}...`);
+		const providerDisplayName =
+			providerSettings?.displayName ?? plugin.settings.aiProvider;
+
+		new Notice(`${command} with ${providerDisplayName}`);
 
 		let taskPrompt = actionData.taskPrompt;
 
