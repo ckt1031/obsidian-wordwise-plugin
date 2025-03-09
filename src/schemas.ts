@@ -11,7 +11,7 @@ export const TextGenerationLogSchema = v.object({
 
 	by: v.string(),
 	model: v.string(),
-	provider: v.enum_(APIProvider),
+	provider: v.string(),
 	generatedAt: v.string(),
 
 	customInstruction: v.optional(v.string()),
@@ -44,55 +44,23 @@ export const PluginSettingsSchema = v.object({
 	/** Date that helps migration */
 	dataSchemeDate: v.string(),
 
-	aiProvider: v.enum_(APIProvider),
-	aiProviderConfig: v.object({
-		[APIProvider.OpenAI]: v.object({
+	// Providers
+	aiProvider: v.string(),
+	aiProviderConfig: v.record(
+		v.string(),
+		v.object({
+			model: v.string(),
 			apiKey: v.string(),
 			baseUrl: v.string(),
-			model: v.string(),
+
+			// New after Azure OpenAI, but not all providers have it
+			apiVersion: v.optional(v.string()),
+
+			// New in v1.1.0
+			isCustom: v.optional(v.boolean()),
+			displayName: v.optional(v.string()),
 		}),
-		[APIProvider.AzureOpenAI]: v.object({
-			apiKey: v.string(),
-			baseUrl: v.string(),
-			model: v.string(),
-			apiVersion: v.string(),
-		}),
-		[APIProvider.GoogleGemini]: v.object({
-			apiKey: v.string(),
-			baseUrl: v.string(),
-			model: v.string(),
-		}),
-		[APIProvider.Anthropic]: v.object({
-			apiKey: v.string(),
-			baseUrl: v.string(),
-			model: v.string(),
-		}),
-		[APIProvider.Cohere]: v.object({
-			apiKey: v.string(),
-			baseUrl: v.string(),
-			model: v.string(),
-		}),
-		[APIProvider.OpenRouter]: v.object({
-			apiKey: v.string(),
-			baseUrl: v.string(),
-			model: v.string(),
-		}),
-		[APIProvider.PerplexityAI]: v.object({
-			apiKey: v.string(),
-			baseUrl: v.string(),
-			model: v.string(),
-		}),
-		[APIProvider.Ollama]: v.object({
-			apiKey: v.string(),
-			baseUrl: v.string(),
-			model: v.string(),
-		}),
-		[APIProvider.Custom]: v.object({
-			apiKey: v.string(),
-			baseUrl: v.string(),
-			model: v.string(),
-		}),
-	}),
+	),
 
 	advancedSettings: v.boolean(),
 	customAiModel: v.string(),

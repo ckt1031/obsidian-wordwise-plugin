@@ -33,8 +33,14 @@ export class SettingTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName('Provider').addDropdown((dropDown) => {
 			// Add all the API Providers, use value as option value
-			for (const provider of Object.values(APIProvider)) {
-				dropDown.addOption(provider, provider);
+			for (const [providerName, data] of Object.entries(
+				settings.aiProviderConfig,
+			)) {
+				const display =
+					data.isCustom && data.displayName && data.displayName.length > 0
+						? data.displayName
+						: providerName;
+				dropDown.addOption(providerName, display);
 			}
 
 			dropDown.setValue(settings.aiProvider);
@@ -45,8 +51,88 @@ export class SettingTab extends PluginSettingTab {
 			});
 		});
 
-		for (const provider of Object.values(APIProvider)) {
+		for (const provider of Object.keys(settings.aiProviderConfig)) {
 			if (settings.aiProvider === provider) {
+				if (settings.aiProviderConfig[provider].isCustom) {
+					const c = new Setting(containerEl);
+					c.setName('Add new custom provider')
+						.setDesc(
+							"Add new provider with different API endpoint, but make sure it's OpenAI compatible",
+						)
+						.addButton((cb: ButtonComponent) => {
+							cb.setButtonText('Add');
+							cb.onClick(async () => {
+								const numberOfCustomProviders = Object.values(
+									settings.aiProviderConfig,
+								).filter((x) => x.isCustom).length;
+
+								const newProvider = `Custom ${numberOfCustomProviders + 1}`;
+								settings.aiProviderConfig[newProvider] = {
+									model: '',
+									apiKey: '',
+									baseUrl: '',
+									isCustom: true,
+								};
+								settings.aiProvider = newProvider;
+								await plugin.saveSettings();
+								await this.restartSettingsTab(plugin);
+							});
+						});
+
+					// Remove the custom provider, but the original custom provider cannot be removed
+					if (provider !== APIProvider.Custom) {
+						c.addButton((cb: ButtonComponent) => {
+							cb.setButtonText('Remove');
+							cb.onClick(async () => {
+								if (cb.buttonEl.textContent === 'Remove') {
+									// Are you sure? (seconds), give 5 seconds, loop 5 times
+									for (let i = 0; i < 5; i++) {
+										cb.setButtonText(`Sure? (${5 - i})`);
+										cb.setDisabled(true);
+										await sleep(1000);
+									}
+
+									cb.setDisabled(false);
+									cb.setButtonText('Remove?');
+
+									setTimeout(() => {
+										cb.setButtonText('Remove');
+									}, 5000);
+								} else {
+									delete settings.aiProviderConfig[provider];
+									settings.aiProvider = APIProvider.OpenAI;
+									await plugin.saveSettings();
+									await this.restartSettingsTab(plugin);
+								}
+							});
+						});
+					}
+
+					new Setting(containerEl)
+						.setName('Provider Display Name')
+						.addText((text) =>
+							text
+								.setPlaceholder('Enter the display name')
+								.setValue(settings.aiProviderConfig[provider].displayName || '')
+								.onChange(async (value) => {
+									// Check if the display conflict with other display names or provider names
+									const isConflict = Object.keys(APIProvider).some(
+										(x) =>
+											x === value ||
+											settings.aiProviderConfig[x].displayName === value,
+									);
+
+									if (isConflict) {
+										new Notice('Display name already exists');
+										return;
+									}
+
+									settings.aiProviderConfig[provider].displayName = value;
+									await plugin.saveSettings();
+								}),
+						);
+				}
+
 				new Setting(containerEl).setName('API key').addText((text) => {
 					wrapPasswordComponent(text);
 					wrapAPITestComponent({ text, plugin });
@@ -85,7 +171,7 @@ export class SettingTab extends PluginSettingTab {
 					new Setting(containerEl).setName('API version').addText((text) =>
 						text
 							.setPlaceholder('2023-05-15')
-							.setValue(settings.aiProviderConfig[provider].apiVersion)
+							.setValue(settings.aiProviderConfig[provider].apiVersion || '')
 							.onChange(async (value) => {
 								// Update the API Version
 								settings.aiProviderConfig[provider].apiVersion = value;

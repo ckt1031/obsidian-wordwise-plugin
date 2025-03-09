@@ -68,54 +68,18 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	dataSchemeDate: new Date('2024-04-15').toISOString(),
 
 	aiProvider: APIProvider.OpenAI,
-	aiProviderConfig: {
-		[APIProvider.OpenAI]: {
-			apiKey: '',
-			baseUrl: DEFAULT_HOST[APIProvider.OpenAI],
-			model: 'gpt-4o-mini',
-		},
-		[APIProvider.AzureOpenAI]: {
-			apiKey: '',
-			baseUrl: '',
-			model: 'gpt-4o-mini',
-			apiVersion: '',
-		},
-		[APIProvider.GoogleGemini]: {
-			apiKey: '',
-			baseUrl: DEFAULT_HOST[APIProvider.GoogleGemini],
-			model: 'gemini-2.0-flash',
-		},
-		[APIProvider.Anthropic]: {
-			apiKey: '',
-			baseUrl: DEFAULT_HOST[APIProvider.Anthropic],
-			model: 'claude-3-5-sonnet-20240620',
-		},
-		[APIProvider.Cohere]: {
-			apiKey: '',
-			baseUrl: DEFAULT_HOST[APIProvider.Cohere],
-			model: 'command-r-plus',
-		},
-		[APIProvider.OpenRouter]: {
-			apiKey: '',
-			baseUrl: DEFAULT_HOST[APIProvider.OpenRouter],
-			model: 'openai/gpt-4o-mini',
-		},
-		[APIProvider.Ollama]: {
-			apiKey: '',
-			baseUrl: DEFAULT_HOST[APIProvider.Ollama],
-			model: '',
-		},
-		[APIProvider.PerplexityAI]: {
-			apiKey: '',
-			baseUrl: DEFAULT_HOST[APIProvider.PerplexityAI],
-			model: '',
-		},
-		[APIProvider.Custom]: {
-			apiKey: '',
-			baseUrl: '',
-			model: '',
-		},
-	},
+	aiProviderConfig: Object.fromEntries(
+		Object.entries(APIProvider).map(([key, provider]) => [
+			provider,
+			{
+				model: '',
+				apiKey: '',
+				baseUrl: key,
+				isCustom: provider === APIProvider.Custom,
+			} as PluginSettings['aiProviderConfig'][APIProvider],
+		]),
+	),
+
 	doNotIncludeThinkingContentToFinalText: true,
 	advancedSettings: false,
 	customAiModel: '',

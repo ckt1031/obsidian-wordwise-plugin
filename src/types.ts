@@ -34,7 +34,7 @@ export interface CallTextAPIProps {
 	model: string;
 	host: string;
 	apiKey: string;
-	provider: APIProvider;
+	provider: string;
 
 	allSettings: PluginSettings;
 	providerSettings: PluginSettings['aiProviderConfig'][APIProvider];
@@ -53,7 +53,7 @@ export interface CommandProps {
 	isFilePrompt?: boolean;
 	filePath?: string;
 	customDefinedModel?: string;
-	customDefinedProvider?: APIProvider;
+	customDefinedProvider?: string;
 }
 
 export type TextGenerationLog = v.InferInput<typeof TextGenerationLogSchema>;

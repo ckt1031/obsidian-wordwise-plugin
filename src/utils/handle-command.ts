@@ -98,6 +98,19 @@ export async function runCommand(
 
 		const startTime = Date.now(); // Capture start time
 
+		const provider =
+			actionData.customDefinedProvider ?? plugin.settings.aiProvider;
+
+		const providerEntry = Object.entries(plugin.settings.aiProviderConfig).find(
+			([key, d]) => {
+				return d.displayName === provider || key === provider;
+			},
+		);
+
+		if (!providerEntry) {
+			throw new Error(`Could not find provider: ${provider}`);
+		}
+
 		let result = await callTextAPI({
 			messages: {
 				system: systemPrompt,
@@ -107,7 +120,7 @@ export async function runCommand(
 			apiKey: providerSettings.apiKey,
 			allSettings: plugin.settings,
 			model: actionData.customDefinedModel ?? model,
-			provider: actionData.customDefinedProvider ?? plugin.settings.aiProvider,
+			provider: providerEntry[0],
 			providerSettings: providerSettings,
 		});
 

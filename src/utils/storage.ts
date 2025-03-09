@@ -1,4 +1,3 @@
-import type { APIProvider } from '@/config';
 import { TextGenerationLogSchema } from '@/schemas';
 import { OpenAIModelsSchema } from '@/schemas/models';
 import type { OpenAIModels, TextGenerationLog } from '@/types';
@@ -89,7 +88,7 @@ export class ForageStorage {
 	/**
 	 * Get the specified provider's model list from the storage
 	 */
-	async getModels(provider: APIProvider) {
+	async getModels(provider: string) {
 		const data = await localforage.getItem(`${provider}-models`);
 
 		const { success, output } = await safeParseAsync(OpenAIModelsSchema, data);
@@ -97,7 +96,7 @@ export class ForageStorage {
 		return success ? output.data : [];
 	}
 
-	async setModels(provider: APIProvider, value: OpenAIModels['data']) {
+	async setModels(provider: string, value: OpenAIModels['data']) {
 		const _data = { data: value };
 		const { success, output } = await safeParseAsync(OpenAIModelsSchema, _data);
 		if (success) await localforage.setItem(`${provider}-models`, output);

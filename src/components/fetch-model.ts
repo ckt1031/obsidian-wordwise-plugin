@@ -64,7 +64,10 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 
 			const { baseUrl, apiKey } =
 				settings.aiProviderConfig[settings.aiProvider];
-			const host = getAPIHost(baseUrl, DEFAULT_HOST[settings.aiProvider]);
+			const host = getAPIHost(
+				baseUrl,
+				settings.aiProvider in DEFAULT_HOST ? settings.aiProvider : '',
+			);
 
 			switch (settings.aiProvider) {
 				case APIProvider.Cohere: {

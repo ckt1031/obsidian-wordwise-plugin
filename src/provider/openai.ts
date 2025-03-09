@@ -14,7 +14,7 @@ const OpenRouterHeaders = {
 export type ModelRequestProps = {
 	host: string;
 	apiKey: string;
-	provider: APIProvider;
+	provider: string;
 };
 
 export async function getOpenAIModels({
@@ -70,11 +70,8 @@ export async function handleTextOpenAI({
 
 		// Validate the API Version YYYY-MM-DD
 		if (
-			!/\d{4}-\d{2}-\d{2}/.test(
-				(
-					providerSettings as PluginSettings['aiProviderConfig'][APIProvider.AzureOpenAI]
-				).apiVersion,
-			)
+			providerSettings.apiVersion &&
+			!/\d{4}-\d{2}-\d{2}/.test(providerSettings.apiVersion)
 		) {
 			new Notice('Invalid API Version, please enter in YYYY-MM-DD format');
 			return;
