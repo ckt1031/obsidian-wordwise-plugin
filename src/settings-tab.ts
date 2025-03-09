@@ -53,6 +53,9 @@ export class SettingTab extends PluginSettingTab {
 
 		for (const provider of Object.keys(settings.aiProviderConfig)) {
 			if (settings.aiProvider === provider) {
+				const displayName =
+					settings.aiProviderConfig[provider].displayName || provider;
+
 				if (settings.aiProviderConfig[provider].isCustom) {
 					const c = new Setting(containerEl);
 					c.setName('Add new custom provider')
@@ -113,7 +116,7 @@ export class SettingTab extends PluginSettingTab {
 						.addText((text) =>
 							text
 								.setPlaceholder('Enter the display name')
-								.setValue(settings.aiProviderConfig[provider].displayName || '')
+								.setValue(displayName || '')
 								.onChange(async (value) => {
 									// Check if the display conflict with other display names or provider names
 									const isConflict = Object.keys(APIProvider).some(
@@ -137,7 +140,7 @@ export class SettingTab extends PluginSettingTab {
 					wrapPasswordComponent(text);
 					wrapAPITestComponent({ text, plugin });
 					text
-						.setPlaceholder(`Enter your ${provider} API Key`)
+						.setPlaceholder('Enter your API Key')
 						.setValue(settings.aiProviderConfig[provider].apiKey)
 						.onChange(async (value) => {
 							// Update the API Key
