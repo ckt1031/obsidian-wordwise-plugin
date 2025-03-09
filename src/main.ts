@@ -152,6 +152,12 @@ export default class WordWisePlugin extends Plugin {
 		}
 
 		this.settings = mergeDeepRight(DEFAULT_SETTINGS, parsedData);
+
+		// Merge providers
+		this.settings.aiProviderConfig = mergeDeepRight(
+			DEFAULT_SETTINGS.aiProviderConfig,
+			this.settings.aiProviderConfig,
+		);
 	}
 
 	async saveSettings() {
