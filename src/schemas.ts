@@ -59,6 +59,7 @@ export const PluginSettingsSchema = v.object({
 			// New in v1.1.0
 			isCustom: v.optional(v.boolean()),
 			displayName: v.optional(v.string()),
+			doNotAppendV1ToPath: v.optional(v.boolean()),
 		}),
 	),
 

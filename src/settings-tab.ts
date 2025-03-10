@@ -286,6 +286,25 @@ export class SettingTab extends PluginSettingTab {
 				.setHeading();
 
 			new Setting(containerEl)
+				.setName('Do not append v1 to path')
+				.setDesc(
+					'Enable this if the API path does not require /v1 in API calls',
+				)
+				.addToggle((toggle) =>
+					toggle
+						.setValue(
+							settings.aiProviderConfig[settings.aiProvider]
+								.doNotAppendV1ToPath || false,
+						)
+						.onChange(async (value) => {
+							settings.aiProviderConfig[
+								settings.aiProvider
+							].doNotAppendV1ToPath = value;
+							await plugin.saveSettings();
+						}),
+				);
+
+			new Setting(containerEl)
 				.setName('Custom model ID')
 				.setDesc('If this is empty, it will follow the selected menu above.')
 				.addText((text) =>

@@ -1,7 +1,6 @@
 import { APIProvider } from '@/config';
 import { OpenAIModelsSchema } from '@/schemas/models';
 import type { Models, PluginSettings, ProviderTextAPIProps } from '@/types';
-import isV1Needed from '@/utils/is-v1-needed';
 import { Notice, request, requestUrl } from 'obsidian';
 import type OpenAI from 'openai';
 import { parseAsync } from 'valibot';
@@ -147,7 +146,7 @@ export async function handleTextOpenAI({
 			break;
 	}
 
-	if (!isV1Needed(host)) {
+	if (providerSettings?.doNotAppendV1ToPath && allSettings.advancedSettings) {
 		path = path.replace('/v1', '');
 	}
 
