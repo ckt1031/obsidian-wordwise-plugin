@@ -86,6 +86,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 
 	excludeThinkingOutput: true,
 
+	disableSystemInstructions: false,
+
 	advancedSettings: false,
 	customAiModel: '',
 	maxTokens: 2000,

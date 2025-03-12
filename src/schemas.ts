@@ -71,6 +71,9 @@ export const PluginSettingsSchema = v.object({
 	/** Thinking and reasoning from model */
 	excludeThinkingOutput: v.boolean(),
 
+	/** Disable system instructions for compatibility */
+	disableSystemInstructions: v.boolean(),
+
 	/** Log the text to storage to trace usage and original text */
 	enableGenerationLogging: v.boolean(),
 

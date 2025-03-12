@@ -64,7 +64,7 @@ export async function handleTextOpenAI({
 	if (provider === APIProvider.AzureOpenAI) {
 		// Reject if base URL is not set
 		if (!providerSettings.baseUrl || providerSettings.baseUrl.length === 0) {
-			throw new Error('Base URL is not set');
+			throw new Error('Azure base URL is not set');
 		}
 
 		// Validate the API Version YYYY-MM-DD
@@ -72,7 +72,9 @@ export async function handleTextOpenAI({
 			providerSettings.apiVersion &&
 			!/\d{4}-\d{2}-\d{2}/.test(providerSettings.apiVersion)
 		) {
-			new Notice('Invalid API Version, please enter in YYYY-MM-DD format');
+			new Notice(
+				'Invalid Azure API Version, please enter in YYYY-MM-DD format',
+			);
 			return;
 		}
 	}
@@ -91,7 +93,7 @@ export async function handleTextOpenAI({
 			// },
 			{
 				role: 'user',
-				content: messages.user,
+				content: messages.user.trim(),
 			},
 		],
 
@@ -104,11 +106,16 @@ export async function handleTextOpenAI({
 	};
 
 	if (messages.system.length > 0) {
-		// Add system message to the beginning
-		body.messages.unshift({
-			role: 'system',
-			content: messages.system,
-		});
+		if (allSettings.disableSystemInstructions && allSettings.advancedSettings) {
+			// Add system message to user message
+			body.messages[0].content = `${messages.system.trim()}\n\n${body.messages[0].content}`;
+		} else {
+			// Add system message to the beginning
+			body.messages.unshift({
+				role: 'system',
+				content: messages.system.trim(),
+			});
+		}
 	}
 
 	let headers: Record<string, string> = {

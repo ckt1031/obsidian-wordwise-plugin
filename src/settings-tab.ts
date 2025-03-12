@@ -271,7 +271,7 @@ export class SettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Advanced mode')
-			.setDesc('Enable this in order to send extra parameters to the API')
+			.setDesc('Apply advanced parameters to the API')
 			.addToggle((toggle) =>
 				toggle.setValue(settings.advancedSettings).onChange(async (value) => {
 					settings.advancedSettings = value;
@@ -284,6 +284,20 @@ export class SettingTab extends PluginSettingTab {
 			new Setting(containerEl)
 				.setName('Advanced API Configrations')
 				.setHeading();
+
+			new Setting(containerEl)
+				.setName('Disable system instructions')
+				.setDesc(
+					'Some models may not support system instructions, turn this on if you encounter issues',
+				)
+				.addToggle((toggle) =>
+					toggle
+						.setValue(settings.disableSystemInstructions)
+						.onChange(async (value) => {
+							settings.disableSystemInstructions = value;
+							await plugin.saveSettings();
+						}),
+				);
 
 			new Setting(containerEl)
 				.setName('Do not append v1 to path')
