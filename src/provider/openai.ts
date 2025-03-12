@@ -85,10 +85,10 @@ export async function handleTextOpenAI({
 		temperature: allSettings.temperature,
 
 		messages: [
-			{
-				role: 'system',
-				content: messages.system,
-			},
+			// {
+			// 	role: 'system',
+			// 	content: messages.system,
+			// },
 			{
 				role: 'user',
 				content: messages.user,
@@ -102,6 +102,14 @@ export async function handleTextOpenAI({
 			}),
 		}),
 	};
+
+	if (messages.system.length > 0) {
+		// Add system message to the beginning
+		body.messages.unshift({
+			role: 'system',
+			content: messages.system,
+		});
+	}
 
 	let headers: Record<string, string> = {
 		'Content-Type': 'application/json',

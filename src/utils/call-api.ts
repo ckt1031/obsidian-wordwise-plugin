@@ -12,10 +12,10 @@ export async function callTextAPI(
 		requestModel = allSettings.customAiModel;
 	}
 
-	if (messages.system.length === 0) {
-		messages.system =
-			'You are an Obsidian text processing assistant, help user to generate, modify and process text.';
-	}
+	// if (messages.system.length === 0) {
+	// 	messages.system =
+	// 		'You are an Obsidian text processing assistant, help user to generate, modify and process text.';
+	// }
 
 	if (messages.user.length === 0) {
 		throw new Error('User message is empty');
