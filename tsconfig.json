@@ -7,7 +7,7 @@
 		"inlineSourceMap": true,
 		"inlineSources": true,
 		"isolatedModules": true,
-		"lib": ["DOM", "es2021"],
+		"lib": ["ESNext", "DOM", "dom.iterable"],
 		"module": "ESNext",
 		"target": "ESNext",
 		"moduleResolution": "Node",

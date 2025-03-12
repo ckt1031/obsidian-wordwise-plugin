@@ -1,7 +1,7 @@
 import { APIProvider } from '@/config';
 import { OpenAIModelsSchema } from '@/schemas/models';
 import type { Models, PluginSettings, ProviderTextAPIProps } from '@/types';
-import { Notice, request, requestUrl } from 'obsidian';
+import { Notice, request } from 'obsidian';
 import type OpenAI from 'openai';
 import { parseAsync } from 'valibot';
 
@@ -152,24 +152,25 @@ export async function handleTextOpenAI({
 
 	const url = `${baseURL}${path}`;
 
-	const response = await requestUrl({
-		url,
+	const response = await fetch(url, {
 		headers,
 		method: 'POST',
 		body: JSON.stringify(body),
 	});
 
 	if (response.status !== 200) {
-		throw new Error(response.text);
+		throw new Error(response.status.toString(), {
+			cause: await response.text(),
+		});
 	}
 
-	const resData: OpenAI.ChatCompletion = JSON.parse(response.text);
+	const resData: OpenAI.ChatCompletion = await response.json();
 
 	// Check if it has choices and return the first one
 	if (!resData.choices || resData.choices.length === 0) {
-		console.info('LLM API Bad Response:', resData);
-
-		throw new Error('Request failed');
+		throw new Error('Request failed', {
+			cause: JSON.stringify(resData),
+		});
 	}
 
 	return resData.choices[0].message.content;

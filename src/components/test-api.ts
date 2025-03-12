@@ -1,4 +1,5 @@
 import type WordWisePlugin from '@/main';
+import ErrorDialogModal from '@/modals/error-dialog';
 import { callTextAPI } from '@/utils/call-api';
 import { Notice, type TextComponent, setIcon, setTooltip } from 'obsidian';
 
@@ -25,10 +26,9 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 	// Add a click event listener to the hider element
 	button.addEventListener('click', async () => {
 		const { settings } = plugin;
+		const providerSettings = settings.aiProviderConfig[settings.aiProvider];
 
 		try {
-			const providerSettings = settings.aiProviderConfig[settings.aiProvider];
-
 			const result = await callTextAPI({
 				allSettings: settings,
 				providerSettings,
@@ -55,10 +55,18 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 
 			if (error instanceof Error) {
 				message += `: ${error.message}`;
+
+				if (typeof error.cause === 'string') {
+					new ErrorDialogModal(
+						plugin,
+						`Test API Failed: ${providerSettings.model}`,
+						error.cause,
+					).open();
+				}
 			}
 
 			// Log the error to the console
-			console.error(error);
+			console.info(error);
 
 			new Notice(message);
 		}
