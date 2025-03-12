@@ -110,6 +110,9 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 				message += `: ${error.message}`;
 			}
 
+			// Log the error to the console
+			console.error(error);
+
 			new Notice(message);
 		}
 	});

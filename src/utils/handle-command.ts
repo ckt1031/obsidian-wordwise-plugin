@@ -133,20 +133,21 @@ export async function runCommand(
 			result = removeThinkingContent(result);
 		}
 
-		const loggingBody: TextGenerationLog = {
-			id: nanoid(),
-			by: command,
-			model,
-			generatedAt: new Date().toISOString(),
-			provider: plugin.settings.aiProvider,
-
-			orginalText: input,
-			generatedText: result,
-
-			customInstruction: instructions,
-		};
-
+		// Log the generation to local storage
 		if (plugin.settings.enableGenerationLogging) {
+			const loggingBody: TextGenerationLog = {
+				id: nanoid(),
+				by: command,
+				model,
+				generatedAt: new Date().toISOString(),
+				provider: plugin.settings.aiProvider,
+
+				orginalText: input,
+				generatedText: result,
+
+				customInstruction: instructions,
+			};
+
 			await new ForageStorage().addTextGenerationLog(loggingBody);
 		}
 
@@ -171,16 +172,18 @@ export async function runCommand(
 		const endTime = Date.now(); // Capture end time
 		const timeUsed = ((endTime - startTime) / 1000).toFixed(2); // Calculate time used in seconds
 
-		const successMessage = `Text generated in ${timeUsed}s`;
-
-		new Notice(successMessage);
+		new Notice(`Text generated in ${timeUsed}s`);
 	} catch (error) {
+		let message = 'Failed to generate text';
+
 		if (error instanceof Error) {
-			new Notice(
-				error.message.length > 100
-					? 'Error generating text, see console for details'
-					: `Error generating text: ${error.message}`,
-			);
+			message += `: ${error.message}`;
 		}
+
+		// Log the error to the console
+		console.error(error);
+
+		// Show the error message
+		new Notice(message);
 	}
 }
