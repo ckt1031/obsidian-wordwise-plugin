@@ -11,7 +11,6 @@ import type { EnhancedEditor } from '@/types';
 import Mustache from 'mustache';
 import { nanoid } from 'nanoid';
 import { callTextAPI } from './call-api';
-import { log } from './logging';
 import { ForageStorage } from './storage';
 
 function markdownListToArray(markdownList: string): string[] {
@@ -50,8 +49,6 @@ export async function runCommand(
 			const context = editor.getLine(from.line);
 			input = `${context.substring(0, from.ch)}|||${input}|||${context.substring(to.ch)}`;
 		}
-
-		log(plugin, `Running command: ${command}`);
 
 		const actionData = (await getCommands(plugin)).find(
 			(p) => p.name === command,
@@ -176,12 +173,9 @@ export async function runCommand(
 
 		const successMessage = `Text generated in ${timeUsed}s`;
 
-		log(plugin, `${successMessage}:\n\n${result}`);
-
 		new Notice(successMessage);
 	} catch (error) {
 		if (error instanceof Error) {
-			log(plugin, error);
 			new Notice(
 				error.message.length > 100
 					? 'Error generating text, see console for details'

@@ -6,7 +6,6 @@ import { getCohereModels } from '@/provider/cohere';
 import { getGoogleGenAIModels } from '@/provider/google-ai';
 import { getOpenAIModels } from '@/provider/openai';
 import { getAPIHost } from '@/utils/get-url-host';
-import { log } from '@/utils/logging';
 import { ForageStorage } from '@/utils/storage';
 import { type DropdownComponent, Notice, setIcon, setTooltip } from 'obsidian';
 
@@ -103,13 +102,8 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 
 			await setModels(settings.aiProvider, models);
 
-			log(plugin, models);
-
-			new Notice(
-				'Models fetched and stored successfully, please refresh the plugin.',
-			);
+			new Notice('Models updated successfully, please refresh the plugin.');
 		} catch (error) {
-			log(plugin, error);
 			let message = 'Failed to fetch models';
 
 			if (error instanceof Error) {

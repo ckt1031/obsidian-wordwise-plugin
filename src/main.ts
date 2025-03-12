@@ -14,7 +14,6 @@ import { SettingTab } from './settings-tab';
 import type { ObfuscatedPluginSettings, PluginSettings } from './types';
 import type { EnhancedEditor } from './types';
 import { runCommand } from './utils/handle-command';
-import { log } from './utils/logging';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 import SettingsExportImport from './utils/settings-sharing';
 
@@ -118,7 +117,7 @@ export default class WordWisePlugin extends Plugin {
 			},
 		);
 
-		log(this, 'Loaded plugin.');
+		console.info('Loaded WordWise Plugin');
 	}
 
 	onunload() {
@@ -140,14 +139,14 @@ export default class WordWisePlugin extends Plugin {
 
 		if (!success) {
 			this.settings = DEFAULT_SETTINGS;
-			log(this, 'Failed to parse settings, using default settings.');
+			console.error('Failed to deobfuscate settings, using default settings.');
 			return;
 		}
 		const parsedData = deobfuscateConfig(localData);
 
 		if (parsedData === null) {
 			this.settings = DEFAULT_SETTINGS;
-			log(this, 'Failed to deobfuscate settings, using default settings.');
+			console.error('Failed to deobfuscate settings, using default settings.');
 			return;
 		}
 

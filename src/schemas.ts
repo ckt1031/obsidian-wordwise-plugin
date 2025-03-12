@@ -74,9 +74,6 @@ export const PluginSettingsSchema = v.object({
 	/** Log the text to storage to trace usage and original text */
 	enableGenerationLogging: v.boolean(),
 
-	/** Enable logging */
-	debugMode: v.boolean(),
-
 	customPrompts: v.array(CustomPromptSchema),
 
 	disableNativeCommands: v.boolean(),

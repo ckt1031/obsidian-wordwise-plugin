@@ -1,7 +1,5 @@
 import type WordWisePlugin from '@/main';
 import { callTextAPI } from '@/utils/call-api';
-import { removeThinkingContent } from '@/utils/handle-command';
-import { log } from '@/utils/logging';
 import { Notice, type TextComponent, setIcon, setTooltip } from 'obsidian';
 
 type Props = {
@@ -30,7 +28,8 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 
 		try {
 			const providerSettings = settings.aiProviderConfig[settings.aiProvider];
-			let result = await callTextAPI({
+
+			const result = await callTextAPI({
 				allSettings: settings,
 				providerSettings,
 
@@ -45,28 +44,13 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 				},
 			});
 
-			if (!result) {
+			if (!result || result.length === 0) {
 				new Notice(`No result from ${settings.aiProvider}`);
 				return;
 			}
 
-			if (plugin.settings.doNotIncludeThinkingContentToFinalText) {
-				result = removeThinkingContent(result);
-			}
-
-			log(plugin, result);
-
-			if (result && result.length > 0) {
-				const provider = settings.aiProvider;
-				const providerSettings = settings.aiProviderConfig[provider];
-				const model =
-					settings.customAiModel.length > 0
-						? settings.customAiModel
-						: providerSettings.model;
-				new Notice(`${provider} API is working properly with model ${model}`);
-			}
+			new Notice('API is working properly');
 		} catch (error) {
-			log(plugin, error);
 			let message = 'API is not working properly';
 
 			if (error instanceof Error) {

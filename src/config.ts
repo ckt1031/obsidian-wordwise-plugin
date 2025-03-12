@@ -91,7 +91,6 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	maxTokens: 2000,
 	temperature: 0.6,
 	enableGenerationLogging: false,
-	debugMode: false,
 	customPrompts: [],
 	disableNativeCommands: false,
 	customPromptsFromFolder: {
