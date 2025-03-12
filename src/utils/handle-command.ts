@@ -129,7 +129,7 @@ export async function runCommand(
 			return;
 		}
 
-		if (plugin.settings.doNotIncludeThinkingContentToFinalText) {
+		if (plugin.settings.excludeThinkingOutput) {
 			result = removeThinkingContent(result);
 		}
 

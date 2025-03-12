@@ -233,9 +233,9 @@ export class SettingTab extends PluginSettingTab {
 			)
 			.addToggle((toggle) =>
 				toggle
-					.setValue(settings.doNotIncludeThinkingContentToFinalText)
+					.setValue(settings.excludeThinkingOutput)
 					.onChange(async (value) => {
-						settings.doNotIncludeThinkingContentToFinalText = value;
+						settings.excludeThinkingOutput = value;
 						await plugin.saveSettings();
 					}),
 			);

@@ -84,7 +84,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 		]),
 	),
 
-	doNotIncludeThinkingContentToFinalText: true,
+	excludeThinkingOutput: true,
 
 	advancedSettings: false,
 	customAiModel: '',
