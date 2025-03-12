@@ -163,7 +163,14 @@ export async function handleTextOpenAI({
 		throw new Error(response.text);
 	}
 
-	const { choices }: OpenAI.ChatCompletion = JSON.parse(response.text);
+	const resData: OpenAI.ChatCompletion = JSON.parse(response.text);
 
-	return choices[0].message.content;
+	// Check if it has choices and return the first one
+	if (!resData.choices || resData.choices.length === 0) {
+		console.info('LLM API Bad Response:', resData);
+
+		throw new Error('Request failed');
+	}
+
+	return resData.choices[0].message.content;
 }
