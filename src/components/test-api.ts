@@ -33,7 +33,7 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 				allSettings: settings,
 				providerSettings,
 
-				host: providerSettings.baseUrl,
+				baseURL: providerSettings.baseUrl,
 				model: providerSettings.model,
 				apiKey: providerSettings.apiKey,
 

@@ -116,7 +116,7 @@ export async function runCommand(
 				system: systemPrompt,
 				user: input,
 			},
-			host: providerSettings.baseUrl,
+			baseURL: providerSettings.baseUrl,
 			apiKey: providerSettings.apiKey,
 			allSettings: plugin.settings,
 			model: actionData.customDefinedModel ?? model,

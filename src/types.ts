@@ -32,7 +32,7 @@ export interface CallTextAPIProps {
 		user: string;
 	};
 	model: string;
-	host: string;
+	baseURL: string;
 	apiKey: string;
 	provider: string;
 

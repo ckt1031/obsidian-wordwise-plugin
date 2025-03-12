@@ -53,7 +53,7 @@ export async function getOpenAIModels({
 }
 
 export async function handleTextOpenAI({
-	host,
+	baseURL,
 	model,
 	provider,
 	messages,
@@ -150,7 +150,7 @@ export async function handleTextOpenAI({
 		path = path.replace('/v1', '');
 	}
 
-	const url = `${host}${path}`;
+	const url = `${baseURL}${path}`;
 
 	const response = await requestUrl({
 		url,
