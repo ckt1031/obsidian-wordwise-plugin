@@ -170,7 +170,7 @@ export async function handleTextOpenAI({
 			break;
 	}
 
-	if (providerSettings?.doNotAppendV1ToPath && allSettings.advancedSettings) {
+	if (providerSettings?.omitVersionPrefix && allSettings.advancedSettings) {
 		path = path.replace('/v1', '');
 	}
 

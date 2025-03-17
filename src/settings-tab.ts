@@ -308,12 +308,11 @@ export class SettingTab extends PluginSettingTab {
 					toggle
 						.setValue(
 							settings.aiProviderConfig[settings.aiProvider]
-								.doNotAppendV1ToPath || false,
+								.omitVersionPrefix || false,
 						)
 						.onChange(async (value) => {
-							settings.aiProviderConfig[
-								settings.aiProvider
-							].doNotAppendV1ToPath = value;
+							settings.aiProviderConfig[settings.aiProvider].omitVersionPrefix =
+								value;
 							await plugin.saveSettings();
 						}),
 				);
