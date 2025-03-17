@@ -87,12 +87,12 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 
 	aiProvider: APIProvider.OpenAI,
 	aiProviderConfig: Object.fromEntries(
-		Object.entries(APIProvider).map(([key, provider]) => [
+		Object.entries(APIProvider).map(([_, provider]) => [
 			provider,
 			{
 				model: '',
 				apiKey: '',
-				baseUrl: key,
+				baseUrl: DEFAULT_HOST[provider],
 				isCustom: provider === APIProvider.Custom,
 			} as PluginSettings['aiProviderConfig'][APIProvider],
 		]),

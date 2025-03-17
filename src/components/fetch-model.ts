@@ -5,6 +5,7 @@ import { getAnthropicModels } from '@/provider/anthropic';
 import { getCohereModels } from '@/provider/cohere';
 import { getGitHubModels } from '@/provider/github';
 import { getGoogleGenAIModels } from '@/provider/google-ai';
+import { getMistralModels } from '@/provider/mistral';
 import { getOpenAIModels } from '@/provider/openai';
 import { getAPIHost } from '@/utils/get-url-host';
 import { ForageStorage } from '@/utils/storage';
@@ -97,6 +98,13 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 					break;
 				case APIProvider.GitHub:
 					models = await getGitHubModels({
+						host,
+						apiKey,
+						provider: settings.aiProvider,
+					});
+					break;
+				case APIProvider.Mistral:
+					models = await getMistralModels({
 						host,
 						apiKey,
 						provider: settings.aiProvider,

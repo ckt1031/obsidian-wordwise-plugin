@@ -9,6 +9,18 @@ export const OpenAIModelsSchema = v.object({
 	),
 });
 
+export const MistralModelsSchema = v.object({
+	data: v.array(
+		v.object({
+			id: v.string(),
+			name: v.string(),
+			capabilities: v.object({
+				completion_chat: v.boolean(),
+			}),
+		}),
+	),
+});
+
 export const GitHubModelsSchema = v.array(
 	v.object({
 		name: v.string(),
