@@ -31,6 +31,8 @@ export enum APIProvider {
 	Mistral = 'Mistral',
 	/** https://docs.x.ai/docs/api-reference#chat-completions */
 	XAI = 'X.AI',
+	/** https://docs.github.com/en/github-models/prototyping-with-ai-models */
+	GitHub = 'GitHub',
 
 	/** OpenAI Compatible API, such as OneAPI and FastGPT */
 	Custom = 'Custom (OpenAI Compatible)',
@@ -74,6 +76,7 @@ export const DEFAULT_HOST = {
 	[APIProvider.DeepSeek]: 'https://api.deepseek.com',
 	[APIProvider.Mistral]: 'https://api.mistral.ai',
 	[APIProvider.XAI]: 'https://api.x.ai',
+	[APIProvider.GitHub]: 'https://models.inference.ai.azure.com',
 
 	// Placeholder for custom API
 	[APIProvider.Custom]: '',

@@ -145,15 +145,24 @@ export async function handleTextOpenAI({
 			break;
 		}
 		default:
-			if (provider === APIProvider.PerplexityAI) {
+			// Case 1: Remove /v1 from path
+			if (
+				provider === APIProvider.PerplexityAI ||
+				provider === APIProvider.GitHub
+			) {
 				path = path.replace('/v1', '');
 			}
+
+			// Cohere compatibility
 			if (provider === APIProvider.Cohere) {
 				path = path.replace('/v1', '/compatibility/v1');
 			}
+
+			// Google AI Studio compatibility
 			if (provider === APIProvider.GoogleGemini) {
 				path = path.replace('/v1', '/v1beta/openai');
 			}
+
 			headers = {
 				...headers,
 				Authorization: `Bearer ${apiKey}`,
