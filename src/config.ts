@@ -25,6 +25,12 @@ export enum APIProvider {
 	Ollama = 'Ollama',
 	/** https://lmstudio.ai/docs/app/api/endpoints/openai */
 	LMStudio = 'LM Studio',
+	/** https://api-docs.deepseek.com */
+	DeepSeek = 'DeepSeek',
+	/** https://docs.mistral.ai/getting-started/quickstart */
+	Mistral = 'Mistral',
+	/** https://docs.x.ai/docs/api-reference#chat-completions */
+	XAI = 'X.AI',
 
 	/** OpenAI Compatible API, such as OneAPI and FastGPT */
 	Custom = 'Custom (OpenAI Compatible)',
@@ -57,7 +63,7 @@ export enum CommandActions {
 
 export const DEFAULT_HOST = {
 	[APIProvider.OpenAI]: 'https://api.openai.com',
-	[APIProvider.AzureOpenAI]: '',
+	[APIProvider.AzureOpenAI]: '', // Must be set by user
 	[APIProvider.GoogleGemini]: 'https://generativelanguage.googleapis.com',
 	[APIProvider.Anthropic]: 'https://api.anthropic.com',
 	[APIProvider.Cohere]: 'https://api.cohere.ai',
@@ -65,6 +71,11 @@ export const DEFAULT_HOST = {
 	[APIProvider.PerplexityAI]: 'https://api.perplexity.ai',
 	[APIProvider.Ollama]: 'http://localhost:11434',
 	[APIProvider.LMStudio]: 'http://localhost:1234',
+	[APIProvider.DeepSeek]: 'https://api.deepseek.com',
+	[APIProvider.Mistral]: 'https://api.mistral.ai',
+	[APIProvider.XAI]: 'https://api.x.ai',
+
+	// Placeholder for custom API
 	[APIProvider.Custom]: '',
 };
 
