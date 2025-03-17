@@ -1,6 +1,5 @@
 import { AnthropicModelsSchema } from '@/schemas/models';
 import type { Models } from '@/types';
-import { requestUrl } from 'obsidian';
 import { parseAsync } from 'valibot';
 import type { ModelRequestProps } from './openai';
 
@@ -16,19 +15,15 @@ export async function getAnthropicModels({
 		'x-api-key': apiKey,
 	};
 
-	const response = await requestUrl({
-		url,
+	const response = await fetch(url, {
 		headers: headers,
 	});
 
 	if (response.status !== 200) {
-		throw new Error(response.text);
+		throw new Error(await response.text());
 	}
 
-	const data = await parseAsync(
-		AnthropicModelsSchema,
-		JSON.parse(response.text),
-	);
+	const data = await parseAsync(AnthropicModelsSchema, await response.json());
 
 	const list: Models = [];
 

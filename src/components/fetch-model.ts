@@ -3,6 +3,7 @@ import type WordWisePlugin from '@/main';
 import ConfirmModal from '@/modals/confirm';
 import { getAnthropicModels } from '@/provider/anthropic';
 import { getCohereModels } from '@/provider/cohere';
+import { getGitHubModels } from '@/provider/github';
 import { getGoogleGenAIModels } from '@/provider/google-ai';
 import { getOpenAIModels } from '@/provider/openai';
 import { getAPIHost } from '@/utils/get-url-host';
@@ -65,7 +66,9 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 				settings.aiProviderConfig[settings.aiProvider];
 			const host = getAPIHost(
 				baseUrl,
-				settings.aiProvider in DEFAULT_HOST ? settings.aiProvider : '',
+				settings.aiProvider in DEFAULT_HOST
+					? DEFAULT_HOST[settings.aiProvider as keyof typeof DEFAULT_HOST]
+					: '',
 			);
 
 			switch (settings.aiProvider) {
@@ -87,6 +90,13 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 				}
 				case APIProvider.Anthropic:
 					models = await getAnthropicModels({
+						host,
+						apiKey,
+						provider: settings.aiProvider,
+					});
+					break;
+				case APIProvider.GitHub:
+					models = await getGitHubModels({
 						host,
 						apiKey,
 						provider: settings.aiProvider,

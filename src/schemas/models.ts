@@ -9,6 +9,14 @@ export const OpenAIModelsSchema = v.object({
 	),
 });
 
+export const GitHubModelsSchema = v.array(
+	v.object({
+		name: v.string(),
+		friendly_name: v.string(),
+		task: v.string(),
+	}),
+);
+
 export const CohereModelsSchema = v.object({
 	models: v.array(
 		v.object({

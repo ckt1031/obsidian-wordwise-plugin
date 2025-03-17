@@ -1,6 +1,5 @@
 import { CohereModelsSchema } from '@/schemas/models';
 import type { Models } from '@/types';
-import { requestUrl } from 'obsidian';
 import { parseAsync } from 'valibot';
 import type { ModelRequestProps } from './openai';
 
@@ -15,18 +14,17 @@ export async function getCohereModels({
 		Authorization: `Bearer ${apiKey}`,
 	};
 
-	const response = await requestUrl({
-		url,
+	const response = await fetch(url, {
 		headers: headers,
 	});
 
 	if (response.status !== 200) {
-		throw new Error(response.text);
+		throw new Error(await response.text());
 	}
 
 	const { models } = await parseAsync(
 		CohereModelsSchema,
-		JSON.parse(response.text),
+		await response.json(),
 	);
 
 	const list: Models = [];

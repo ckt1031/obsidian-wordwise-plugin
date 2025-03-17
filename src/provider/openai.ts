@@ -1,7 +1,8 @@
-import { APIProvider } from '@/config';
+import { APIProvider, DEFAULT_HOST } from '@/config';
 import { OpenAIModelsSchema } from '@/schemas/models';
 import type { Models, PluginSettings, ProviderTextAPIProps } from '@/types';
-import { Notice, request } from 'obsidian';
+import { getAPIHost } from '@/utils/get-url-host';
+import { Notice } from 'obsidian';
 import type OpenAI from 'openai';
 import { parseAsync } from 'valibot';
 
@@ -32,12 +33,15 @@ export async function getOpenAIModels({
 		path = `/api${path}`;
 	}
 
-	const response = await request({
-		url: `${host}${path}`,
+	const response = await fetch(`${host}${path}`, {
 		headers,
 	});
 
-	const models = await parseAsync(OpenAIModelsSchema, JSON.parse(response));
+	if (response.status !== 200) {
+		throw new Error(await response.text());
+	}
+
+	const models = await parseAsync(OpenAIModelsSchema, await response.json());
 
 	if (provider === APIProvider.OpenAI) {
 		// Filter off models with name embed, whisper, tts
@@ -174,7 +178,14 @@ export async function handleTextOpenAI({
 		path = path.replace('/v1', '');
 	}
 
-	const url = `${baseURL}${path}`;
+	const host = getAPIHost(
+		baseURL,
+		allSettings.aiProvider in DEFAULT_HOST
+			? DEFAULT_HOST[allSettings.aiProvider as keyof typeof DEFAULT_HOST]
+			: '',
+	);
+
+	const url = `${host}${path}`;
 
 	const response = await fetch(url, {
 		headers,
