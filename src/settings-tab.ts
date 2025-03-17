@@ -55,9 +55,9 @@ export class SettingTab extends PluginSettingTab {
 			if (settings.aiProvider === provider) {
 				if (settings.aiProviderConfig[provider].isCustom) {
 					const c = new Setting(containerEl);
-					c.setName('Add new custom provider')
+					c.setName('Add New Custom Provider')
 						.setDesc(
-							"Add new provider with different API endpoint, but make sure it's OpenAI compatible",
+							"Add a provider with a different web address (API endpoint).  Make sure it's compatible with OpenAI.", // Less technical
 						)
 						.addButton((cb: ButtonComponent) => {
 							cb.setButtonText('Add');
@@ -112,7 +112,7 @@ export class SettingTab extends PluginSettingTab {
 						.setName('Provider Display Name')
 						.addText((text) =>
 							text
-								.setPlaceholder('Enter the display name')
+								.setPlaceholder('Enter a name for this provider')
 								.setValue(
 									settings.aiProviderConfig[provider]?.displayName || '',
 								)
@@ -135,7 +135,7 @@ export class SettingTab extends PluginSettingTab {
 						);
 				}
 
-				new Setting(containerEl).setName('API key').addText((text) => {
+				new Setting(containerEl).setName('API Key').addText((text) => {
 					wrapPasswordComponent(text);
 					wrapAPITestComponent({ text, plugin });
 					text
@@ -155,11 +155,13 @@ export class SettingTab extends PluginSettingTab {
 					settings.aiProviderConfig[provider].isCustom
 				) {
 					new Setting(containerEl)
-						.setName('API base URL')
-						.setDesc('DO NOT include / trailing slash and paths.')
+						.setName('API Base URL')
+						.setDesc(
+							'Enter the web address for the API. Do not include a trailing slash or any extra parts of the address.',
+						)
 						.addText((text) =>
 							text
-								.setPlaceholder('https://api.example.com/v1')
+								.setPlaceholder('https://api.example.com') // No trailing slash in placeholder
 								.setValue(settings.aiProviderConfig[provider].baseUrl)
 								.onChange(async (value) => {
 									// Update the Base URL
@@ -171,7 +173,7 @@ export class SettingTab extends PluginSettingTab {
 
 				if (provider === APIProvider.AzureOpenAI) {
 					// API Version
-					new Setting(containerEl).setName('API version').addText((text) =>
+					new Setting(containerEl).setName('API Version').addText((text) =>
 						text
 							.setPlaceholder('2023-05-15')
 							.setValue(settings.aiProviderConfig[provider].apiVersion || '')
@@ -211,8 +213,10 @@ export class SettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName('Override Generation Behavior')
-			.setDesc('Replace or insert the generated text')
+			.setName('Generation Behavior')
+			.setDesc(
+				'Choose whether to replace the selected text or insert the generated text after it.',
+			) // Clearer explanation
 			.addDropdown((dropDown) => {
 				// Add all the API Providers, use value as option value
 				for (const value of Object.values(CustomBehavior)) {
@@ -227,9 +231,9 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName('Hide thinking content')
+			.setName('Hide Thinking Text')
 			.setDesc(
-				'Models with reasoning capabilities may include thinking content in the generated text (<think>...</think>). Enable this to hide it.',
+				"Some AI models show their 'thinking' process. Turn this on to hide that extra text.", // User-friendly explanation
 			)
 			.addToggle((toggle) =>
 				toggle
@@ -245,7 +249,7 @@ export class SettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('Temperature')
 			.setDesc(
-				'Higher value means more creative but less accurate, default value is 0.6.',
+				'Higher values make the AI more creative but less precise.  The default is 0.6.',
 			)
 			.addSlider((slider) => {
 				slider.setDynamicTooltip();
@@ -258,8 +262,10 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName('Disable pre-defined commands')
-			.setDesc('This will only work if you have a custom prompt setup')
+			.setName('Disable Pre-defined Commands')
+			.setDesc(
+				"This only works if you've set up custom instructions (prompts).",
+			) // Clarified prerequisite
 			.addToggle((toggle) =>
 				toggle
 					.setValue(settings.disableNativeCommands)
@@ -270,8 +276,8 @@ export class SettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('Advanced mode')
-			.setDesc('Apply advanced parameters to the API')
+			.setName('Advanced Mode')
+			.setDesc('Use advanced settings for the API (for experienced users).') // Added warning
 			.addToggle((toggle) =>
 				toggle.setValue(settings.advancedSettings).onChange(async (value) => {
 					settings.advancedSettings = value;
@@ -281,14 +287,12 @@ export class SettingTab extends PluginSettingTab {
 			);
 
 		if (settings.advancedSettings) {
-			new Setting(containerEl)
-				.setName('Advanced API Configrations')
-				.setHeading();
+			new Setting(containerEl).setName('Advanced API Settings').setHeading();
 
 			new Setting(containerEl)
-				.setName('Disable system instructions')
+				.setName('Disable System Instructions')
 				.setDesc(
-					'Some models may not support system instructions, turn this on if you encounter issues',
+					'Some AI models might not work with system instructions.  Try turning this on if you have problems.',
 				)
 				.addToggle((toggle) =>
 					toggle
@@ -300,9 +304,9 @@ export class SettingTab extends PluginSettingTab {
 				);
 
 			new Setting(containerEl)
-				.setName('Do not append v1 to path')
+				.setName('Omit Version Prefix')
 				.setDesc(
-					'Enable this if the API path does not require /v1 in API calls',
+					'Use the web address without the version number (e.g., /chat/completions instead of /v1/chat/completions). Some providers might do this automatically.',
 				)
 				.addToggle((toggle) =>
 					toggle
@@ -318,8 +322,10 @@ export class SettingTab extends PluginSettingTab {
 				);
 
 			new Setting(containerEl)
-				.setName('Custom model ID')
-				.setDesc('If this is empty, it will follow the selected menu above.')
+				.setName('Custom Model ID')
+				.setDesc(
+					"If you don't enter anything here, the model selected above will be used.",
+				) // Clarified
 				.addText((text) =>
 					text
 						.setPlaceholder('Enter the model name')
@@ -331,9 +337,9 @@ export class SettingTab extends PluginSettingTab {
 				);
 
 			new Setting(containerEl)
-				.setName('Max tokens')
+				.setName('Max Tokens')
 				.setDesc(
-					'Maximum number of tokens to generate (Set to 0 to use the default value)',
+					'The maximum number of words or characters the AI can generate. Set to 0 to use the default.',
 				)
 				.addText((text) =>
 					text
@@ -355,7 +361,7 @@ export class SettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setDesc(
-				"Here is a list of all the custom prompts you've created. You can edit or delete them here, or add a new one below.",
+				'This is a list of your custom instructions. You can edit, delete, or add new ones.',
 			)
 			.addButton((cb: ButtonComponent) => {
 				cb.setTooltip('Add a new custom prompt');
@@ -420,10 +426,8 @@ export class SettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName('File prompts')
-			.setDesc(
-				'Enable file prompts, this will load file prompts from the folder path specified below',
-			)
+			.setName('File Prompts')
+			.setDesc('Use instructions from files in a specific folder.')
 			.addToggle((toggle) =>
 				toggle
 					.setValue(settings.customPromptsFromFolder.enabled)
@@ -436,8 +440,8 @@ export class SettingTab extends PluginSettingTab {
 
 		if (settings.customPromptsFromFolder.enabled) {
 			new Setting(containerEl)
-				.setName('Folder path')
-				.setDesc('Folder paths containing the files prompts')
+				.setName('Folder Path')
+				.setDesc('The folder where your prompt files are located.')
 				.addText((text) =>
 					text
 						.setPlaceholder('Enter the folder path')
@@ -452,8 +456,8 @@ export class SettingTab extends PluginSettingTab {
 		new Setting(containerEl).setName('Text Generation Logging').setHeading();
 
 		new Setting(containerEl)
-			.setName('Enable')
-			.setDesc('Enable to log all the generated text to the storage')
+			.setName('Enable Logging')
+			.setDesc('Save all generated text to a log.')
 			.addToggle((toggle) =>
 				toggle
 					.setValue(settings.enableGenerationLogging)
@@ -464,8 +468,8 @@ export class SettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('Import and export')
-			.setDesc('Import and export the text generation logs')
+			.setName('Import and Export Logs')
+			.setDesc('Import or export your text generation logs.')
 			.addButton((button) => {
 				button.setButtonText('Import').onClick(async () => {
 					const input = document.createElement('input');
@@ -516,8 +520,8 @@ export class SettingTab extends PluginSettingTab {
 		new Setting(containerEl).setName('Danger Zone').setHeading();
 
 		new Setting(containerEl)
-			.setName('Import and export settings')
-			.setDesc('Import and export settings as a QR code or RAW URL.')
+			.setName('Import and Export Settings')
+			.setDesc('Import or export settings using a QR code or web address.')
 			.addButton((button) => {
 				button.setButtonText('Import').onClick(async () => {
 					new ImportSettingsModal(this.plugin).open();
@@ -530,21 +534,21 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName('Reset settings')
-			.setDesc('This will reset all settings to their default values')
+			.setName('Reset Settings')
+			.setDesc('This will reset all settings to their original values.')
 			.addButton((button) => {
-				button.setTooltip('Irreversible action, please be careful!');
+				button.setTooltip('This cannot be undone! Be careful.');
 				button.setButtonText('Reset').onClick(async () => {
 					if (button.buttonEl.textContent === 'Reset') {
 						// Are you sure? (seconds), give 5 seconds, loop 5 times
 						for (let i = 0; i < 5; i++) {
-							button.setButtonText(`Are you sure to reset? (${5 - i})`);
+							button.setButtonText(`Are you sure? (${5 - i})`);
 							button.setDisabled(true);
 							await sleep(1000);
 						}
 
 						button.setDisabled(false);
-						button.setButtonText('Are you sure to reset?');
+						button.setButtonText('Are you sure?');
 
 						setTimeout(() => {
 							button.setButtonText('Reset');
