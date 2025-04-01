@@ -41,9 +41,6 @@ export const CustomPromptSchema = v.object({
 });
 
 export const PluginSettingsSchema = v.object({
-	/** Date that helps migration */
-	dataSchemeDate: v.string(),
-
 	// Providers
 	aiProvider: v.string(),
 	aiProviderConfig: v.record(
