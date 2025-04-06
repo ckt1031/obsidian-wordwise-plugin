@@ -1,6 +1,5 @@
 import { APIProvider, DEFAULT_HOST } from '@/config';
 import type WordWisePlugin from '@/main';
-import ConfirmModal from '@/modals/confirm';
 import { getAnthropicModels } from '@/provider/anthropic';
 import { getCohereModels } from '@/provider/cohere';
 import { getGitHubModels } from '@/provider/github';
@@ -20,12 +19,12 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 	const fetchButton = dropDown.selectEl.insertAdjacentElement(
 		'beforebegin',
 		document.createElement('button'),
-	) as HTMLElement;
+	) as HTMLButtonElement;
 
 	const resetButton = dropDown.selectEl.insertAdjacentElement(
 		'beforebegin',
 		document.createElement('button'),
-	) as HTMLElement;
+	) as HTMLButtonElement;
 
 	if (!fetchButton || !resetButton) return;
 
@@ -39,21 +38,30 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 	const { setModels } = new ForageStorage();
 
 	resetButton.addEventListener('click', async () => {
-		const confirmModal = new ConfirmModal(plugin);
+		if (resetButton.textContent === '') {
+			// Disable the button
+			resetButton.disabled = true;
 
-		confirmModal.open();
+			// Countdown from 5 seconds
+			for (let i = 0; i < 5; i++) {
+				resetButton.textContent = `${5 - i}`;
+				await sleep(1000);
+			}
 
-		const result = await confirmModal.promise;
+			resetButton.textContent = '';
 
-		if (!result) return;
+			// Re-enable the button
+			resetButton.disabled = false;
+			setIcon(resetButton, 'list-x');
 
-		if (plugin.settings.aiProvider === APIProvider.OpenRouter) {
-			await setModels(APIProvider.OpenRouter, []);
+			setTooltip(resetButton, 'Reset models?');
+			setTimeout(() => {
+				setTooltip(resetButton, 'Reset models (use with caution)');
+			}, 5000);
 		} else {
 			await setModels(plugin.settings.aiProvider, []);
+			new Notice('Models reset successfully, please refresh the plugin.');
 		}
-
-		new Notice('Models reset successfully, please refresh the plugin.');
 	});
 
 	// Add a click event listener to the hider element
