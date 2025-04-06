@@ -7,8 +7,8 @@ import { wrapAPITestComponent } from './components/test-api';
 import { APIProvider, CustomBehavior } from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
+import ExportSettingsModal from './modals/export-settings';
 import ImportSettingsModal from './modals/import-settings';
-import ExportSettingsQrCodeModal from './modals/qr-code';
 import { ForageStorage } from './utils/storage';
 
 export class SettingTab extends PluginSettingTab {
@@ -521,7 +521,7 @@ export class SettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Import and Export Settings')
-			.setDesc('Import or export settings using a QR code or web address.')
+			.setDesc('Import or export settings using text or URL.')
 			.addButton((button) => {
 				button.setButtonText('Import').onClick(async () => {
 					new ImportSettingsModal(this.plugin).open();
@@ -529,7 +529,7 @@ export class SettingTab extends PluginSettingTab {
 			})
 			.addButton((button) => {
 				button.setButtonText('Export').onClick(async () => {
-					new ExportSettingsQrCodeModal(this.plugin).open();
+					new ExportSettingsModal(this.plugin).open();
 				});
 			});
 

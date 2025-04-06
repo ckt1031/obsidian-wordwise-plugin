@@ -1,4 +1,4 @@
-import { Notice, Plugin, addIcon } from 'obsidian';
+import { Plugin, addIcon } from 'obsidian';
 
 import localforage from 'localforage';
 import { mergeDeepRight } from 'rambda';
@@ -103,17 +103,9 @@ export default class WordWisePlugin extends Plugin {
 		this.registerObsidianProtocolHandler(
 			this.manifest.id,
 			async (inputParams) => {
+				console.log(inputParams);
 				const settingsImport = new SettingsExportImport(this);
-				const parsed = await settingsImport.importQrCodeUri(inputParams);
-				if (parsed.status === 'error') {
-					new Notice(parsed.message);
-				} else if (parsed.result) {
-					this.settings = mergeDeepRight(this.settings, parsed.result);
-					await this.saveSettings();
-					new Notice(
-						'Settings imported. Please check the settings tab to verify.',
-					);
-				}
+				settingsImport.importEncodedData(inputParams.data);
 			},
 		);
 

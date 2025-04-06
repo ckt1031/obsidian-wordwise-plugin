@@ -18,11 +18,11 @@ export default class ImportSettingsModal extends Modal {
 		const div1 = contentEl.createDiv();
 
 		div1.createEl('p', {
-			text: 'Paste the string data here:',
+			text: 'Paste the string data or protocol URI here:',
 		});
 
 		new Setting(contentEl).setName('String:').addText((text: TextComponent) => {
-			text.setPlaceholder('String, not the URI.');
+			text.setPlaceholder('Here');
 			text.onChange((value: string) => {
 				this.data = value;
 			});
@@ -34,6 +34,40 @@ export default class ImportSettingsModal extends Modal {
 				.setButtonText('Confirm')
 				.setCta()
 				.onClick(async () => {
+					const data = this.data.trim();
+
+					if (!data) {
+						new Notice('Please enter a valid string');
+						return;
+					}
+
+					// const protocolURL = `obsidian://${this.plugin.manifest.id}?func=import&version=${this.plugin.manifest.version}&vault=${vault}&data=${data}`;
+
+					if (data.startsWith('obsidian://')) {
+						// Parse the URI
+						const qs = new URL(data).searchParams;
+						const func = qs.get('func');
+						const vault = qs.get('vault');
+						const encodedData = qs.get('data');
+
+						if (!vault || !encodedData || !func) {
+							new Notice('Invalid URI format');
+							return;
+						}
+
+						if (func !== 'import') {
+							new Notice('Invalid function in URI');
+							return;
+						}
+
+						if (decodeURIComponent(vault) !== this.plugin.app.vault.getName()) {
+							new Notice('Invalid vault name in URI');
+							return;
+						}
+
+						this.data = encodedData;
+					}
+
 					await this.submitForm();
 				}),
 		);
@@ -42,18 +76,8 @@ export default class ImportSettingsModal extends Modal {
 	async submitForm() {
 		const { data } = this;
 
-		const result = await new SettingsExportImport(this.plugin).importQrCodeUri({
-			func: 'import',
-			vault: this.plugin.app.vault.getName(),
-			data,
-		});
+		new SettingsExportImport(this.plugin).importEncodedData(data);
 
-		if (result.status === 'ok') {
-			new Notice('Settings imported successfully');
-			this.close();
-		} else {
-			new Notice(result.message);
-		}
 		this.close();
 	}
 

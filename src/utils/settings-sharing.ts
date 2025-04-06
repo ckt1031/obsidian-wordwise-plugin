@@ -1,17 +1,9 @@
 import type WordWisePlugin from '@/main';
 import type { PluginSettings } from '@/types';
-import QRCode from 'qrcode';
-
-export interface ProcessQrCodeResultType {
-	status: 'error' | 'ok';
-	message: string;
-	result?: PluginSettings;
-}
+import { Notice } from 'obsidian';
 
 export interface UriParams {
-	func?: string;
-	vault?: string;
-	data?: string;
+	data: string;
 }
 
 export default class SettingsExportImport {
@@ -33,69 +25,42 @@ export default class SettingsExportImport {
 		return this.plugin.app.vault.getName();
 	}
 
-	public async exportQrCodeUri() {
+	public generateSettingsStrings() {
 		const vault = encodeURIComponent(this.getVaultName());
 		const data = encodeURIComponent(
 			this.utf8_to_b64(JSON.stringify(this.plugin.settings)),
 		);
 
-		const rawUri = `obsidian://${this.plugin.manifest.id}?func=import&version=${this.plugin.manifest.version}&vault=${vault}&data=${data}`;
-		const imgUri = await QRCode.toDataURL(rawUri).catch(() => null);
+		const protocolURL = `obsidian://${this.plugin.manifest.id}?func=import&version=${this.plugin.manifest.version}&vault=${vault}&data=${data}`;
 
 		return {
-			rawUri,
-			imgUri,
+			protocolURL,
 			encodedDataString: data,
 		};
 	}
 
-	public async importQrCodeUri(
-		inputParams: unknown,
-	): Promise<ProcessQrCodeResultType> {
-		const currentVaultName = this.getVaultName();
-		const params = inputParams as UriParams;
-
-		if (
-			params.func === undefined ||
-			params.func !== 'import' ||
-			params.vault === undefined ||
-			params.data === undefined
-		) {
-			return {
-				status: 'error',
-				message: `The uri is not for exporting/importing settings: ${JSON.stringify(
-					inputParams,
-				)}`,
-			};
-		}
-
-		if (params.vault !== currentVaultName) {
-			return {
-				status: 'error',
-				message: `The target vault is ${
-					params.vault
-				} but you are currently in ${currentVaultName}: ${JSON.stringify(
-					inputParams,
-				)}`,
-			};
-		}
-
+	public importEncodedData(encoded_string_json: string) {
 		let settings = {} as PluginSettings;
 
 		try {
-			settings = JSON.parse(this.b64_to_utf8(decodeURIComponent(params.data)));
+			settings = JSON.parse(
+				this.b64_to_utf8(decodeURIComponent(encoded_string_json)),
+			);
 		} catch (e) {
-			return {
-				status: 'error',
-				message: `Errors while parsing settings: ${JSON.stringify(
-					inputParams,
-				)}`,
-			};
+			console.error(
+				'Error while parsing settings from encoded string',
+				encoded_string_json,
+				e,
+			);
+			new Notice('Failed to parse input settings. Please check the format.');
+			return;
 		}
-		return {
-			status: 'ok',
-			message: 'OK',
-			result: settings,
-		};
+
+		new Notice(
+			'Settings imported successfully, you might need to reload the plugin to apply them.',
+		);
+
+		this.plugin.settings = settings;
+		this.plugin.saveSettings();
 	}
 }
