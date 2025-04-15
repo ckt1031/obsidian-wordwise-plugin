@@ -2,7 +2,7 @@ import type WordWisePlugin from '@/main';
 import SettingsExportImport from '@/utils/settings-sharing';
 import { Modal, Notice } from 'obsidian';
 
-export default class ExportSettingsQrCodeModal extends Modal {
+export default class ExportSettingsModal extends Modal {
 	private readonly plugin: WordWisePlugin;
 
 	constructor(plugin: WordWisePlugin) {
@@ -19,7 +19,7 @@ export default class ExportSettingsQrCodeModal extends Modal {
 
 		const topDiv = contentEl.createDiv();
 		topDiv.createEl('p', {
-			text: 'Scan the QR code with your mobile device to import the settings',
+			text: 'Import the settings',
 		});
 
 		const buttonsDiv = contentEl.createDiv();
