@@ -55,12 +55,12 @@ export class SettingTab extends PluginSettingTab {
 			if (settings.aiProvider === provider) {
 				if (settings.aiProviderConfig[provider].isCustom) {
 					const c = new Setting(containerEl);
-					c.setName('Add New Custom Provider')
+					c.setName('Create New Custom Provider')
 						.setDesc(
-							"Add a provider with a different web address (API endpoint).  Make sure it's compatible with OpenAI.", // Less technical
+							"Create a provider with a different API endpoint.  Make sure it's compatible with OpenAI.",
 						)
 						.addButton((cb: ButtonComponent) => {
-							cb.setButtonText('Add');
+							cb.setButtonText('Create');
 							cb.onClick(async () => {
 								const numberOfCustomProviders = Object.values(
 									settings.aiProviderConfig,
