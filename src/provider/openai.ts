@@ -196,32 +196,38 @@ export async function handleTextOpenAI({
 		plugin.updateStatusBar(); // Show status bar loader
 	}
 
-	const response = await fetch(url, {
-		headers,
-		method: 'POST',
-		body: JSON.stringify(body),
-		signal: isTesting
-			? undefined
-			: plugin.generationRequestAbortController?.signal,
-	});
-
-	if (response.status !== 200) {
-		throw new Error(response.status.toString(), {
-			cause: await response.text(),
+	try {
+		const response = await fetch(url, {
+			headers,
+			method: 'POST',
+			body: JSON.stringify(body),
+			signal: isTesting
+				? undefined
+				: plugin.generationRequestAbortController?.signal,
 		});
-	}
 
-	const resData: OpenAI.ChatCompletion = await response.json();
+		if (response.status !== 200) {
+			throw new Error(response.status.toString(), {
+				cause: await response.text(),
+			});
+		}
 
-	// Check if it has choices and return the first one
-	if (!resData.choices || resData.choices.length === 0) {
+		const resData: OpenAI.ChatCompletion = await response.json();
+
+		// Check if it has choices and return the first one
+		if (!resData.choices || resData.choices.length === 0) {
+			throw new Error('Request failed', {
+				cause: JSON.stringify(resData),
+			});
+		}
+
+		return resData.choices[0].message.content;
+	} catch (error) {
 		throw new Error('Request failed', {
-			cause: JSON.stringify(resData),
+			cause: error instanceof Error ? error.message : String(error),
 		});
+	} finally {
+		plugin.generationRequestAbortController = null;
+		if (!isTesting) plugin.updateStatusBar(); // Clear status bar
 	}
-
-	plugin.generationRequestAbortController = null;
-	if (!isTesting) plugin.updateStatusBar(); // Clear status bar
-
-	return resData.choices[0].message.content;
 }
