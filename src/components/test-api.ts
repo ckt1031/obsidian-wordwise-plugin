@@ -28,13 +28,25 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 		const providerSettings =
 			plugin.settings.aiProviderConfig[plugin.settings.aiProvider];
 
+		const modelToCall =
+			plugin.settings.customAiModel.length > 0
+				? plugin.settings.customAiModel
+				: providerSettings.model;
+
+		if (!modelToCall || modelToCall.length === 0) {
+			new Notice(
+				'Please fetch the models first and select a model first or set custom model',
+			);
+			return;
+		}
+
 		try {
 			const result = await callTextAPI({
 				plugin,
 				providerSettings,
 
 				baseURL: providerSettings.baseUrl,
-				model: providerSettings.model,
+				model: modelToCall,
 				apiKey: providerSettings.apiKey,
 
 				provider: plugin.settings.aiProvider,

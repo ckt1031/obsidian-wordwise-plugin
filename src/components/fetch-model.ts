@@ -9,9 +9,17 @@ import { getOpenAIModels } from '@/provider/openai';
 import type { Models } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import { ForageStorage } from '@/utils/storage';
-import { type DropdownComponent, Notice, setIcon, setTooltip } from 'obsidian';
+import {
+	type DropdownComponent,
+	Notice,
+	Platform,
+	type Setting,
+	setIcon,
+	setTooltip,
+} from 'obsidian';
 
 type Props = {
+	setting: Setting;
 	dropDown: DropdownComponent;
 	plugin: WordWisePlugin;
 	onUpdateModels: (models: Models) => void;
@@ -19,34 +27,43 @@ type Props = {
 };
 
 export const wrapFetchModelComponent = ({
+	setting,
 	dropDown,
 	plugin,
 	onUpdateModels,
 	triggerUIClearModels,
 }: Props) => {
-	const fetchButton = dropDown.selectEl.insertAdjacentElement(
-		'beforebegin',
-		document.createElement('button'),
-	) as HTMLButtonElement;
+	// Create a container for the buttons
+	const buttonContainer = document.createElement('div');
+	buttonContainer.style.display = 'flex'; // Optional: Style for horizontal layout
+	buttonContainer.style.flexDirection = 'row'; // Stack buttons horizontally
+	buttonContainer.style.gap = '10px'; // Optional: Add some space between buttons
 
-	const resetButton = dropDown.selectEl.insertAdjacentElement(
-		'beforebegin',
-		document.createElement('button'),
-	) as HTMLButtonElement;
+	const fetchButton = document.createElement('button') as HTMLButtonElement;
+	const resetButton = document.createElement('button') as HTMLButtonElement;
 
-	if (!fetchButton || !resetButton) return;
+	// Append buttons to the container
+	buttonContainer.appendChild(fetchButton);
+	buttonContainer.appendChild(resetButton);
 
-	// Set the initial icon for the hider element
-	setIcon(fetchButton, 'list-restart');
-	setIcon(resetButton, 'list-x');
+	// Set dropDown.selectEl style
+	setting.controlEl.style.display = 'flex';
+	setting.controlEl.style.flexDirection = 'column'; // Stack dropdown and buttons vertically
+	setting.controlEl.style.alignItems = Platform.isDesktop
+		? 'flex-end'
+		: 'flex-start'; // Align to the right on desktop, left on mobile
 
-	setTooltip(fetchButton, 'Fetch models');
-	setTooltip(resetButton, 'Reset models (use with caution)');
+	// Insert the container before the dropdown
+	dropDown.selectEl.insertAdjacentElement('beforebegin', buttonContainer);
+
+	// Add text
+	fetchButton.textContent = 'Fetch Models';
+	resetButton.textContent = 'Reset';
 
 	const { setModels } = new ForageStorage();
 
 	resetButton.addEventListener('click', async () => {
-		if (resetButton.textContent === '') {
+		if (resetButton.textContent !== 'Confirm Reset') {
 			// Disable the button
 			resetButton.disabled = true;
 
@@ -61,7 +78,7 @@ export const wrapFetchModelComponent = ({
 			setIcon(resetButton, 'list-x');
 			setTooltip(resetButton, 'Reset models?');
 
-			resetButton.textContent = 'Clear';
+			resetButton.textContent = 'Confirm Reset';
 
 			setTimeout(() => {
 				setTooltip(resetButton, 'Reset models (use with caution)');
@@ -70,6 +87,10 @@ export const wrapFetchModelComponent = ({
 			await setModels(plugin.settings.aiProvider, []);
 			new Notice('Models reset successfully!');
 			triggerUIClearModels();
+			resetButton.textContent = 'Reset';
+			plugin.settings.aiProviderConfig[plugin.settings.aiProvider].model = '';
+			// Save the settings
+			await plugin.saveSettings();
 		}
 	});
 

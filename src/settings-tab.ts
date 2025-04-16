@@ -221,6 +221,7 @@ export class SettingTab extends PluginSettingTab {
 
 				wrapFetchModelComponent({
 					dropDown,
+					setting: modelSetting,
 					plugin,
 					triggerUIClearModels: () => {
 						// Remove all options and fill it with the new models

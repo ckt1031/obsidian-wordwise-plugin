@@ -118,6 +118,14 @@ export async function runCommand(
 			throw new Error(`Could not find provider: ${provider}`);
 		}
 
+		const modelToCall = actionData.customDefinedModel ?? model;
+
+		if (!modelToCall || modelToCall.length === 0) {
+			throw new Error(
+				'Please fetch the models first and select a model first or set custom model',
+			);
+		}
+
 		let result = await callTextAPI({
 			plugin,
 			messages: {
@@ -126,7 +134,7 @@ export async function runCommand(
 			},
 			baseURL: providerSettings.baseUrl,
 			apiKey: providerSettings.apiKey,
-			model: actionData.customDefinedModel ?? model,
+			model: modelToCall,
 			provider: providerEntry[0],
 			providerSettings: providerSettings,
 		});
