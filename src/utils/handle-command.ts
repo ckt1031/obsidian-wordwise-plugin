@@ -33,6 +33,13 @@ export async function runCommand(
 	plugin: WordWisePlugin,
 	command: CommandNames | string,
 ) {
+	// Check if there is abort controller, exists, that means that there is a generation in progress
+	if (plugin.generationRequestAbortController) {
+		// Notice that there is a generation in progress
+		new Notice('There is a generation in progress, please wait');
+		return;
+	}
+
 	try {
 		let input = editor.getSelection();
 
@@ -50,9 +57,8 @@ export async function runCommand(
 			input = `${context.substring(0, from.ch)}|||${input}|||${context.substring(to.ch)}`;
 		}
 
-		const actionData = (await getCommands(plugin)).find(
-			(p) => p.name === command,
-		);
+		const commands = await getCommands(plugin);
+		const actionData = commands.find((p) => p.name === command);
 
 		if (!actionData) {
 			throw new Error(`Could not find command data with name ${command}`);
