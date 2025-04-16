@@ -209,30 +209,64 @@ export class SettingTab extends PluginSettingTab {
 				);
 			}
 
-			new Setting(providerSettingsEl)
-				.setName('Model')
-				.addDropdown(async (dropDown) => {
-					const models = await new ForageStorage().getModels(provider);
+			const modelSetting = new Setting(providerSettingsEl);
 
-					wrapFetchModelComponent({
-						dropDown,
-						plugin,
-					});
+			modelSetting.setName('Model').addDropdown(async (dropDown) => {
+				const models = await new ForageStorage().getModels(provider);
 
-					for (const model of models) {
-						if (typeof model === 'string') {
-							dropDown.addOption(model, model);
-						} else {
-							dropDown.addOption(model.id, model.name || model.id);
+				// Find out the only select element in the containerEl
+				const selectElement = modelSetting.settingEl.find(
+					'select',
+				) as HTMLSelectElement;
+
+				wrapFetchModelComponent({
+					dropDown,
+					plugin,
+					triggerUIClearModels: () => {
+						// Remove all options and fill it with the new models
+						selectElement.innerHTML = '';
+
+						// Add the new models to the dropdown
+						for (const model of models) {
+							selectElement.remove(models.indexOf(model));
 						}
-					}
-					dropDown.setValue(settings.aiProviderConfig[provider].model);
-					dropDown.onChange(async (value) => {
-						// Update the Model
-						settings.aiProviderConfig[provider].model = value;
-						await plugin.saveSettings();
-					});
+					},
+					onUpdateModels: (models) => {
+						// Remove all options and fill it with the new models
+						selectElement.innerHTML = '';
+
+						// Add the new models to the dropdown
+						for (const model of models) {
+							selectElement.remove(models.indexOf(model));
+						}
+
+						for (const model of models) {
+							if (typeof model === 'string') {
+								dropDown.addOption(model, model);
+							} else {
+								dropDown.addOption(model.id, model.name || model.id);
+							}
+						}
+
+						// Set the value to the current model
+						dropDown.setValue(settings.aiProviderConfig[provider].model);
+					},
 				});
+
+				for (const model of models) {
+					if (typeof model === 'string') {
+						dropDown.addOption(model, model);
+					} else {
+						dropDown.addOption(model.id, model.name || model.id);
+					}
+				}
+				dropDown.setValue(settings.aiProviderConfig[provider].model);
+				dropDown.onChange(async (value) => {
+					// Update the Model
+					settings.aiProviderConfig[provider].model = value;
+					await plugin.saveSettings();
+				});
+			});
 		}
 
 		new Setting(containerEl)

@@ -6,6 +6,7 @@ import { getGitHubModels } from '@/provider/github';
 import { getGoogleGenAIModels } from '@/provider/google-ai';
 import { getMistralModels } from '@/provider/mistral';
 import { getOpenAIModels } from '@/provider/openai';
+import type { Models } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import { ForageStorage } from '@/utils/storage';
 import { type DropdownComponent, Notice, setIcon, setTooltip } from 'obsidian';
@@ -13,9 +14,16 @@ import { type DropdownComponent, Notice, setIcon, setTooltip } from 'obsidian';
 type Props = {
 	dropDown: DropdownComponent;
 	plugin: WordWisePlugin;
+	onUpdateModels: (models: Models) => void;
+	triggerUIClearModels: () => void;
 };
 
-export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
+export const wrapFetchModelComponent = ({
+	dropDown,
+	plugin,
+	onUpdateModels,
+	triggerUIClearModels,
+}: Props) => {
 	const fetchButton = dropDown.selectEl.insertAdjacentElement(
 		'beforebegin',
 		document.createElement('button'),
@@ -48,19 +56,20 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 				await sleep(1000);
 			}
 
-			resetButton.textContent = '';
-
 			// Re-enable the button
 			resetButton.disabled = false;
 			setIcon(resetButton, 'list-x');
-
 			setTooltip(resetButton, 'Reset models?');
+
+			resetButton.textContent = 'Clear';
+
 			setTimeout(() => {
 				setTooltip(resetButton, 'Reset models (use with caution)');
 			}, 5000);
 		} else {
 			await setModels(plugin.settings.aiProvider, []);
-			new Notice('Models reset successfully, please refresh the plugin.');
+			new Notice('Models reset successfully!');
+			triggerUIClearModels();
 		}
 	});
 
@@ -125,6 +134,9 @@ export const wrapFetchModelComponent = ({ dropDown, plugin }: Props) => {
 						provider: settings.aiProvider,
 					});
 			}
+
+			// Fire the onUpdateModels callback if provided
+			onUpdateModels(models);
 
 			await setModels(settings.aiProvider, models);
 
