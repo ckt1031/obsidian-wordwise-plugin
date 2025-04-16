@@ -132,9 +132,7 @@ export default class WordWisePlugin extends Plugin {
 		this.statusBarEl.empty();
 
 		if (this.generationRequestAbortController) {
-			const idleStatusBar = createEl('span', {
-				cls: 'edge-tts-status-bar-control',
-			});
+			const idleStatusBar = createEl('span');
 			setTooltip(idleStatusBar, 'Ckick to stop Wordwise generation', {
 				placement: 'top',
 			});
@@ -147,9 +145,7 @@ export default class WordWisePlugin extends Plugin {
 
 			this.statusBarEl.appendChild(idleStatusBar);
 		} else {
-			const idleStatusBar = createEl('span', {
-				cls: 'edge-tts-status-bar-control',
-			});
+			const idleStatusBar = createEl('span');
 			setTooltip(idleStatusBar, 'WordWise Ready', { placement: 'top' });
 			setIcon(idleStatusBar, 'brain-cog');
 
