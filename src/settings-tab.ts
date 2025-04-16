@@ -451,8 +451,9 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		for (const prompts of settings.customPrompts) {
+			const index = settings.customPrompts.indexOf(prompts);
 			new Setting(containerEl)
-				.setName(prompts.name)
+				.setName(`${index + 1}: ${prompts.name}`)
 				.addButton((button) => {
 					button.setIcon('pencil');
 					button.setTooltip('Edit this prompt');
