@@ -2,6 +2,7 @@ import type CodeMirror from 'codemirror';
 import type { Editor, Menu } from 'obsidian';
 import type * as v from 'valibot';
 import type { APIProvider, CommandActions } from './config';
+import type WordWisePlugin from './main';
 import type {
 	CommandSchema,
 	ObfuscatedPluginSettingsSchema,
@@ -36,8 +37,10 @@ export interface CallTextAPIProps {
 	apiKey: string;
 	provider: string;
 
-	allSettings: PluginSettings;
+	plugin: WordWisePlugin;
 	providerSettings: PluginSettings['aiProviderConfig'][APIProvider];
+
+	isTesting?: boolean;
 }
 
 export interface ProviderTextAPIProps extends CallTextAPIProps {

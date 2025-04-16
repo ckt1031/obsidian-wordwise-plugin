@@ -4,12 +4,15 @@ import type { CallTextAPIProps } from '@/types';
 export async function callTextAPI(
 	props: CallTextAPIProps,
 ): Promise<string | null | undefined> {
-	const { model, allSettings, messages } = props;
+	const { plugin, messages, model } = props;
 
 	let requestModel = model;
 
-	if (allSettings.customAiModel.length > 0 && allSettings.advancedSettings) {
-		requestModel = allSettings.customAiModel;
+	if (
+		plugin.settings.customAiModel.length > 0 &&
+		plugin.settings.advancedSettings
+	) {
+		requestModel = plugin.settings.customAiModel;
 	}
 
 	// if (messages.system.length === 0) {

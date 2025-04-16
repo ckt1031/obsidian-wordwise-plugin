@@ -25,27 +25,29 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 
 	// Add a click event listener to the hider element
 	button.addEventListener('click', async () => {
-		const { settings } = plugin;
-		const providerSettings = settings.aiProviderConfig[settings.aiProvider];
+		const providerSettings =
+			plugin.settings.aiProviderConfig[plugin.settings.aiProvider];
 
 		try {
 			const result = await callTextAPI({
-				allSettings: settings,
+				plugin,
 				providerSettings,
 
 				baseURL: providerSettings.baseUrl,
 				model: providerSettings.model,
 				apiKey: providerSettings.apiKey,
 
-				provider: settings.aiProvider,
+				provider: plugin.settings.aiProvider,
 				messages: {
 					system: '',
 					user: 'Say word hello only.',
 				},
+
+				isTesting: true,
 			});
 
 			if (!result || result.length === 0) {
-				new Notice(`No result from ${settings.aiProvider}`);
+				new Notice(`No result from ${plugin.settings.aiProvider}`);
 				return;
 			}
 

@@ -1,4 +1,4 @@
-import { Plugin, addIcon } from 'obsidian';
+import { Notice, Plugin, addIcon, setIcon, setTooltip } from 'obsidian';
 
 import localforage from 'localforage';
 import { mergeDeepRight } from 'rambda';
@@ -20,8 +20,14 @@ import SettingsExportImport from './utils/settings-sharing';
 export default class WordWisePlugin extends Plugin {
 	settings: PluginSettings;
 
+	private statusBarEl: HTMLElement | null = null;
+	generationRequestAbortController: AbortController | null = null;
+
 	async onload() {
 		await moveConfig(this);
+
+		// This will add a settings tab, only available for Desktop app
+		this.statusBarEl = this.addStatusBarItem();
 
 		// Initialize localForage
 		localforage.config({
@@ -109,11 +115,52 @@ export default class WordWisePlugin extends Plugin {
 			},
 		);
 
+		// Load status bar
+		this.updateStatusBar();
+
 		console.info('Loaded WordWise Plugin');
 	}
 
 	onunload() {
 		// This is called when the plugin is deactivated
+	}
+
+	updateStatusBar(): void {
+		if (!this.statusBarEl) return;
+
+		// Clear the status bar element
+		this.statusBarEl.empty();
+
+		if (this.generationRequestAbortController) {
+			const idleStatusBar = createEl('span', {
+				cls: 'edge-tts-status-bar-control',
+			});
+			setTooltip(idleStatusBar, 'Ckick to stop Wordwise generation', {
+				placement: 'top',
+			});
+			setIcon(idleStatusBar, 'loader');
+			idleStatusBar.onclick = () => {
+				this.generationRequestAbortController?.abort();
+				this.generationRequestAbortController = null;
+				this.updateStatusBar();
+			};
+
+			this.statusBarEl.appendChild(idleStatusBar);
+		} else {
+			const idleStatusBar = createEl('span', {
+				cls: 'edge-tts-status-bar-control',
+			});
+			setTooltip(idleStatusBar, 'WordWise Ready', { placement: 'top' });
+			setIcon(idleStatusBar, 'brain-cog');
+
+			const onPress = () => {
+				new Notice('WordWise is ready');
+			};
+
+			idleStatusBar.onclick = onPress;
+
+			this.statusBarEl.appendChild(idleStatusBar);
+		}
 	}
 
 	async resetSettings() {

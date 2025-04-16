@@ -112,13 +112,13 @@ export async function runCommand(
 		}
 
 		let result = await callTextAPI({
+			plugin,
 			messages: {
 				system: systemPrompt,
 				user: input,
 			},
 			baseURL: providerSettings.baseUrl,
 			apiKey: providerSettings.apiKey,
-			allSettings: plugin.settings,
 			model: actionData.customDefinedModel ?? model,
 			provider: providerEntry[0],
 			providerSettings: providerSettings,
@@ -177,6 +177,11 @@ export async function runCommand(
 		let message = 'Failed to generate text';
 
 		if (error instanceof Error) {
+			if (error.name === 'AbortError') {
+				new Notice('Text generation aborted');
+				return;
+			}
+
 			message += `: ${error.message}`;
 		}
 

@@ -62,8 +62,9 @@ export async function handleTextOpenAI({
 	provider,
 	messages,
 	apiKey,
-	allSettings,
+	plugin,
 	providerSettings,
+	isTesting = false,
 }: ProviderTextAPIProps) {
 	if (provider === APIProvider.AzureOpenAI) {
 		// Reject if base URL is not set
@@ -88,7 +89,7 @@ export async function handleTextOpenAI({
 		| Omit<OpenAI.ChatCompletionCreateParams, 'model'> = {
 		stream: false,
 		model,
-		temperature: allSettings.temperature,
+		temperature: plugin.settings.temperature,
 
 		messages: [
 			// {
@@ -102,15 +103,18 @@ export async function handleTextOpenAI({
 		],
 
 		// Advanced settings here:
-		...(allSettings.advancedSettings && {
-			...(allSettings.maxTokens > 0 && {
-				max_tokens: allSettings.maxTokens,
+		...(plugin.settings.advancedSettings && {
+			...(plugin.settings.maxTokens > 0 && {
+				max_tokens: plugin.settings.maxTokens,
 			}),
 		}),
 	};
 
 	if (messages.system.length > 0) {
-		if (allSettings.disableSystemInstructions && allSettings.advancedSettings) {
+		if (
+			plugin.settings.disableSystemInstructions &&
+			plugin.settings.advancedSettings
+		) {
 			// Add system message to user message
 			body.messages[0].content = `${messages.system.trim()}\n\n${body.messages[0].content}`;
 		} else {
@@ -174,23 +178,31 @@ export async function handleTextOpenAI({
 			break;
 	}
 
-	if (providerSettings?.omitVersionPrefix && allSettings.advancedSettings) {
+	if (providerSettings?.omitVersionPrefix && plugin.settings.advancedSettings) {
 		path = path.replace('/v1', '');
 	}
 
 	const host = getAPIHost(
 		baseURL,
-		allSettings.aiProvider in DEFAULT_HOST
-			? DEFAULT_HOST[allSettings.aiProvider as keyof typeof DEFAULT_HOST]
+		plugin.settings.aiProvider in DEFAULT_HOST
+			? DEFAULT_HOST[plugin.settings.aiProvider as keyof typeof DEFAULT_HOST]
 			: '',
 	);
 
 	const url = `${host}${path}`;
 
+	if (!isTesting) {
+		plugin.generationRequestAbortController = new AbortController();
+		plugin.updateStatusBar(); // Show status bar loader
+	}
+
 	const response = await fetch(url, {
 		headers,
 		method: 'POST',
 		body: JSON.stringify(body),
+		signal: isTesting
+			? undefined
+			: plugin.generationRequestAbortController?.signal,
 	});
 
 	if (response.status !== 200) {
@@ -207,6 +219,9 @@ export async function handleTextOpenAI({
 			cause: JSON.stringify(resData),
 		});
 	}
+
+	plugin.generationRequestAbortController = null;
+	if (!isTesting) plugin.updateStatusBar(); // Clear status bar
 
 	return resData.choices[0].message.content;
 }
