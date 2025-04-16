@@ -1,5 +1,5 @@
 import type WordWisePlugin from '@/main';
-import { Modal } from 'obsidian';
+import { Modal, Notice, setIcon, setTooltip } from 'obsidian';
 
 export default class ErrorDialogModal extends Modal {
 	private readonly title: string;
@@ -36,6 +36,23 @@ export default class ErrorDialogModal extends Modal {
 				style: 'white-space: pre-wrap; overflow: auto; max-height: 300px;',
 			},
 		});
+
+		const buttonDiv = div.createDiv({
+			attr: {
+				class: 'button-container',
+			},
+		});
+
+		// Show copy button
+		const copyButton = buttonDiv.createEl('button', {
+			text: 'Copy',
+		});
+		copyButton.addEventListener('click', () => {
+			navigator.clipboard.writeText(this.message);
+			new Notice('Copied to clipboard');
+		});
+		setIcon(copyButton, 'copy');
+		setTooltip(copyButton, 'Copy error message');
 	}
 
 	onClose() {
