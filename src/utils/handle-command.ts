@@ -1,4 +1,4 @@
-import { Notice } from 'obsidian';
+import { Notice, Platform } from 'obsidian';
 
 import { getCommands } from '@/commands';
 import { getFolderBasedPrompt } from '@/commands';
@@ -34,7 +34,7 @@ export async function runCommand(
 	command: CommandNames | string,
 ) {
 	// Check if there is abort controller, exists, that means that there is a generation in progress
-	if (plugin.generationRequestAbortController) {
+	if (plugin.generationRequestAbortController && Platform.isDesktop) {
 		// Notice that there is a generation in progress
 		new Notice('There is a generation in progress, please wait');
 		return;
