@@ -83,6 +83,8 @@ export const PluginSettingsSchema = v.object({
 		path: v.string(),
 	}),
 
+	showConfirmationModal: v.boolean(),
+
 	// Custom Behavior
 	customBehavior: v.enum_(CustomBehavior),
 });

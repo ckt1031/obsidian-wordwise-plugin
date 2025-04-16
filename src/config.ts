@@ -112,6 +112,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 		path: 'Wordwise',
 	},
 
+	showConfirmationModal: false,
+
 	// Custom Behavior
 	customBehavior: CustomBehavior.Replace,
 };

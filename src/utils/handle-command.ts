@@ -6,6 +6,7 @@ import { CommandActions, type CommandNames, CustomBehavior } from '@/config';
 import type WordWisePlugin from '@/main';
 import optionsMenu from '@/menus/optionsMenu';
 import AskForInstructionModal from '@/modals/ask-for-instruction';
+import GenerationConfirmationModal from '@/modals/generation-confirm';
 import type { TextGenerationLog } from '@/types';
 import type { EnhancedEditor } from '@/types';
 import Mustache from 'mustache';
@@ -157,28 +158,36 @@ export async function runCommand(
 			await new ForageStorage().addTextGenerationLog(loggingBody);
 		}
 
-		switch (plugin.settings.customBehavior) {
-			case CustomBehavior.InsertFirst:
-				// Insert the generated text at the beginning of the editor
-				editor.replaceRange(result, { line: get.line, ch: 0 });
-				break;
-			case CustomBehavior.InsertLast:
-				editor.replaceRange(result, { line: get.line + 1, ch: 0 });
-				break;
-			default:
-				if (command === 'Find Synonym') {
-					!document.querySelector('.menu.optionContainer')
-						? optionsMenu(editor, markdownListToArray(result))
-						: true;
-				} else {
-					editor.replaceSelection(result);
-				}
-		}
-
 		const endTime = Date.now(); // Capture end time
 		const timeUsed = ((endTime - startTime) / 1000).toFixed(2); // Calculate time used in seconds
 
 		new Notice(`Text generated in ${timeUsed}s`);
+
+		// Directly run post-generation action, as it has "confirmation" logic inside
+		if (command === 'Find Synonym') {
+			!document.querySelector('.menu.optionContainer')
+				? optionsMenu(editor, markdownListToArray(result))
+				: true;
+			return;
+		}
+
+		const onAccept = async () => {
+			switch (plugin.settings.customBehavior) {
+				case CustomBehavior.InsertFirst:
+					// Insert the generated text at the beginning of the editor
+					editor.replaceRange(result, { line: get.line, ch: 0 });
+					break;
+				case CustomBehavior.InsertLast:
+					editor.replaceRange(result, { line: get.line + 1, ch: 0 });
+					break;
+				default:
+					editor.replaceSelection(result);
+			}
+		};
+
+		if (plugin.settings.showConfirmationModal)
+			new GenerationConfirmationModal(plugin, result, onAccept).open();
+		else onAccept();
 	} catch (error) {
 		let message = 'Failed to generate text';
 

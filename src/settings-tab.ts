@@ -288,6 +288,20 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
+			.setName('SHow Confirmation Modal')
+			.setDesc(
+				'Show a confirmation modal before inserting the generated text, allowing you to review it first.',
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(settings.showConfirmationModal)
+					.onChange(async (value) => {
+						settings.showConfirmationModal = value;
+						await plugin.saveSettings();
+					}),
+			);
+
+		new Setting(containerEl)
 			.setName('Hide Thinking Text')
 			.setDesc(
 				"Some AI models show their 'thinking' process. Turn this on to hide that extra text.", // User-friendly explanation
