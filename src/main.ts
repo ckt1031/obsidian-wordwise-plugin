@@ -149,11 +149,9 @@ export default class WordWisePlugin extends Plugin {
 			setTooltip(idleStatusBar, 'WordWise Ready', { placement: 'top' });
 			setIcon(idleStatusBar, 'brain-cog');
 
-			const onPress = () => {
+			idleStatusBar.onclick = () => {
 				new Notice('WordWise is ready');
 			};
-
-			idleStatusBar.onclick = onPress;
 
 			this.statusBarEl.appendChild(idleStatusBar);
 		}
