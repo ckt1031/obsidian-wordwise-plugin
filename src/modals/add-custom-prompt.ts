@@ -74,8 +74,8 @@ export default class AddCustomPromptModal extends Modal {
 
 	onOpen() {
 		const { contentEl, data, name } = this;
-
-		contentEl.createEl('h4', { text: 'Add custom prompt here:' });
+		contentEl.empty();
+		this.setTitle(this.isEdit ? 'Edit Custom Prompt' : 'Add Custom Prompt');
 
 		new Setting(contentEl).setName('Name:').addText((text: TextComponent) => {
 			text.setPlaceholder('Name (example: text-tone-helper)');

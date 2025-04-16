@@ -15,11 +15,7 @@ export default class ImportSettingsModal extends Modal {
 	async onOpen() {
 		const { contentEl, data } = this;
 
-		const div1 = contentEl.createDiv();
-
-		div1.createEl('p', {
-			text: 'Paste the string data or protocol URI here:',
-		});
+		this.setTitle('Paste string data or protocol URI here:');
 
 		new Setting(contentEl).setName('String:').addText((text: TextComponent) => {
 			text.setPlaceholder('Here');

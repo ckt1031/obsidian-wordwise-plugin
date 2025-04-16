@@ -17,10 +17,7 @@ export default class ExportSettingsModal extends Modal {
 		const { protocolURL, encodedDataString } =
 			settingsExportImport.generateSettingsStrings();
 
-		const topDiv = contentEl.createDiv();
-		topDiv.createEl('p', {
-			text: 'Import the settings',
-		});
+		this.setTitle('Export Settings Actions');
 
 		const buttonsDiv = contentEl.createDiv();
 

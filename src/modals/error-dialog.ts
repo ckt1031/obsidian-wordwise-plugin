@@ -13,8 +13,9 @@ export default class ErrorDialogModal extends Modal {
 
 	async onOpen() {
 		const { contentEl } = this;
+		contentEl.empty();
 
-		contentEl.createEl('h4', { text: this.title });
+		this.setTitle(this.title);
 
 		const div = contentEl.createDiv();
 

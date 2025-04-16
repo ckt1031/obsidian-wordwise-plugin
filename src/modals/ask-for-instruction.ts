@@ -33,8 +33,8 @@ export default class AskForInstructionModal extends Modal {
 
 	onOpen() {
 		const { contentEl, instruction } = this;
-
-		contentEl.createEl('h4', { text: 'Enter custom instruction here:' });
+		contentEl.empty();
+		this.setTitle('Enter custom instruction here:');
 
 		new Setting(contentEl)
 			.setName('Instruction:')
