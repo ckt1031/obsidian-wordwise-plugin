@@ -1,7 +1,7 @@
 import { Notice, Plugin, addIcon, setIcon, setTooltip } from 'obsidian';
 
 import localforage from 'localforage';
-import { mergeDeepRight } from 'rambda';
+import { merge } from 'rambda';
 import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
 import { getCommands } from './commands';
@@ -183,11 +183,10 @@ export default class WordWisePlugin extends Plugin {
 			return;
 		}
 
-		this.settings = mergeDeepRight(DEFAULT_SETTINGS, parsedData);
+		this.settings = merge(DEFAULT_SETTINGS)(parsedData);
 
 		// Merge providers
-		this.settings.aiProviderConfig = mergeDeepRight(
-			DEFAULT_SETTINGS.aiProviderConfig,
+		this.settings.aiProviderConfig = merge(DEFAULT_SETTINGS.aiProviderConfig)(
 			this.settings.aiProviderConfig,
 		);
 	}
