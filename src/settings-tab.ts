@@ -289,7 +289,7 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName('SHow Confirmation Modal')
+			.setName('Show Confirmation Modal')
 			.setDesc(
 				'Show a confirmation modal before inserting the generated text, allowing you to review it first.',
 			)
