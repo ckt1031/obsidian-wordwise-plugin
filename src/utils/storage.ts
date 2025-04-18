@@ -97,8 +97,9 @@ export class ForageStorage {
 	}
 
 	async setModels(provider: string, value: OpenAIModels['data']) {
-		const _data = { data: value };
-		const { success, output } = await safeParseAsync(OpenAIModelsSchema, _data);
+		const { success, output } = await safeParseAsync(OpenAIModelsSchema, {
+			data: value,
+		});
 		if (success) await localforage.setItem(`${provider}-models`, output);
 	}
 }
