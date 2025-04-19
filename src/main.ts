@@ -144,35 +144,37 @@ export default class WordWisePlugin extends Plugin {
 		// Clear the status bar element
 		this.statusBarEl.empty();
 
-		if (this.generationRequestAbortController) {
-			const idleStatusBar = createEl('span');
+		this.statusBarEl.addClass('mod-clickable');
 
-			setIcon(idleStatusBar, 'loader');
-			setTooltip(idleStatusBar, 'Ckick to stop Wordwise generation', {
+		const button = createEl('span', {
+			cls: ['status-bar-item-icon'],
+		});
+
+		if (this.generationRequestAbortController) {
+			setIcon(button, 'loader');
+			setTooltip(button, 'Ckick to stop Wordwise generation', {
 				placement: 'top',
 			});
 
-			idleStatusBar.onclick = () => {
+			button.onclick = () => {
 				this.generationRequestAbortController?.abort();
 				this.generationRequestAbortController = null;
 				this.updateStatusBar();
 			};
 
-			this.statusBarEl.appendChild(idleStatusBar);
+			this.statusBarEl.appendChild(button);
 
 			return;
 		}
 
-		const idleStatusBar = createEl('span');
+		setIcon(button, 'brain-cog');
+		setTooltip(button, 'WordWise Ready', { placement: 'top' });
 
-		setIcon(idleStatusBar, 'brain-cog');
-		setTooltip(idleStatusBar, 'WordWise Ready', { placement: 'top' });
-
-		idleStatusBar.onclick = () => {
+		button.onclick = () => {
 			new Notice('WordWise is ready');
 		};
 
-		this.statusBarEl.appendChild(idleStatusBar);
+		this.statusBarEl.appendChild(button);
 	}
 
 	async resetSettings() {

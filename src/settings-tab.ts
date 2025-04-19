@@ -301,6 +301,7 @@ export class SettingTab extends PluginSettingTab {
 						.onChange(async (value) => {
 							settings.enableStatusBarButton = value;
 							await plugin.saveSettings();
+							this.plugin.updateStatusBar();
 						}),
 				);
 		}
