@@ -303,15 +303,15 @@ export class SettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('Show Confirmation Modal')
+			.setName('Enable Confirmation Modal')
 			.setDesc(
 				'Show a confirmation modal before inserting the generated text, allowing you to review it first.',
 			)
 			.addToggle((toggle) =>
 				toggle
-					.setValue(settings.showConfirmationModal)
+					.setValue(settings.enableConfirmationModal)
 					.onChange(async (value) => {
-						settings.showConfirmationModal = value;
+						settings.enableConfirmationModal = value;
 						await plugin.saveSettings();
 					}),
 			);

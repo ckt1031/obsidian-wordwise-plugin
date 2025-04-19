@@ -193,7 +193,7 @@ export async function runCommand(
 			}
 		};
 
-		if (plugin.settings.showConfirmationModal)
+		if (plugin.settings.enableConfirmationModal)
 			new GenerationConfirmationModal(plugin, result, onAccept).open();
 		else onAccept();
 	} catch (error) {
