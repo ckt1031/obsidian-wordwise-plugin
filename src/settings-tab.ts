@@ -1,5 +1,5 @@
 import type { App, ButtonComponent } from 'obsidian';
-import { Notice, PluginSettingTab, Setting } from 'obsidian';
+import { Notice, Platform, PluginSettingTab, Setting } from 'obsidian';
 
 import { wrapFetchModelComponent } from './components/fetch-model';
 import { wrapPasswordComponent } from './components/password';
@@ -288,19 +288,22 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
-		new Setting(containerEl)
-			.setName('Enable Status Bar Button')
-			.setDesc(
-				'Enable a button in the status bar to interrupt the AI when it is generating text. This is useful if you want to stop the generation process.',
-			)
-			.addToggle((toggle) =>
-				toggle
-					.setValue(settings.enableStatusBarButton)
-					.onChange(async (value) => {
-						settings.enableStatusBarButton = value;
-						await plugin.saveSettings();
-					}),
-			);
+		// Platform specific settings
+		if (Platform.isDesktop) {
+			new Setting(containerEl)
+				.setName('Enable Status Bar Button')
+				.setDesc(
+					'Enable a button in the status bar to interrupt the AI when it is generating text. This is useful if you want to stop the generation process.',
+				)
+				.addToggle((toggle) =>
+					toggle
+						.setValue(settings.enableStatusBarButton)
+						.onChange(async (value) => {
+							settings.enableStatusBarButton = value;
+							await plugin.saveSettings();
+						}),
+				);
+		}
 
 		new Setting(containerEl)
 			.setName('Enable Confirmation Modal')
