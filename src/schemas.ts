@@ -65,6 +65,9 @@ export const PluginSettingsSchema = v.object({
 	maxTokens: v.number(),
 	temperature: v.number(),
 
+	/** Exclusive to desktop view */
+	enableStatusBarButton: v.boolean(),
+
 	/** Thinking and reasoning from model */
 	excludeThinkingOutput: v.boolean(),
 

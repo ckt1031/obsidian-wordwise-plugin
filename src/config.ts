@@ -96,6 +96,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 		]),
 	),
 
+	enableStatusBarButton: false,
+
 	excludeThinkingOutput: true,
 
 	disableSystemInstructions: false,

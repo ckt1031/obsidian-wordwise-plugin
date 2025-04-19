@@ -274,7 +274,7 @@ export class SettingTab extends PluginSettingTab {
 			.setName('Generation Behavior')
 			.setDesc(
 				'Choose whether to replace the selected text or insert the generated text after it.',
-			) // Clearer explanation
+			)
 			.addDropdown((dropDown) => {
 				// Add all the API Providers, use value as option value
 				for (const value of Object.values(CustomBehavior)) {
@@ -287,6 +287,20 @@ export class SettingTab extends PluginSettingTab {
 					await plugin.saveSettings();
 				});
 			});
+
+		new Setting(containerEl)
+			.setName('Enable Status Bar Button')
+			.setDesc(
+				'Enable a button in the status bar to interrupt the AI when it is generating text. This is useful if you want to stop the generation process.',
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(settings.enableStatusBarButton)
+					.onChange(async (value) => {
+						settings.enableStatusBarButton = value;
+						await plugin.saveSettings();
+					}),
+			);
 
 		new Setting(containerEl)
 			.setName('Show Confirmation Modal')

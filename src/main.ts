@@ -1,4 +1,11 @@
-import { Notice, Plugin, addIcon, setIcon, setTooltip } from 'obsidian';
+import {
+	Notice,
+	Platform,
+	Plugin,
+	addIcon,
+	setIcon,
+	setTooltip,
+} from 'obsidian';
 
 import localforage from 'localforage';
 import { merge } from 'rambda';
@@ -26,8 +33,10 @@ export default class WordWisePlugin extends Plugin {
 	async onload() {
 		await moveConfig(this);
 
-		// This will add a settings tab, only available for Desktop app
-		this.statusBarEl = this.addStatusBarItem();
+		if (Platform.isDesktop) {
+			// This will add a status bar element, only available for Desktop app
+			this.statusBarEl = this.addStatusBarItem();
+		}
 
 		// Initialize localForage
 		localforage.config({
@@ -126,17 +135,23 @@ export default class WordWisePlugin extends Plugin {
 	}
 
 	updateStatusBar(): void {
-		if (!this.statusBarEl) return;
+		// Check if the status bar element is available and if the status bar is enabled
+		if (!this.statusBarEl || !this.settings.enableStatusBarButton) return;
+
+		// Check if the platform is desktop
+		if (!Platform.isDesktop) return;
 
 		// Clear the status bar element
 		this.statusBarEl.empty();
 
 		if (this.generationRequestAbortController) {
 			const idleStatusBar = createEl('span');
+
+			setIcon(idleStatusBar, 'loader');
 			setTooltip(idleStatusBar, 'Ckick to stop Wordwise generation', {
 				placement: 'top',
 			});
-			setIcon(idleStatusBar, 'loader');
+
 			idleStatusBar.onclick = () => {
 				this.generationRequestAbortController?.abort();
 				this.generationRequestAbortController = null;
@@ -144,17 +159,20 @@ export default class WordWisePlugin extends Plugin {
 			};
 
 			this.statusBarEl.appendChild(idleStatusBar);
-		} else {
-			const idleStatusBar = createEl('span');
-			setTooltip(idleStatusBar, 'WordWise Ready', { placement: 'top' });
-			setIcon(idleStatusBar, 'brain-cog');
 
-			idleStatusBar.onclick = () => {
-				new Notice('WordWise is ready');
-			};
-
-			this.statusBarEl.appendChild(idleStatusBar);
+			return;
 		}
+
+		const idleStatusBar = createEl('span');
+
+		setIcon(idleStatusBar, 'brain-cog');
+		setTooltip(idleStatusBar, 'WordWise Ready', { placement: 'top' });
+
+		idleStatusBar.onclick = () => {
+			new Notice('WordWise is ready');
+		};
+
+		this.statusBarEl.appendChild(idleStatusBar);
 	}
 
 	async resetSettings() {
