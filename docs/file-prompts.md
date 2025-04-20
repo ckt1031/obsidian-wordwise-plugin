@@ -1,24 +1,52 @@
-## Setting Up File-Based Prompts in WordWise
+# How to Set Up Prompts Using Files in WordWise
 
-This document explains how to create and use file-based prompts in WordWise.
+Here's how to set up and use prompts stored in files for WordWise.
 
-1. **Create a Directory:** Choose a location on your system for storing your prompts. For example, `WordWise/Prompts`. Remember this path, as you'll need it later. The path is case-sensitive.
-2. **Enable File-Based Prompts:** In WordWise, enable the "File based custom prompts" option. Enter the path you chose in step one (e.g., `WordWise/Prompts`) into the "File Path" field. ![](https://i.imgur.com/mevNOYg.png)
-3. **Create a Markdown File:** Create a new markdown file within your chosen prompts directory.
-4. **Add Prompt Properties:** Inside the new markdown file, add the following properties enclosed within triple dashes (`---`) at the beginning of the file:
+1. **Make a folder for your prompts:** Pick a spot on your computer to keep your prompt files. For example, you could create a folder named `Prompts`. Keep this path handy; you'll need it soon. Remember, the path has to be exact (case-sensitive).
+2. **Tell WordWise where your prompts are:** Go into the WordWise settings. Find and turn on the "File based custom prompts" option. Then, put the full path to the folder you made in step 1 (like `Prompts`) into the "File Path" box.  
+![Obsidian Screenshot](https://i.imgur.com/Eh1rqJu.png)
+3. **Create a new Markdown file:** Inside the prompts folder you just set up, create a new file. Make sure it's a Markdown file (with a `.md` extension).
+4. **Add prompt details:** At the very start of this new Markdown file, add the following information between triple dashes (`---`). These details tell WordWise how to use your prompt.
 
-   ```yaml
-   ---
-   name: YourPromptName  # Required: The name/identifier of your prompt.
-   disabled: false       # Optional: Set to true to temporarily disable this prompt.
-   provider: ProviderName # Optional: Specify a provider for this prompt.
-   model: ModelID        # Optional: Specify a model ID for this prompt.
-   systemPrompt: Your system prompt here # Optional: Override the default system prompt.
-   ---
-   ```
+## Prompt File Structure
 
-	- `name`: This is required and serves as the identifier for your prompt.
-	- `disabled`: (Optional) Use this to temporarily disable the prompt. This corresponds to a checkbox in reading mode.
-	- `provider`: (Optional) Allows you to specify a particular provider for this prompt.
-	- `model`: (Optional) Allows you to specify a specific model ID for this prompt.
-	- `systemPrompt`: (Optional) Use this to override any pre-defined system prompts and tailor them to your specific needs. Place your desired system prompt text after the colon.
+* **Must-Have:**
+  * `name`: This is the unique name for your prompt. You *need* this.
+* **Optional:**
+  * `disabled`: Set this to `true` to temporarily turn off the prompt. It's like unchecking a box for it.
+  * `provider`: You can use this to pick a specific AI provider for this prompt.
+  * `model`: Use this to specify a particular AI model ID for this prompt.
+  * `systemPrompt`: You can use this to give the AI specific instructions before your main prompt. The built-in system prompt is usually best and highly optimized, so it's often better *not* to use this unless you know exactly why you need to change it.
+
+## Example Prompt File
+
+### Starting Details (YAML Frontmatter)
+
+```yaml
+---
+name: Example # Required: This is the name your prompt will show up as.
+disabled: false # Optional: Set to true to hide this prompt temporarily.
+provider: OpenAI # Optional: Choose a specific AI provider.
+model: gpt-4o-mini # Optional: Pick a specific AI model ID.
+systemPrompt: Your system prompt here # Optional: Override the default system prompt. It's often best to leave this out unless you have a specific reason to change it.
+---
+```
+
+### Example: Remove All Bold Formatting
+
+Here's a full example of a prompt file that removes bold formatting from text.
+
+```markdown
+---
+name: Remove All Bold
+description: Removes the double asterisks from bolded Markdown text.
+---
+
+Remove all bold formatting from the given Markdown text. Follow these steps:
+
+- Find all text that is bolded using double asterisks (`**`) in the input.
+- Delete the double asterisks from both the start and end of the bolded text. Keep the text inside exactly as it is.
+- Do not change anything else in the text. Don't rephrase sentences, change words, or alter the structure.
+- Make sure removing the bold formatting doesn't mess up how the sentences flow or their grammar.
+- If there's no bold text in the input, just give back the original text without any changes.
+```
