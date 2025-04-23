@@ -114,6 +114,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 		path: 'Wordwise',
 	},
 
+	enableStreaming: false,
+
 	enableConfirmationModal: false,
 
 	// Custom Behavior

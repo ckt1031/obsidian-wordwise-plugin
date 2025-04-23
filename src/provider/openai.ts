@@ -2,8 +2,9 @@ import { APIProvider, DEFAULT_HOST } from '@/config';
 import { OpenAIModelsSchema } from '@/schemas/models';
 import type { Models, PluginSettings, ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
+import { type GenerateTextOptions, generateText } from '@xsai/generate-text';
+import { type StreamTextOptions, streamText } from '@xsai/stream-text';
 import { Notice } from 'obsidian';
-import type OpenAI from 'openai';
 import { parseAsync } from 'valibot';
 
 const OpenRouterHeaders = {
@@ -65,6 +66,7 @@ export async function handleTextOpenAI({
 	plugin,
 	providerSettings,
 	isTesting = false,
+	...props
 }: ProviderTextAPIProps) {
 	if (provider === APIProvider.AzureOpenAI) {
 		// Reject if base URL is not set
@@ -84,12 +86,21 @@ export async function handleTextOpenAI({
 		}
 	}
 
-	let body:
-		| OpenAI.ChatCompletionCreateParams
-		| Omit<OpenAI.ChatCompletionCreateParams, 'model'> = {
-		stream: false,
+	if (!isTesting) {
+		plugin.generationRequestAbortController = new AbortController();
+		plugin.updateStatusBar(); // Show status bar loader
+	}
+
+	const body: GenerateTextOptions & StreamTextOptions = {
+		// Base URL for the API
+		baseURL: '', // WILL BE SET LATER
+
 		model,
 		temperature: plugin.settings.temperature,
+
+		abortSignal: isTesting
+			? undefined
+			: plugin.generationRequestAbortController?.signal,
 
 		messages: [
 			// {
@@ -126,11 +137,9 @@ export async function handleTextOpenAI({
 		}
 	}
 
-	let headers: Record<string, string> = {
-		'Content-Type': 'application/json',
-	};
+	let headers: Record<string, string> = {};
 
-	let path = '/v1/chat/completions';
+	let path = '/v1/';
 
 	switch (provider) {
 		case APIProvider.OpenRouter:
@@ -143,9 +152,9 @@ export async function handleTextOpenAI({
 			break;
 		case APIProvider.AzureOpenAI: {
 			path = `/openai/deployments/${model}/chat/completions?api-version=${(providerSettings as PluginSettings['aiProviderConfig'][APIProvider.AzureOpenAI]).apiVersion}`;
-			// Remove model from body
-			const { model: _, ...newObj } = body;
-			body = newObj;
+			// // Remove model from body
+			// const { model: _, ...newObj } = body;
+			// body = newObj;
 			headers = {
 				...headers,
 				'api-key': providerSettings.apiKey,
@@ -189,39 +198,29 @@ export async function handleTextOpenAI({
 			: '',
 	);
 
-	const url = `${host}${path}`;
-
-	if (!isTesting) {
-		plugin.generationRequestAbortController = new AbortController();
-		plugin.updateStatusBar(); // Show status bar loader
-	}
+	// Set the base URL and headers for the request
+	body.baseURL = `${host}${path}`;
+	body.headers = headers;
 
 	try {
-		const response = await fetch(url, {
-			headers,
-			method: 'POST',
-			body: JSON.stringify(body),
-			signal: isTesting
-				? undefined
-				: plugin.generationRequestAbortController?.signal,
-		});
+		if (props.stream) {
+			const { textStream } = await streamText(body);
 
-		if (response.status !== 200) {
-			throw new Error(response.status.toString(), {
-				cause: await response.text(),
-			});
+			const text: string[] = [];
+
+			for await (const textPart of textStream) {
+				text.push(textPart);
+				props.onStreamText?.(textPart);
+			}
+
+			props.onStreamComplete?.();
+
+			return text.join('');
 		}
 
-		const resData: OpenAI.ChatCompletion = await response.json();
+		const { text } = await generateText(body);
 
-		// Check if it has choices and return the first one
-		if (!resData.choices || resData.choices.length === 0) {
-			throw new Error('Request failed', {
-				cause: JSON.stringify(resData),
-			});
-		}
-
-		return resData.choices[0].message.content;
+		return text;
 	} catch (error) {
 		throw new Error('Request failed', {
 			cause: error instanceof Error ? error.message : String(error),

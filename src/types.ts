@@ -41,6 +41,11 @@ export interface CallTextAPIProps {
 	providerSettings: PluginSettings['aiProviderConfig'][APIProvider];
 
 	isTesting?: boolean;
+
+	// Stream Mode
+	stream: boolean;
+	onStreamText?: (text: string) => void;
+	onStreamComplete?: () => void;
 }
 
 export interface ProviderTextAPIProps extends CallTextAPIProps {

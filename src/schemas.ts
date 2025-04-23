@@ -86,6 +86,10 @@ export const PluginSettingsSchema = v.object({
 		path: v.string(),
 	}),
 
+	/** Enable streaming view to UI, this will enforce `enableConfirmationModal` to be true */
+	enableStreaming: v.boolean(),
+
+	/** Show a confirmation UI before inserting generated text */
 	enableConfirmationModal: v.boolean(),
 
 	// Custom Behavior

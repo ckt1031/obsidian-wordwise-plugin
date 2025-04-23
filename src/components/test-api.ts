@@ -56,6 +56,7 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 				},
 
 				isTesting: true,
+				stream: false,
 			});
 
 			if (!result || result.length === 0) {

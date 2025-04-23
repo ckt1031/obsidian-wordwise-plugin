@@ -288,6 +288,19 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
+		// Streaming
+		new Setting(containerEl)
+			.setName('Streaming')
+			.setDesc(
+				'Enable streaming mode to receive text as it is generated. This may be faster and more efficient.',
+			)
+			.addToggle((toggle) =>
+				toggle.setValue(settings.enableStreaming).onChange(async (value) => {
+					settings.enableStreaming = value;
+					await plugin.saveSettings();
+				}),
+			);
+
 		// Platform specific settings
 		if (Platform.isDesktop) {
 			new Setting(containerEl)

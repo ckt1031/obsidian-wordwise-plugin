@@ -126,6 +126,34 @@ export async function runCommand(
 			);
 		}
 
+		const onAccept = async (text: string) => {
+			switch (plugin.settings.customBehavior) {
+				case CustomBehavior.InsertFirst:
+					// Insert the generated text at the beginning of the editor
+					editor.replaceRange(text, { line: get.line, ch: 0 });
+					break;
+				case CustomBehavior.InsertLast:
+					editor.replaceRange(text, { line: get.line + 1, ch: 0 });
+					break;
+				default:
+					editor.replaceSelection(text);
+			}
+		};
+
+		const enableStreaming =
+			plugin.settings.enableStreaming && command !== 'Find Synonym';
+
+		const confirmationModal = new GenerationConfirmationModal(
+			plugin,
+			onAccept,
+			enableStreaming,
+		);
+
+		if (enableStreaming) {
+			// Show the confirmation modal with streaming
+			confirmationModal.open();
+		}
+
 		let result = await callTextAPI({
 			plugin,
 			messages: {
@@ -137,10 +165,26 @@ export async function runCommand(
 			model: modelToCall,
 			provider: providerEntry[0],
 			providerSettings: providerSettings,
+			stream: enableStreaming,
+			onStreamText: (text: string) => {
+				// Append the text to the modal
+				confirmationModal.appendResult(text);
+			},
+			onStreamComplete() {
+				confirmationModal.setStreamingCompleted();
+			},
 		});
 
 		if (!result) {
 			new Notice(`No result from ${plugin.settings.aiProvider}`);
+			return;
+		}
+
+		// Directly run post-generation action, as it has "confirmation" logic inside
+		if (command === 'Find Synonym') {
+			!document.querySelector('.menu.optionContainer')
+				? optionsMenu(editor, markdownListToArray(result))
+				: true;
 			return;
 		}
 
@@ -171,31 +215,14 @@ export async function runCommand(
 
 		new Notice(`Text generated in ${timeUsed}s`);
 
-		// Directly run post-generation action, as it has "confirmation" logic inside
-		if (command === 'Find Synonym') {
-			!document.querySelector('.menu.optionContainer')
-				? optionsMenu(editor, markdownListToArray(result))
-				: true;
-			return;
+		if (enableStreaming) {
+			return; // Don't show the confirmation modal if streaming is enabled
 		}
 
-		const onAccept = async () => {
-			switch (plugin.settings.customBehavior) {
-				case CustomBehavior.InsertFirst:
-					// Insert the generated text at the beginning of the editor
-					editor.replaceRange(result, { line: get.line, ch: 0 });
-					break;
-				case CustomBehavior.InsertLast:
-					editor.replaceRange(result, { line: get.line + 1, ch: 0 });
-					break;
-				default:
-					editor.replaceSelection(result);
-			}
-		};
-
-		if (plugin.settings.enableConfirmationModal)
-			new GenerationConfirmationModal(plugin, result, onAccept).open();
-		else onAccept();
+		if (plugin.settings.enableConfirmationModal) {
+			confirmationModal.setResult(result);
+			confirmationModal.open();
+		} else onAccept(result);
 	} catch (error) {
 		let message = 'Failed to generate text';
 
