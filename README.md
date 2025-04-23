@@ -6,6 +6,12 @@ It supports various AI models, including OpenAI, Google’s Gemini, Cohere, Deep
 
 For guidance on creating your own file-based prompts, see: [Docs](docs/file-prompts.md).
 
+## How It's Different from Other AI Plugins
+
+This plugin is built as a **lightweight**, **easy-to-use** tool specifically focused on enhancing your writing. It offers a simple, intuitive interface without unnecessary features. The main goal is to help you modify and improve your text efficiently.
+
+Other plugins can have complex interfaces that might feel overwhelming or slow things down. Some popular AI plugins don't work well on mobile devices, feeling laggy or not being supported at all. This plugin is designed to work smoothly on all devices, including mobile.
+
 ## Installation
 
 ### Community Plugins
