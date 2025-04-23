@@ -21,7 +21,7 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 	setTooltip(button, 'Test API');
 
 	// Set the initial icon for the hider element
-	setIcon(button, 'check-circle-2');
+	setIcon(button, 'fan');
 
 	// Add a click event listener to the hider element
 	button.addEventListener('click', async () => {
@@ -65,6 +65,11 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 			}
 
 			new Notice('API is working properly');
+
+			// Set the icon to success
+			setIcon(button, 'badge-check');
+			// Set icon green with effect
+			button.style.color = '#28FF1E';
 		} catch (error) {
 			let message = 'API is not working properly';
 
@@ -79,6 +84,11 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 					).open();
 				}
 			}
+
+			// Set the icon to error
+			setIcon(button, 'cloud-alert');
+			// Set icon red with effect
+			button.style.color = '#FF0000';
 
 			// Log the error to the console
 			console.info(error);
