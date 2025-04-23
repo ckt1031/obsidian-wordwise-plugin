@@ -161,7 +161,7 @@ export const wrapFetchModelComponent = ({
 
 			await setModels(settings.aiProvider, models);
 
-			new Notice('Models updated successfully, please refresh the plugin.');
+			new Notice('Models updated successfully');
 		} catch (error) {
 			let message = 'Failed to fetch models';
 
