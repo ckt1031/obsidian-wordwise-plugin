@@ -49,7 +49,11 @@ export default class GenerationConfirmationModal extends Modal {
 
 		// Show error message
 		this.resultEl = div.createEl('code', {
-			text: this.result,
+			text: this.result || (this.isStreaming ? 'Generating...' : 'No result'),
+			attr: {
+				// Make sure new lines are preserved, but scrollable if too long
+				disabled: !this.result || this.result.length === 0,
+			},
 		});
 
 		const btnContainer = this.contentEl.createDiv({
@@ -69,6 +73,11 @@ export default class GenerationConfirmationModal extends Modal {
 
 		// Add click event to copy button
 		copyBtn.addEventListener('click', () => {
+			if (!this.result || this.result.length === 0) {
+				new Notice('Nothing to copy');
+				return;
+			}
+
 			navigator.clipboard.writeText(this.result);
 			new Notice('Copied to clipboard');
 		});
