@@ -220,8 +220,8 @@ export async function runCommand(
 		}
 
 		if (plugin.settings.enableConfirmationModal) {
-			confirmationModal.setResult(result);
 			confirmationModal.open();
+			confirmationModal.setResult(result);
 		} else onAccept(result);
 	} catch (error) {
 		let message = 'Failed to generate text';
