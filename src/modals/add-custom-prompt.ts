@@ -1,5 +1,5 @@
-import { getCommands } from '@/commands';
 import type WordWisePlugin from '@/main';
+import { retrieveAllPrompts } from '@/prompt';
 import { Modal, Notice, Setting } from 'obsidian';
 
 export default class AddCustomPromptModal extends Modal {
@@ -68,8 +68,8 @@ export default class AddCustomPromptModal extends Modal {
 
 		await this.plugin.saveSettings();
 
-		// Reload the command list
-		this.plugin.commands = await getCommands(this.plugin);
+		// Reload the prompt list
+		this.plugin.prompts = await retrieveAllPrompts(this.plugin);
 
 		new Notice('Updated successfully');
 

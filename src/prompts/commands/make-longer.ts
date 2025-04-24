@@ -1,6 +1,6 @@
-import { CommandActions, CommandNames } from '@/config';
+import { InternalPromptNames, PrePromptActions } from '@/config';
 import MakeLongerIcon from '@/icons/make-longer.svg';
-import type { Command } from '@/types';
+import type { InputPromptProps } from '@/types';
 
 const prompt = `
 - Write a longer version, keep the text clear, easy to understand, and well put together.
@@ -8,11 +8,11 @@ const prompt = `
 - Keep the meaning the same if possible. Ensure the rewritten text's word count is more than twice the original text but no more than 4 times the original text.
 `;
 
-const command: Command = {
-	name: CommandNames.MakeLonger,
+const promptData: InputPromptProps = {
+	name: InternalPromptNames.MakeLonger,
 	icon: MakeLongerIcon,
-	action: CommandActions.DirectReplacement,
+	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };
 
-export default command;
+export default promptData;

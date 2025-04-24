@@ -1,16 +1,16 @@
 import { Notice, Platform } from 'obsidian';
 
-import { getFolderBasedPrompt } from '@/commands';
 import {
 	APIProvider,
-	CommandActions,
-	type CommandNames,
 	CustomBehavior,
+	type InternalPromptNames,
+	PrePromptActions,
 } from '@/config';
 import type WordWisePlugin from '@/main';
 import optionsMenu from '@/menus/optionsMenu';
 import AskForInstructionModal from '@/modals/ask-for-instruction';
 import GenerationConfirmationModal from '@/modals/generation-confirm';
+import { getFolderBasedPrompt } from '@/prompt';
 import type { TextGenerationLog } from '@/types';
 import type { EnhancedEditor } from '@/types';
 import Mustache from 'mustache';
@@ -33,10 +33,10 @@ export function removeThinkingContent(result: string): string {
 	return result.replace(regex, '');
 }
 
-export async function runCommand(
+export async function runPrompt(
 	editor: EnhancedEditor,
 	plugin: WordWisePlugin,
-	command: CommandNames | string,
+	promptName: InternalPromptNames | string,
 ) {
 	// Check if there is abort controller, exists, that means that there is a generation in progress
 	if (plugin.generationRequestAbortController && Platform.isDesktop) {
@@ -55,23 +55,22 @@ export async function runCommand(
 
 		const get = editor.getCursor();
 
-		if (command === 'Find Synonym') {
+		if (promptName === 'Find Synonym') {
 			const from = editor.getCursor('from');
 			const to = editor.getCursor('to');
 			const context = editor.getLine(from.line);
 			input = `${context.substring(0, from.ch)}|||${input}|||${context.substring(to.ch)}`;
 		}
 
-		const commands = plugin.commands;
-		const actionData = commands.find((p) => p.name === command);
+		const actionData = plugin.prompts.find((p) => p.name === promptName);
 
 		if (!actionData) {
-			throw new Error(`Could not find command data with name ${command}`);
+			throw new Error(`Could not find prompt data with name ${promptName}`);
 		}
 
 		let instructions = '';
 
-		if (actionData.action === CommandActions.CustomInstructions) {
+		if (actionData.action === PrePromptActions.CustomInstructions) {
 			const modal = new AskForInstructionModal(plugin);
 			modal.open();
 			instructions = await modal.promise;
@@ -87,7 +86,7 @@ export async function runCommand(
 		const providerDisplayName =
 			providerSettings?.displayName ?? plugin.settings.aiProvider;
 
-		new Notice(`${command} with ${providerDisplayName}`);
+		new Notice(`${promptName} with ${providerDisplayName}`);
 
 		let taskPrompt = actionData.taskPrompt;
 
@@ -97,7 +96,7 @@ export async function runCommand(
 		}
 
 		if (!taskPrompt) {
-			throw new Error(`No task prompt found for command ${command}`);
+			throw new Error(`No task prompt found for prompt ${promptName}`);
 		}
 
 		const systemPrompt: string = Mustache.render(
@@ -110,7 +109,7 @@ export async function runCommand(
 		const startTime = Date.now(); // Capture start time
 
 		const provider =
-			actionData.customCommandDefinedProvider ?? plugin.settings.aiProvider;
+			actionData.customPromptDefinedProvider ?? plugin.settings.aiProvider;
 
 		const providerEntry = Object.entries(plugin.settings.aiProviderConfig).find(
 			([key, d]) => {
@@ -122,7 +121,7 @@ export async function runCommand(
 			throw new Error(`Could not find provider: ${provider}`);
 		}
 
-		const modelToCall = actionData.customCommandDefinedModel ?? model;
+		const modelToCall = actionData.customPromptDefinedModel ?? model;
 
 		if (!modelToCall || modelToCall.length === 0) {
 			throw new Error(
@@ -146,7 +145,7 @@ export async function runCommand(
 
 		const enableStreaming =
 			plugin.settings.enableStreaming &&
-			command !== 'Find Synonym' &&
+			promptName !== 'Find Synonym' &&
 			providerEntry[0] !== APIProvider.AzureOpenAI;
 
 		const confirmationModal = new GenerationConfirmationModal(
@@ -187,7 +186,7 @@ export async function runCommand(
 		}
 
 		// Directly run post-generation action, as it has "confirmation" logic inside
-		if (command === 'Find Synonym') {
+		if (promptName === 'Find Synonym') {
 			!document.querySelector('.menu.optionContainer')
 				? optionsMenu(editor, markdownListToArray(result))
 				: true;
@@ -202,7 +201,7 @@ export async function runCommand(
 		if (plugin.settings.enableGenerationLogging) {
 			const loggingBody: TextGenerationLog = {
 				id: nanoid(),
-				by: command,
+				by: promptName,
 				model,
 				generatedAt: new Date().toISOString(),
 				provider: plugin.settings.aiProvider,

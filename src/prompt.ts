@@ -1,33 +1,35 @@
 import fm from 'front-matter';
 import * as v from 'valibot';
-import { CommandActions } from './config';
+import { PrePromptActions } from './config';
 import type WordWisePlugin from './main';
-import { NATIVE_COMMANDS } from './prompts/commands';
+import { INTERNAL_PROMPTS } from './prompts/commands';
 import defaultPluginSystemPrompt from './prompts/system';
 import { FilePromptPropertiesSchema } from './schemas';
-import type { Command, OutputInternalCommandProps } from './types';
+import type { InputPromptProps, OutputInternalPromptProps } from './types';
 
-export async function getCommands(
+export async function retrieveAllPrompts(
 	plugin: WordWisePlugin,
-): Promise<OutputInternalCommandProps[]> {
+): Promise<OutputInternalPromptProps[]> {
 	const settings = plugin.settings;
 
 	// Saved in config.json
 	const configCustomPrompts = settings.customPrompts;
 
 	// Internal prompts hard coded in the plugin
-	const internalPrompts = settings.disableNativeCommands ? [] : NATIVE_COMMANDS;
+	const internalPrompts = settings.disableInternalPrompts
+		? []
+		: INTERNAL_PROMPTS;
 
 	const folderPrompts = await getAllFolderBasedPrompt(plugin);
 
 	// Add basePromptEnding to all prompts ending
 	return [...internalPrompts, ...configCustomPrompts, ...folderPrompts].map(
 		(prompt) => {
-			let action = CommandActions.DirectReplacement;
+			let action = PrePromptActions.DirectReplacement;
 
 			// Check if prompt has it's own action mode
 			if ('action' in prompt) {
-				action = prompt.action as CommandActions;
+				action = prompt.action as PrePromptActions;
 			}
 
 			return {
@@ -38,8 +40,8 @@ export async function getCommands(
 				systemPrompt: prompt.systemPrompt ?? defaultPluginSystemPrompt,
 				isFilePrompt: prompt.isFilePrompt,
 				filePath: prompt.filePath,
-				customCommandDefinedModel: prompt.customCommandDefinedModel,
-				customCommandDefinedProvider: prompt.customCommandDefinedProvider,
+				customCommandDefinedModel: prompt.customPromptDefinedModel,
+				customCommandDefinedProvider: prompt.customPromptDefinedProvider,
 			};
 		},
 	);
@@ -85,7 +87,7 @@ export async function getAllFolderBasedPrompt(plugin: WordWisePlugin) {
 	return prompts;
 }
 
-function readFile(fileContent: string): Command | undefined {
+function readFile(fileContent: string): InputPromptProps | undefined {
 	const content = fm(fileContent);
 
 	// Ignore if content.attributes is {}
@@ -104,8 +106,8 @@ function readFile(fileContent: string): Command | undefined {
 		icon: undefined,
 		data: content.body,
 		isFilePrompt: true,
-		customCommandDefinedModel: attributes.model,
-		customCommandDefinedProvider: attributes.provider,
+		customPromptDefinedModel: attributes.model,
+		customPromptDefinedProvider: attributes.provider,
 		// filePath <-- Is set in getAllFolderBasedPrompt
 	};
 }

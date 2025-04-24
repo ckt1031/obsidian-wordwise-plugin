@@ -8,7 +8,7 @@ import makeShorter from './make-shorter';
 import paraphrase from './paraphrase';
 import simplify from './simplify';
 
-export const NATIVE_COMMANDS = [
+export const INTERNAL_PROMPTS = [
 	bold,
 	customInstruction,
 	findSynonym,

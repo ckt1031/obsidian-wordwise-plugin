@@ -1,6 +1,6 @@
-import { CommandActions, CommandNames } from '@/config';
+import { InternalPromptNames, PrePromptActions } from '@/config';
 import CustomInstructions from '@/icons/custom-instructions.svg';
-import type { Command } from '@/types';
+import type { InputPromptProps } from '@/types';
 
 const prompt = `
 - Follow the instructions below to make changes to the text.
@@ -11,11 +11,11 @@ const prompt = `
 {{instructions}}
 `;
 
-const command: Command = {
-	name: CommandNames.CustomInstructions,
+const promptData: InputPromptProps = {
+	name: InternalPromptNames.CustomInstructions,
 	icon: CustomInstructions,
-	action: CommandActions.CustomInstructions,
+	action: PrePromptActions.CustomInstructions,
 	data: prompt,
 };
 
-export default command;
+export default promptData;

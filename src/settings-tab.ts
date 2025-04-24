@@ -383,15 +383,15 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName('Disable Pre-defined Commands')
+			.setName('Disable Internal Prompts')
 			.setDesc(
-				"This only works if you've set up custom instructions (prompts).",
-			) // Clarified prerequisite
+				'Remove internal sets of prompts that are used to generate text. This is useful if you want to use your own prompts only.',
+			)
 			.addToggle((toggle) =>
 				toggle
-					.setValue(settings.disableNativeCommands)
+					.setValue(settings.disableInternalPrompts)
 					.onChange(async (value) => {
-						settings.disableNativeCommands = value;
+						settings.disableInternalPrompts = value;
 						await plugin.saveSettings();
 					}),
 			);

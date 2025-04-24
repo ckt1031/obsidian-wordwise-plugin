@@ -1,6 +1,6 @@
-import { CommandActions, CommandNames } from '@/config';
+import { InternalPromptNames, PrePromptActions } from '@/config';
 import FindSynonymIcon from '@/icons/find-synonym.svg';
-import type { Command } from '@/types';
+import type { InputPromptProps } from '@/types';
 
 const prompt = `
 - Find four synonyms for the words wrapped in three pipe characters.
@@ -10,11 +10,11 @@ const prompt = `
 - Output the synonyms in a markdown list format, with each suggestion as a bullet point.
 `;
 
-const command: Command = {
-	name: CommandNames.FindSynonym,
+const promptData: InputPromptProps = {
+	name: InternalPromptNames.FindSynonym,
 	icon: FindSynonymIcon,
-	action: CommandActions.DirectReplacement,
+	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };
 
-export default command;
+export default promptData;

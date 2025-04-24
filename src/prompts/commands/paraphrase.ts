@@ -1,6 +1,6 @@
-import { CommandActions, CommandNames } from '@/config';
+import { InternalPromptNames, PrePromptActions } from '@/config';
 import ParaphraseIcon from '@/icons/paraphrase.svg';
-import type { Command } from '@/types';
+import type { InputPromptProps } from '@/types';
 
 const prompt = `
 - Reformulate the sentences, changing the structure and using synonyms where appropriate, without distorting the meaning of the text.
@@ -11,11 +11,11 @@ const prompt = `
 - If a word, phrase, or part of the text is already clear and effective, you may leave it as it is, unchanged.
 `;
 
-const command: Command = {
-	name: CommandNames.Paraphrase,
+const promptData: InputPromptProps = {
+	name: InternalPromptNames.Paraphrase,
 	icon: ParaphraseIcon,
-	action: CommandActions.DirectReplacement,
+	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };
 
-export default command;
+export default promptData;

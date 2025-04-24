@@ -1,10 +1,10 @@
 import type CodeMirror from 'codemirror';
 import type { Editor, Menu } from 'obsidian';
 import type * as v from 'valibot';
-import type { APIProvider, CommandActions } from './config';
+import type { APIProvider, PrePromptActions } from './config';
 import type WordWisePlugin from './main';
 import type {
-	InputCommandSchema,
+	InputPromptSchema,
 	ObfuscatedPluginSettingsSchema,
 	PluginSettingsSchema,
 	TextGenerationLogSchema,
@@ -19,7 +19,7 @@ export type Models = {
 	name?: string | undefined;
 }[];
 
-export type Command = v.InferInput<typeof InputCommandSchema>;
+export type InputPromptProps = v.InferInput<typeof InputPromptSchema>;
 
 export type PluginSettings = v.InferInput<typeof PluginSettingsSchema>;
 
@@ -52,16 +52,16 @@ export interface ProviderTextAPIProps extends CallTextAPIProps {
 	model: string;
 }
 
-export interface OutputInternalCommandProps {
+export interface OutputInternalPromptProps {
 	name: string;
 	icon: string | undefined;
-	action: CommandActions;
+	action: PrePromptActions;
 	taskPrompt: string | undefined;
 	systemPrompt?: string;
 	isFilePrompt?: boolean;
 	filePath?: string;
-	customCommandDefinedModel?: string;
-	customCommandDefinedProvider?: string;
+	customPromptDefinedModel?: string;
+	customPromptDefinedProvider?: string;
 }
 
 export type TextGenerationLog = v.InferInput<typeof TextGenerationLogSchema>;

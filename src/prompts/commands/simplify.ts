@@ -1,6 +1,6 @@
-import { CommandActions, CommandNames } from '@/config';
+import { InternalPromptNames, PrePromptActions } from '@/config';
 import SimplifyIcon from '@/icons/simplify-text.svg';
-import type { Command } from '@/types';
+import type { InputPromptProps } from '@/types';
 
 const prompt = `
 - Make the text clearer and easier to understand by using simple words and phrases. Avoid ones that are too hard or confusing.
@@ -12,11 +12,11 @@ const prompt = `
 - If a word, phrase, or part of the text is already clear and effective, leave it as it is, unchanged.
 `;
 
-const command: Command = {
-	name: CommandNames.SimplifyText,
+const promptData: InputPromptProps = {
+	name: InternalPromptNames.SimplifyText,
 	icon: SimplifyIcon,
-	action: CommandActions.DirectReplacement,
+	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };
 
-export default command;
+export default promptData;

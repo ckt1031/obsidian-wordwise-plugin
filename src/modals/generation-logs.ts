@@ -1,6 +1,6 @@
 import { Modal, Notice } from 'obsidian';
 
-import { CommandNames } from '@/config';
+import { InternalPromptNames } from '@/config';
 import type WordWisePlugin from '@/main';
 import type { TextGenerationLog } from '@/types';
 import { ForageStorage } from '@/utils/storage';
@@ -93,10 +93,13 @@ export default class TextGenerationLogModal extends Modal {
 
 		contentEl.createEl('p', { text: `Model: ${log.model}` });
 		contentEl.createEl('p', { text: `Provider: ${log.provider}` });
-		contentEl.createEl('p', { text: `Command Name: ${log.by}` });
+		contentEl.createEl('p', { text: `Prompt name: ${log.by}` });
 
 		// Show Text Custom Instruction if it exists
-		if (log.by === CommandNames.CustomInstructions && log.customInstruction) {
+		if (
+			log.by === InternalPromptNames.CustomInstructions &&
+			log.customInstruction
+		) {
 			contentEl.createEl('textarea', {
 				text: log.customInstruction,
 				cls: 'modal-text-area',

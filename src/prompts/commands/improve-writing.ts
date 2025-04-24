@@ -1,6 +1,6 @@
-import { CommandActions, CommandNames } from '@/config';
+import { InternalPromptNames, PrePromptActions } from '@/config';
 import ImproveWritingIcon from '@/icons/improve-writing.svg';
-import type { Command } from '@/types';
+import type { InputPromptProps } from '@/types';
 
 const prompt = `
 - Improve text.
@@ -19,11 +19,11 @@ const prompt = `
 - For Obsidian specific components like tags (#tag), linked references, or block references, do not change them unless they need fixes.
 `;
 
-const command: Command = {
-	name: CommandNames.ImproveWriting,
+const promptData: InputPromptProps = {
+	name: InternalPromptNames.ImproveWriting,
 	icon: ImproveWritingIcon,
-	action: CommandActions.DirectReplacement,
+	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };
 
-export default command;
+export default promptData;

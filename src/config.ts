@@ -38,7 +38,7 @@ export enum APIProvider {
 	Custom = 'Custom (OpenAI Compatible)',
 }
 
-export enum CommandNames {
+export enum InternalPromptNames {
 	FindSynonym = 'Find Synonym',
 	FixGrammar = 'Fix Grammar',
 	ImproveWriting = 'Improve Writing',
@@ -47,12 +47,10 @@ export enum CommandNames {
 	MakeShorter = 'Make Shorter',
 	Paraphrase = 'Paraphrase',
 	SimplifyText = 'Simplify Text',
-
-	// Extra Commands
 	CustomInstructions = 'Custom Instructions',
 }
 
-export enum CommandActions {
+export enum PrePromptActions {
 	/**
 	 * Directly replace the selected text with the generated text.
 	 */
@@ -108,7 +106,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	temperature: 0.6,
 	enableGenerationLogging: false,
 	customPrompts: [],
-	disableNativeCommands: false,
+	disableInternalPrompts: false,
 	customPromptsFromFolder: {
 		enabled: false,
 		path: 'Wordwise',

@@ -11,25 +11,25 @@ import localforage from 'localforage';
 import { merge } from 'rambda';
 import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
-import { getCommands } from './commands';
 import { DEFAULT_SETTINGS } from './config';
 import AiIcon from './icons/ai.svg';
 import { moveConfig } from './migrations/localforage';
 import TextGenerationLogModal from './modals/generation-logs';
+import { retrieveAllPrompts } from './prompt';
 import { ObfuscatedPluginSettingsSchema } from './schemas';
 import { SettingTab } from './settings-tab';
 import type { ObfuscatedPluginSettings, PluginSettings } from './types';
-import type { EnhancedEditor, OutputInternalCommandProps } from './types';
-import { runCommand } from './utils/handle-command';
+import type { EnhancedEditor, OutputInternalPromptProps } from './types';
+import { runPrompt } from './utils/handle-command';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 import SettingsExportImport from './utils/settings-sharing';
 
 export default class WordWisePlugin extends Plugin {
 	settings: PluginSettings;
+	prompts: OutputInternalPromptProps[];
+	generationRequestAbortController: AbortController | null = null;
 
 	private statusBarEl: HTMLElement | null = null;
-	commands: OutputInternalCommandProps[];
-	generationRequestAbortController: AbortController | null = null;
 
 	async onload() {
 		await moveConfig(this);
@@ -48,25 +48,25 @@ export default class WordWisePlugin extends Plugin {
 
 		addIcon('openai', AiIcon);
 
-		this.commands = await getCommands(this);
+		this.prompts = await retrieveAllPrompts(this);
 
-		for (const command of this.commands) {
+		for (const prompt of this.prompts) {
 			// slugify and remove spaces
-			const iconName = command.name.toLowerCase().replaceAll(/\s/g, '-');
+			const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
 
 			// Add icon if it exists
-			if (command.icon) addIcon(iconName, command.icon);
+			if (prompt.icon) addIcon(iconName, prompt.icon);
 
 			this.addCommand({
-				id: slugify(command.name),
-				name: command.name,
-				icon: command.icon ? iconName : AiIcon,
+				id: slugify(prompt.name),
+				name: prompt.name,
+				icon: prompt.icon ? iconName : AiIcon,
 				editorCallback: (editor: EnhancedEditor) =>
-					runCommand(editor, this, command.name),
+					runPrompt(editor, this, prompt.name),
 			});
 		}
 
-		const commands = [
+		const obsidianCommands = [
 			{
 				name: 'Check Text Generation Logs',
 				onClick: async (_editor: EnhancedEditor) => {
@@ -79,7 +79,7 @@ export default class WordWisePlugin extends Plugin {
 			},
 		];
 
-		for (const command of commands) {
+		for (const command of obsidianCommands) {
 			this.addCommand({
 				id: slugify(command.name),
 				name: command.name,
@@ -90,23 +90,23 @@ export default class WordWisePlugin extends Plugin {
 		this.registerEvent(
 			this.app.workspace.on('editor-menu', (menu, editor: EnhancedEditor) => {
 				menu.addItem((item) => {
-					item.setTitle(`${this.manifest.name} Commands`).setIcon('brain-cog');
+					item.setTitle(`${this.manifest.name} prompts`).setIcon('brain-cog');
 
 					const subMenu = item.setSubmenu();
 
-					for (const command of this.commands) {
+					for (const prompt of this.prompts) {
 						// slugify and remove spaces
-						const iconName = command.name.toLowerCase().replaceAll(/\s/g, '-');
+						const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
 
 						// Add icon if it exists
-						if (command.icon) addIcon(iconName, command.icon);
+						if (prompt.icon) addIcon(iconName, prompt.icon);
 
-						// Add command to sub-menu
+						// Add prompt to sub-menu
 						subMenu.addItem((item) => {
 							item
-								.setTitle(command.name)
-								.setIcon(command.icon ? iconName : AiIcon)
-								.onClick(() => runCommand(editor, this, command.name));
+								.setTitle(prompt.name)
+								.setIcon(prompt.icon ? iconName : AiIcon)
+								.onClick(() => runPrompt(editor, this, prompt.name));
 						});
 					}
 				});

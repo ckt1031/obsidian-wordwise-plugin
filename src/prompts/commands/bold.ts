@@ -1,6 +1,6 @@
-import { CommandActions, CommandNames } from '@/config';
+import { InternalPromptNames, PrePromptActions } from '@/config';
 import HighlightMainPointIcon from '@/icons/highlight-mainpoint.svg';
-import type { Command } from '@/types';
+import type { InputPromptProps } from '@/types';
 
 const prompt = `
 - Bold the main ideas, key terms, important phrases, or crucial numbers by making them bold.
@@ -12,11 +12,11 @@ const prompt = `
 - Ensure that the bolded text does not disrupt the flow or grammatical structure of the sentences.
 `;
 
-const command: Command = {
-	name: CommandNames.Bold,
+const promptData: InputPromptProps = {
+	name: InternalPromptNames.Bold,
 	icon: HighlightMainPointIcon,
-	action: CommandActions.DirectReplacement,
+	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };
 
-export default command;
+export default promptData;

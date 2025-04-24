@@ -1,6 +1,6 @@
-import { CommandActions, CommandNames } from '@/config';
+import { InternalPromptNames, PrePromptActions } from '@/config';
 import FixGrammarIcon from '@/icons/fix-grammar.svg';
-import type { Command } from '@/types';
+import type { InputPromptProps } from '@/types';
 
 const prompt = `
 - Fix linguistic issues in all part of the text.
@@ -9,11 +9,11 @@ const prompt = `
 - If there are no grammar or spelling mistakes in the text, return the original text as is.
 `;
 
-const command: Command = {
-	name: CommandNames.FixGrammar,
+const promptData: InputPromptProps = {
+	name: InternalPromptNames.FixGrammar,
 	icon: FixGrammarIcon,
-	action: CommandActions.DirectReplacement,
+	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };
 
-export default command;
+export default promptData;

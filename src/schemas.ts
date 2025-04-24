@@ -1,9 +1,9 @@
 import * as v from 'valibot';
 import {
 	APIProvider,
-	CommandActions,
-	CommandNames,
 	CustomBehavior,
+	InternalPromptNames,
+	PrePromptActions,
 } from './config';
 
 export const TextGenerationLogSchema = v.object({
@@ -37,9 +37,9 @@ export const FilePromptPropertiesSchema = v.object({
 	systemPrompt: v.optional(v.string()),
 });
 
-export const InputCommandSchema = v.object({
+export const InputPromptSchema = v.object({
 	// Required Values
-	name: v.union([v.string(), v.enum_(CommandNames)]),
+	name: v.union([v.string(), v.enum_(InternalPromptNames)]),
 
 	/** Body prompt, will be passed in system message in LLM API */
 	data: v.string(),
@@ -48,11 +48,11 @@ export const InputCommandSchema = v.object({
 	systemPrompt: v.optional(v.string()),
 
 	// Optional Values
-	action: v.optional(v.enum_(CommandActions)),
+	action: v.optional(v.enum_(PrePromptActions)),
 	icon: v.optional(v.string()),
 	isFilePrompt: v.optional(v.boolean()),
-	customCommandDefinedModel: v.optional(v.string()),
-	customCommandDefinedProvider: v.optional(v.string()),
+	customPromptDefinedModel: v.optional(v.string()),
+	customPromptDefinedProvider: v.optional(v.string()),
 });
 
 export const PluginSettingsSchema = v.object({
@@ -92,9 +92,9 @@ export const PluginSettingsSchema = v.object({
 	/** Log the text to storage to trace usage and original text */
 	enableGenerationLogging: v.boolean(),
 
-	customPrompts: v.array(InputCommandSchema),
+	customPrompts: v.array(InputPromptSchema),
 
-	disableNativeCommands: v.boolean(),
+	disableInternalPrompts: v.boolean(),
 
 	customPromptsFromFolder: v.object({
 		enabled: v.boolean(),
