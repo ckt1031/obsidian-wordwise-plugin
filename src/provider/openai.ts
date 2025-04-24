@@ -4,6 +4,7 @@ import type { Models, PluginSettings, ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import { type GenerateTextOptions, generateText } from '@xsai/generate-text';
 import { type StreamTextOptions, streamText } from '@xsai/stream-text';
+import { smoothStream, toAsyncIterator } from '@xsai/utils-stream';
 import { Notice } from 'obsidian';
 import { parseAsync } from 'valibot';
 
@@ -206,9 +207,20 @@ export async function handleTextOpenAI({
 		if (props.stream) {
 			const { textStream } = await streamText(body);
 
+			// Make the stream view smoother, some API or models might be streaming in weird ways
+			const smoothTextStream = textStream.pipeThrough(
+				smoothStream({
+					delay: 15,
+					chunking: 'word',
+				}),
+			);
+
+			// https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility
+			const iterableStream = toAsyncIterator(smoothTextStream);
+
 			const text: string[] = [];
 
-			for await (const textPart of textStream) {
+			for await (const textPart of iterableStream) {
 				text.push(textPart);
 				props.onStreamText?.(textPart);
 			}

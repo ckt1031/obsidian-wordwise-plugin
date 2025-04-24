@@ -21,6 +21,7 @@
 		"@types/mustache": "^4.2.5",
 		"@xsai/generate-text": "^0.2.0-beta.4",
 		"@xsai/stream-text": "^0.2.0-beta.3",
+		"@xsai/utils-stream": "^0.2.0-beta.4",
 		"dayjs": "1.11.13",
 		"front-matter": "^4.0.2",
 		"fuse.js": "7.1.0",
