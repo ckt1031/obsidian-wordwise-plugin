@@ -1,22 +1,21 @@
 import fm from 'front-matter';
-import { safeParse } from 'valibot';
 import * as v from 'valibot';
 import { CommandActions } from './config';
 import type WordWisePlugin from './main';
 import { NATIVE_COMMANDS } from './prompts/commands';
-import systemPrompt from './prompts/system';
-import { CommandSchema } from './schemas';
+import defaultPluginSystemPrompt from './prompts/system';
 import { FilePromptPropertiesSchema } from './schemas';
-import type { CommandProps } from './types';
+import type { Command, OutputInternalCommandProps } from './types';
 
 export async function getCommands(
 	plugin: WordWisePlugin,
-): Promise<CommandProps[]> {
+): Promise<OutputInternalCommandProps[]> {
 	const settings = plugin.settings;
 
 	// Saved in config.json
 	const configCustomPrompts = settings.customPrompts;
 
+	// Internal prompts hard coded in the plugin
 	const internalPrompts = settings.disableNativeCommands ? [] : NATIVE_COMMANDS;
 
 	const folderPrompts = await getAllFolderBasedPrompt(plugin);
@@ -26,8 +25,8 @@ export async function getCommands(
 		(prompt) => {
 			let action = CommandActions.DirectReplacement;
 
-			// Check if prompt has Prompt type
-			if ('action' in prompt && safeParse(CommandSchema, prompt)) {
+			// Check if prompt has it's own action mode
+			if ('action' in prompt) {
 				action = prompt.action as CommandActions;
 			}
 
@@ -36,17 +35,11 @@ export async function getCommands(
 				icon: prompt.icon,
 				action,
 				taskPrompt: prompt.data,
-
-				// Custom defined properties
-				systemPrompt:
-					'systemPrompt' in prompt
-						? (prompt.systemPrompt as string)
-						: systemPrompt,
-				isFilePrompt: 'isFilePrompt' in prompt ? prompt.isFilePrompt : false,
-				filePath: 'filePath' in prompt ? prompt.filePath : undefined,
-				customDefinedModel: 'model' in prompt ? prompt.model : undefined,
-				customDefinedProvider:
-					'provider' in prompt ? prompt.provider : undefined,
+				systemPrompt: prompt.systemPrompt ?? defaultPluginSystemPrompt,
+				isFilePrompt: prompt.isFilePrompt,
+				filePath: prompt.filePath,
+				customCommandDefinedModel: prompt.customCommandDefinedModel,
+				customCommandDefinedProvider: prompt.customCommandDefinedProvider,
 			};
 		},
 	);
@@ -61,7 +54,7 @@ export async function getFolderBasedPrompt(
 	if (!exists) return undefined;
 
 	const fileContent = await plugin.app.vault.adapter.read(path);
-	return readFile(fileContent, true);
+	return readFile(fileContent);
 }
 
 export async function getAllFolderBasedPrompt(plugin: WordWisePlugin) {
@@ -92,7 +85,7 @@ export async function getAllFolderBasedPrompt(plugin: WordWisePlugin) {
 	return prompts;
 }
 
-function readFile(fileContent: string, needBody = false) {
+function readFile(fileContent: string): Command | undefined {
 	const content = fm(fileContent);
 
 	// Ignore if content.attributes is {}
@@ -108,15 +101,11 @@ function readFile(fileContent: string, needBody = false) {
 
 	return {
 		name: attributes.name,
-		// systemPrompt: attributes.systemPrompt || '',
-		data: needBody ? content.body : undefined,
 		icon: undefined,
-		...(attributes.systemPrompt &&
-			attributes.systemPrompt.length > 0 && {
-				systemPrompt: attributes.systemPrompt,
-			}),
+		data: content.body,
 		isFilePrompt: true,
-		model: attributes.model,
-		provider: attributes.provider,
+		customCommandDefinedModel: attributes.model,
+		customCommandDefinedProvider: attributes.provider,
+		// filePath <-- Is set in getAllFolderBasedPrompt
 	};
 }

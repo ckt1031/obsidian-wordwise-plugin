@@ -1,13 +1,13 @@
-import type { TextAreaComponent, TextComponent } from 'obsidian';
-import { Modal, Notice, Setting } from 'obsidian';
-
+import { getCommands } from '@/commands';
 import type WordWisePlugin from '@/main';
+import { Modal, Notice, Setting } from 'obsidian';
 
 export default class AddCustomPromptModal extends Modal {
 	private name: string;
 	private data: string;
 
-	private originalName: string;
+	// Readonly property, since this is required to locate the prompt in the settings before it has been edited
+	private readonly originalName: string;
 
 	private readonly isEdit: boolean;
 	private readonly plugin: WordWisePlugin;
@@ -68,21 +68,22 @@ export default class AddCustomPromptModal extends Modal {
 
 		await this.plugin.saveSettings();
 
-		new Notice(
-			`Please reload the plugin after ${
-				this.isEdit ? 'editing' : 'adding'
-			} a prompt`,
-		);
+		// Reload the command list
+		this.plugin.commands = await getCommands(this.plugin);
+
+		new Notice('Updated successfully');
 
 		this.close();
 	}
 
 	onOpen() {
 		const { contentEl, data, name } = this;
+
 		contentEl.empty();
+
 		this.setTitle(this.isEdit ? 'Edit Custom Prompt' : 'Add Custom Prompt');
 
-		new Setting(contentEl).setName('Name:').addText((text: TextComponent) => {
+		new Setting(contentEl).setName('Name:').addText((text) => {
 			text.setPlaceholder('Name (example: text-tone-helper)');
 			text.onChange((value: string) => {
 				this.name = value;
@@ -90,16 +91,14 @@ export default class AddCustomPromptModal extends Modal {
 			text.setValue(name);
 		});
 
-		new Setting(contentEl)
-			.setName('Prompt:')
-			.addTextArea((textArea: TextAreaComponent) => {
-				textArea.inputEl.className = 'modal-text-area';
-				textArea.setPlaceholder('Change the tone of the text');
-				textArea.onChange((value: string) => {
-					this.data = value;
-				});
-				textArea.setValue(data);
+		new Setting(contentEl).setName('Prompt:').addTextArea((textArea) => {
+			textArea.inputEl.className = 'modal-text-area';
+			textArea.setPlaceholder('Change the tone of the text');
+			textArea.onChange((value) => {
+				this.data = value;
 			});
+			textArea.setValue(data);
+		});
 
 		new Setting(contentEl).addButton((btn) =>
 			btn

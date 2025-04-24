@@ -27,17 +27,32 @@ export const ObfuscatedPluginSettingsSchema = v.object({
 });
 
 export const FilePromptPropertiesSchema = v.object({
+	// REQUIRED
 	name: v.string(),
+
+	// OPTIONAL
 	disabled: v.optional(v.boolean()),
 	model: v.optional(v.string()),
 	provider: v.optional(v.enum_(APIProvider)),
 	systemPrompt: v.optional(v.string()),
 });
 
-export const CustomPromptSchema = v.object({
-	name: v.string(),
-	icon: v.optional(v.string()),
+export const InputCommandSchema = v.object({
+	// Required Values
+	name: v.union([v.string(), v.enum_(CommandNames)]),
+
+	/** Body prompt, will be passed in system message in LLM API */
 	data: v.string(),
+
+	filePath: v.optional(v.string()),
+	systemPrompt: v.optional(v.string()),
+
+	// Optional Values
+	action: v.optional(v.enum_(CommandActions)),
+	icon: v.optional(v.string()),
+	isFilePrompt: v.optional(v.boolean()),
+	customCommandDefinedModel: v.optional(v.string()),
+	customCommandDefinedProvider: v.optional(v.string()),
 });
 
 export const PluginSettingsSchema = v.object({
@@ -77,7 +92,7 @@ export const PluginSettingsSchema = v.object({
 	/** Log the text to storage to trace usage and original text */
 	enableGenerationLogging: v.boolean(),
 
-	customPrompts: v.array(CustomPromptSchema),
+	customPrompts: v.array(InputCommandSchema),
 
 	disableNativeCommands: v.boolean(),
 
@@ -94,11 +109,4 @@ export const PluginSettingsSchema = v.object({
 
 	// Custom Behavior
 	customBehavior: v.enum_(CustomBehavior),
-});
-
-export const CommandSchema = v.object({
-	name: v.union([v.string(), v.enum_(CommandNames)]),
-	icon: v.optional(v.string()),
-	action: v.enum_(CommandActions),
-	data: v.string(),
 });

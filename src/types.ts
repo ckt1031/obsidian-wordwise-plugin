@@ -4,7 +4,7 @@ import type * as v from 'valibot';
 import type { APIProvider, CommandActions } from './config';
 import type WordWisePlugin from './main';
 import type {
-	CommandSchema,
+	InputCommandSchema,
 	ObfuscatedPluginSettingsSchema,
 	PluginSettingsSchema,
 	TextGenerationLogSchema,
@@ -19,7 +19,7 @@ export type Models = {
 	name?: string | undefined;
 }[];
 
-export type Command = v.InferInput<typeof CommandSchema>;
+export type Command = v.InferInput<typeof InputCommandSchema>;
 
 export type PluginSettings = v.InferInput<typeof PluginSettingsSchema>;
 
@@ -52,16 +52,16 @@ export interface ProviderTextAPIProps extends CallTextAPIProps {
 	model: string;
 }
 
-export interface CommandProps {
+export interface OutputInternalCommandProps {
 	name: string;
 	icon: string | undefined;
 	action: CommandActions;
 	taskPrompt: string | undefined;
-	systemPrompt: string;
+	systemPrompt?: string;
 	isFilePrompt?: boolean;
 	filePath?: string;
-	customDefinedModel?: string;
-	customDefinedProvider?: string;
+	customCommandDefinedModel?: string;
+	customCommandDefinedProvider?: string;
 }
 
 export type TextGenerationLog = v.InferInput<typeof TextGenerationLogSchema>;

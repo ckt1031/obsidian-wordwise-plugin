@@ -1,6 +1,5 @@
 import { Notice, Platform } from 'obsidian';
 
-import { getCommands } from '@/commands';
 import { getFolderBasedPrompt } from '@/commands';
 import {
 	APIProvider,
@@ -63,7 +62,7 @@ export async function runCommand(
 			input = `${context.substring(0, from.ch)}|||${input}|||${context.substring(to.ch)}`;
 		}
 
-		const commands = await getCommands(plugin);
+		const commands = plugin.commands;
 		const actionData = commands.find((p) => p.name === command);
 
 		if (!actionData) {
@@ -111,7 +110,7 @@ export async function runCommand(
 		const startTime = Date.now(); // Capture start time
 
 		const provider =
-			actionData.customDefinedProvider ?? plugin.settings.aiProvider;
+			actionData.customCommandDefinedProvider ?? plugin.settings.aiProvider;
 
 		const providerEntry = Object.entries(plugin.settings.aiProviderConfig).find(
 			([key, d]) => {
@@ -123,7 +122,7 @@ export async function runCommand(
 			throw new Error(`Could not find provider: ${provider}`);
 		}
 
-		const modelToCall = actionData.customDefinedModel ?? model;
+		const modelToCall = actionData.customCommandDefinedModel ?? model;
 
 		if (!modelToCall || modelToCall.length === 0) {
 			throw new Error(

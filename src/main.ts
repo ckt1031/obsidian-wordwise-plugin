@@ -19,7 +19,7 @@ import TextGenerationLogModal from './modals/generation-logs';
 import { ObfuscatedPluginSettingsSchema } from './schemas';
 import { SettingTab } from './settings-tab';
 import type { ObfuscatedPluginSettings, PluginSettings } from './types';
-import type { EnhancedEditor } from './types';
+import type { EnhancedEditor, OutputInternalCommandProps } from './types';
 import { runCommand } from './utils/handle-command';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 import SettingsExportImport from './utils/settings-sharing';
@@ -28,6 +28,7 @@ export default class WordWisePlugin extends Plugin {
 	settings: PluginSettings;
 
 	private statusBarEl: HTMLElement | null = null;
+	commands: OutputInternalCommandProps[];
 	generationRequestAbortController: AbortController | null = null;
 
 	async onload() {
@@ -47,9 +48,9 @@ export default class WordWisePlugin extends Plugin {
 
 		addIcon('openai', AiIcon);
 
-		const allCommands = await getCommands(this);
+		this.commands = await getCommands(this);
 
-		for (const command of allCommands) {
+		for (const command of this.commands) {
 			// slugify and remove spaces
 			const iconName = command.name.toLowerCase().replaceAll(/\s/g, '-');
 
@@ -93,7 +94,7 @@ export default class WordWisePlugin extends Plugin {
 
 					const subMenu = item.setSubmenu();
 
-					for (const command of allCommands) {
+					for (const command of this.commands) {
 						// slugify and remove spaces
 						const iconName = command.name.toLowerCase().replaceAll(/\s/g, '-');
 
