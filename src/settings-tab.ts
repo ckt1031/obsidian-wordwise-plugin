@@ -18,10 +18,12 @@ export class SettingTab extends PluginSettingTab {
 	advancedSettingsEl: HTMLElement;
 	filePromptsEl: HTMLElement;
 	providerEl: HTMLElement[] = [];
+	forage: ForageStorage;
 
 	constructor(app: App, plugin: WordWisePlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+		this.forage = new ForageStorage();
 	}
 
 	async restartSettingsTab(plugin: WordWisePlugin) {
@@ -211,63 +213,79 @@ export class SettingTab extends PluginSettingTab {
 
 			const modelSetting = new Setting(providerSettingsEl);
 
-			modelSetting.setName('Model').addDropdown(async (dropDown) => {
-				const models = await new ForageStorage().getModels(provider);
+			modelSetting.setName('Model');
 
-				// Find out the only select element in the containerEl
-				const selectElement = modelSetting.settingEl.find(
-					'select',
-				) as HTMLSelectElement;
+			if (provider === APIProvider.AzureOpenAI) {
+				// Set model as text input
+				modelSetting.addText((text) =>
+					text
+						.setPlaceholder('gpt-4o-mini')
+						.setValue(settings.aiProviderConfig[provider].model || '')
+						.onChange(async (value) => {
+							// Update the model
+							settings.aiProviderConfig[provider].model = value;
+							await plugin.saveSettings();
+						}),
+				);
+			} else {
+				modelSetting.addDropdown(async (dropDown) => {
+					const models = await this.forage.getModels(provider);
 
-				wrapFetchModelComponent({
-					dropDown,
-					setting: modelSetting,
-					plugin,
-					triggerUIClearModels: () => {
-						// Remove all options and fill it with the new models
-						selectElement.innerHTML = '';
+					// Find out the only select element in the containerEl
+					const selectElement = modelSetting.settingEl.find(
+						'select',
+					) as HTMLSelectElement;
 
-						// Add the new models to the dropdown
-						for (const model of models) {
-							selectElement.remove(models.indexOf(model));
-						}
-					},
-					onUpdateModels: (models) => {
-						// Remove all options and fill it with the new models
-						selectElement.innerHTML = '';
+					wrapFetchModelComponent({
+						dropDown,
+						setting: modelSetting,
+						plugin,
+						triggerUIClearModels: () => {
+							// Remove all options and fill it with the new models
+							selectElement.innerHTML = '';
 
-						// Add the new models to the dropdown
-						for (const model of models) {
-							selectElement.remove(models.indexOf(model));
-						}
-
-						for (const model of models) {
-							if (typeof model === 'string') {
-								dropDown.addOption(model, model);
-							} else {
-								dropDown.addOption(model.id, model.name || model.id);
+							// Add the new models to the dropdown
+							for (const model of models) {
+								selectElement.remove(models.indexOf(model));
 							}
+						},
+						onUpdateModels: (models) => {
+							// Remove all options and fill it with the new models
+							selectElement.innerHTML = '';
+
+							// Add the new models to the dropdown
+							for (const model of models) {
+								selectElement.remove(models.indexOf(model));
+							}
+
+							for (const model of models) {
+								if (typeof model === 'string') {
+									dropDown.addOption(model, model);
+								} else {
+									dropDown.addOption(model.id, model.name || model.id);
+								}
+							}
+
+							// Set the value to the current model
+							dropDown.setValue(settings.aiProviderConfig[provider].model);
+						},
+					});
+
+					for (const model of models) {
+						if (typeof model === 'string') {
+							dropDown.addOption(model, model);
+						} else {
+							dropDown.addOption(model.id, model.name || model.id);
 						}
-
-						// Set the value to the current model
-						dropDown.setValue(settings.aiProviderConfig[provider].model);
-					},
-				});
-
-				for (const model of models) {
-					if (typeof model === 'string') {
-						dropDown.addOption(model, model);
-					} else {
-						dropDown.addOption(model.id, model.name || model.id);
 					}
-				}
-				dropDown.setValue(settings.aiProviderConfig[provider].model);
-				dropDown.onChange(async (value) => {
-					// Update the Model
-					settings.aiProviderConfig[provider].model = value;
-					await plugin.saveSettings();
+					dropDown.setValue(settings.aiProviderConfig[provider].model);
+					dropDown.onChange(async (value) => {
+						// Update the Model
+						settings.aiProviderConfig[provider].model = value;
+						await plugin.saveSettings();
+					});
 				});
-			});
+			}
 		}
 
 		new Setting(containerEl)
@@ -292,7 +310,7 @@ export class SettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('Streaming')
 			.setDesc(
-				'Enable streaming mode to receive text as it is generated. This may be faster and more efficient.',
+				'Enable streaming mode to receive text as it is generated. This is not supported with Azure OpenAI.',
 			)
 			.addToggle((toggle) =>
 				toggle.setValue(settings.enableStreaming).onChange(async (value) => {
@@ -601,7 +619,7 @@ export class SettingTab extends PluginSettingTab {
 								const content = e.target?.result;
 								if (typeof content === 'string') {
 									const logs = JSON.parse(content);
-									await new ForageStorage().setTextGenerationLogs(logs);
+									await this.forage.setTextGenerationLogs(logs);
 									new Notice('Text generation logs imported successfully');
 								}
 							};
@@ -613,7 +631,7 @@ export class SettingTab extends PluginSettingTab {
 			})
 			.addButton((button) => {
 				button.setButtonText('Export').onClick(async () => {
-					const logs = await new ForageStorage().getTextGenerationLogs();
+					const logs = await this.forage.getTextGenerationLogs();
 					const blob = new Blob([JSON.stringify(logs)], {
 						type: 'application/json',
 					});

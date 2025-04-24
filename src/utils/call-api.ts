@@ -1,3 +1,5 @@
+import { APIProvider } from '@/config';
+import { handleTextAzure } from '@/provider/azure-openai';
 import { handleTextOpenAI } from '@/provider/openai';
 import type { CallTextAPIProps } from '@/types';
 
@@ -22,6 +24,10 @@ export async function callTextAPI(
 
 	if (messages.user.length === 0) {
 		throw new Error('User message is empty');
+	}
+
+	if (props.provider === APIProvider.AzureOpenAI) {
+		return handleTextAzure({ ...props, model: requestModel });
 	}
 
 	return handleTextOpenAI({ ...props, model: requestModel });

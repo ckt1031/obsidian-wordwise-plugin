@@ -2,7 +2,12 @@ import { Notice, Platform } from 'obsidian';
 
 import { getCommands } from '@/commands';
 import { getFolderBasedPrompt } from '@/commands';
-import { CommandActions, type CommandNames, CustomBehavior } from '@/config';
+import {
+	APIProvider,
+	CommandActions,
+	type CommandNames,
+	CustomBehavior,
+} from '@/config';
 import type WordWisePlugin from '@/main';
 import optionsMenu from '@/menus/optionsMenu';
 import AskForInstructionModal from '@/modals/ask-for-instruction';
@@ -141,7 +146,9 @@ export async function runCommand(
 		};
 
 		const enableStreaming =
-			plugin.settings.enableStreaming && command !== 'Find Synonym';
+			plugin.settings.enableStreaming &&
+			command !== 'Find Synonym' &&
+			providerEntry[0] !== APIProvider.AzureOpenAI;
 
 		const confirmationModal = new GenerationConfirmationModal(
 			plugin,
