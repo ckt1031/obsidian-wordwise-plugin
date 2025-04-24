@@ -1,3 +1,4 @@
+import { APIProvider } from '@/config';
 import type WordWisePlugin from '@/main';
 import ErrorDialogModal from '@/modals/error-dialog';
 import { callTextAPI } from '@/utils/call-api';
@@ -33,7 +34,20 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 				? plugin.settings.customAiModel
 				: providerSettings.model;
 
-		if (!modelToCall || modelToCall.length === 0) {
+		const hasNoModelConfigurated = !modelToCall || modelToCall.length === 0;
+
+		// Warn if Azure OpenAI has no model
+		if (
+			plugin.settings.aiProvider === APIProvider.AzureOpenAI &&
+			hasNoModelConfigurated
+		) {
+			new Notice(
+				'You must configure the model ID from Azure OpenAI in the settings',
+			);
+			return;
+		}
+
+		if (hasNoModelConfigurated) {
 			new Notice(
 				'Please fetch the models first and select a model first or set custom model',
 			);
