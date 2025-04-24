@@ -192,7 +192,8 @@ export async function handleTextOpenAI({
 		return text;
 	} catch (error) {
 		throw new Error('Request failed', {
-			cause: error instanceof Error ? error.message : String(error),
+			cause:
+				error instanceof Error ? error.cause || error.message : String(error),
 		});
 	} finally {
 		plugin.generationRequestAbortController = null;

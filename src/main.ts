@@ -118,7 +118,6 @@ export default class WordWisePlugin extends Plugin {
 		this.registerObsidianProtocolHandler(
 			this.manifest.id,
 			async (inputParams) => {
-				console.log(inputParams);
 				const settingsImport = new SettingsExportImport(this);
 				settingsImport.importEncodedData(inputParams.data);
 			},

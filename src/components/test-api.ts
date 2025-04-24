@@ -85,12 +85,17 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 			// Set icon green with effect
 			button.style.color = '#28FF1E';
 		} catch (error) {
+			// Set the icon to error
+			setIcon(button, 'server-crash');
+			// Set icon red with effect
+			button.style.color = '#FF0000';
+
 			let message = 'API is not working properly';
 
 			if (error instanceof Error) {
 				message += `: ${error.message}`;
 
-				if (typeof error.cause === 'string') {
+				if (typeof error.cause === 'string' || error.cause instanceof Error) {
 					new ErrorDialogModal(
 						plugin,
 						`Test API Failed: ${providerSettings.model}`,
@@ -98,11 +103,6 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 					).open();
 				}
 			}
-
-			// Set the icon to error
-			setIcon(button, 'cloud-alert');
-			// Set icon red with effect
-			button.style.color = '#FF0000';
 
 			// Log the error to the console
 			console.info(error);
