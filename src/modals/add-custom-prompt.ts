@@ -6,6 +6,9 @@ import type WordWisePlugin from '@/main';
 export default class AddCustomPromptModal extends Modal {
 	private name: string;
 	private data: string;
+
+	private originalName: string;
+
 	private readonly isEdit: boolean;
 	private readonly plugin: WordWisePlugin;
 
@@ -27,6 +30,8 @@ export default class AddCustomPromptModal extends Modal {
 			this.name = name ?? '';
 			this.data = data ?? '';
 		}
+
+		this.originalName = name ?? '';
 	}
 
 	async submitForm(): Promise<void> {
@@ -47,7 +52,7 @@ export default class AddCustomPromptModal extends Modal {
 
 		if (this.isEdit) {
 			const index = this.plugin.settings.customPrompts.findIndex(
-				(prompt) => prompt.name === this.name,
+				(prompt) => prompt.name === this.originalName,
 			);
 
 			this.plugin.settings.customPrompts[index] = {
