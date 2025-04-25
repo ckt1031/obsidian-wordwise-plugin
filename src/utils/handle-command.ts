@@ -3,7 +3,7 @@ import { Notice, Platform } from 'obsidian';
 import {
 	APIProvider,
 	CustomBehavior,
-	type InternalPromptNames,
+	InternalPromptNames,
 	PrePromptActions,
 } from '@/config';
 import type WordWisePlugin from '@/main';
@@ -33,6 +33,11 @@ export function removeThinkingContent(result: string): string {
 	return result.replace(regex, '');
 }
 
+function getNonEmptyString(str?: string): string | undefined {
+	if (!str) return undefined;
+	return str.length > 0 ? str : undefined;
+}
+
 export async function runPrompt(
 	editor: EnhancedEditor,
 	plugin: WordWisePlugin,
@@ -55,37 +60,73 @@ export async function runPrompt(
 
 		const get = editor.getCursor();
 
-		if (promptName === 'Find Synonym') {
+		if (promptName === InternalPromptNames.FindSynonym) {
 			const from = editor.getCursor('from');
 			const to = editor.getCursor('to');
 			const context = editor.getLine(from.line);
 			input = `${context.substring(0, from.ch)}|||${input}|||${context.substring(to.ch)}`;
 		}
 
+		// Find form global store
 		const actionData = plugin.prompts.find((p) => p.name === promptName);
 
+		// Reject if not found
 		if (!actionData) {
 			throw new Error(`Could not find prompt data with name ${promptName}`);
 		}
 
-		let instructions = '';
+		/** Specifically for `PrePromptActions.CustomInstructions` prompt */
+		let customInputInstructions = '';
 
 		if (actionData.action === PrePromptActions.CustomInstructions) {
 			const modal = new AskForInstructionModal(plugin);
 			modal.open();
-			instructions = await modal.promise;
+			customInputInstructions = await modal.promise;
 		}
 
-		const customModel = plugin.settings.customAiModel;
+		// Priority: Command specific > Custom Model > Provider Model
+		const settingsCustomModel = getNonEmptyString(
+			plugin.settings.customAiModel,
+		);
+		const commandSpecificModel = getNonEmptyString(
+			actionData.customPromptDefinedModel,
+		);
+		const commandSpecificProviderName = getNonEmptyString(
+			actionData.customPromptDefinedProvider,
+		);
 
-		const providerSettings =
-			plugin.settings.aiProviderConfig[plugin.settings.aiProvider];
+		// Tried to find provider settings from name given (Current we have command specific and settings)
+		const providerNameToBeFound =
+			commandSpecificProviderName || plugin.settings.aiProvider;
 
-		const model = customModel.length > 0 ? customModel : providerSettings.model;
+		const providerSettingEntry = Object.entries(
+			plugin.settings.aiProviderConfig,
+		).find(
+			([key, provider]) =>
+				key === providerNameToBeFound ||
+				provider.displayName === providerNameToBeFound,
+		);
+
+		if (!providerSettingEntry) {
+			throw new Error(
+				`Could not find provider settings with name "${providerNameToBeFound}"`,
+			);
+		}
+
+		// providerSettingEntry = [key, provider <--]
+		const providerSettings = providerSettingEntry[1];
+		const model =
+			commandSpecificModel || settingsCustomModel || providerSettings.model;
+
+		// Reject if model is empty
+		if (!getNonEmptyString(model)) {
+			throw new Error('Please configure the model');
+		}
 
 		const providerDisplayName =
-			providerSettings?.displayName ?? plugin.settings.aiProvider;
-
+			// Still need to ensure if the display name is not empty
+			getNonEmptyString(providerSettings?.displayName) ??
+			providerSettingEntry[0]; // Get the key if display name is empty
 		new Notice(`${promptName} with ${providerDisplayName}`);
 
 		let taskPrompt = actionData.taskPrompt;
@@ -102,7 +143,7 @@ export async function runPrompt(
 		const systemPrompt: string = Mustache.render(
 			`${actionData.systemPrompt}\n\n${taskPrompt}`,
 			{
-				instructions,
+				instructions: customInputInstructions,
 			},
 		);
 
@@ -209,7 +250,7 @@ export async function runPrompt(
 				orginalText: input,
 				generatedText: result,
 
-				customInstruction: instructions,
+				customInstruction: customInputInstructions,
 			};
 
 			await new ForageStorage().addTextGenerationLog(loggingBody);

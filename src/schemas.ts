@@ -33,7 +33,7 @@ export const FilePromptPropertiesSchema = v.object({
 	// OPTIONAL
 	disabled: v.optional(v.boolean()),
 	model: v.optional(v.string()),
-	provider: v.optional(v.enum_(APIProvider)),
+	provider: v.optional(v.union([v.enum_(APIProvider), v.string()])),
 	systemPrompt: v.optional(v.string()),
 });
 

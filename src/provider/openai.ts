@@ -5,7 +5,7 @@ import { getAPIHost } from '@/utils/get-url-host';
 import { createOpenAI } from '@xsai-ext/providers-cloud';
 import { type GenerateTextOptions, generateText } from '@xsai/generate-text';
 import { type StreamTextOptions, streamText } from '@xsai/stream-text';
-import { smoothStream, toAsyncIterator } from '@xsai/utils-stream';
+// import { smoothStream, toAsyncIterator } from '@xsai/utils-stream';
 import { parseAsync } from 'valibot';
 
 const OpenRouterHeaders = {
@@ -164,20 +164,20 @@ export async function handleTextOpenAI({
 		if (props.stream) {
 			const { textStream } = await streamText(body);
 
-			// Make the stream view smoother, some API or models might be streaming in weird ways
-			const smoothTextStream = textStream.pipeThrough(
-				smoothStream({
-					delay: 15,
-					chunking: 'word',
-				}),
-			);
+			// // Make the stream view smoother, some API or models might be streaming in weird ways
+			// const smoothTextStream = textStream.pipeThrough(
+			// 	smoothStream({
+			// 		delay: 15,
+			// 		chunking: 'word',
+			// 	}),
+			// );
 
-			// https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility
-			const iterableStream = toAsyncIterator(smoothTextStream);
+			// // https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility
+			// const iterableStream = toAsyncIterator(smoothTextStream);
 
 			const text: string[] = [];
 
-			for await (const textPart of iterableStream) {
+			for await (const textPart of textStream) {
 				text.push(textPart);
 				props.onStreamText?.(textPart);
 			}

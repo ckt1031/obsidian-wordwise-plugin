@@ -40,8 +40,8 @@ export async function retrieveAllPrompts(
 				systemPrompt: prompt.systemPrompt ?? defaultPluginSystemPrompt,
 				isFilePrompt: prompt.isFilePrompt,
 				filePath: prompt.filePath,
-				customCommandDefinedModel: prompt.customPromptDefinedModel,
-				customCommandDefinedProvider: prompt.customPromptDefinedProvider,
+				customPromptDefinedModel: prompt.customPromptDefinedModel,
+				customPromptDefinedProvider: prompt.customPromptDefinedProvider,
 			};
 		},
 	);
