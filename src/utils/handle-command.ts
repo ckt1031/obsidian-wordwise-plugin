@@ -30,7 +30,13 @@ export function removeThinkingContent(result: string): string {
 	// Find out \n<think>.+</think>\n and remove it
 	const regex = /\n<think>[^<]+<\/think>\n\n/;
 
-	return result.replace(regex, '');
+	if (regex.test(result)) {
+		return result.replace(regex, '');
+	}
+
+	const additionalRegex = /<think>[^<]+<\/think>\n\n/;
+
+	return result.replace(additionalRegex, '');
 }
 
 function getNonEmptyString(str?: string): string | undefined {
@@ -228,6 +234,8 @@ export async function runPrompt(
 
 		// Directly run post-generation action, as it has "confirmation" logic inside
 		if (promptName === 'Find Synonym') {
+			result = removeThinkingContent(result); // Experimental
+
 			!document.querySelector('.menu.optionContainer')
 				? optionsMenu(editor, markdownListToArray(result))
 				: true;
