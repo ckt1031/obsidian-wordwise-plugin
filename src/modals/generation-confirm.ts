@@ -1,9 +1,11 @@
 import type WordWisePlugin from '@/main';
+import { removeThinkingContent } from '@/utils/handle-command';
 import { Modal, Notice } from 'obsidian';
 
 export default class GenerationConfirmationModal extends Modal {
 	private result = '';
 	private resultEl: HTMLElement;
+	private copyAllBtn: HTMLButtonElement;
 	private acceptBtnEl: HTMLButtonElement;
 
 	private plugin: WordWisePlugin;
@@ -36,6 +38,18 @@ export default class GenerationConfirmationModal extends Modal {
 		this.isStreamingCompleted = true;
 		this.acceptBtnEl.disabled = false;
 		this.acceptBtnEl.textContent = 'Accept';
+
+		if (this.checkThinkingContentExists()) {
+			this.copyAllBtn.style = '';
+		}
+	}
+
+	checkThinkingContentExists(): boolean {
+		// <think>...</think>...
+		const regex1 = /^<think>[^<]+<\/think>[^<]+/;
+		const regex2 = /^\n<think>[^<]+<\/think>[^<]+/;
+
+		return regex1.test(this.result) || regex2.test(this.result);
 	}
 
 	async onOpen() {
@@ -69,6 +83,24 @@ export default class GenerationConfirmationModal extends Modal {
 
 		const copyBtn = btnContainer.createEl('button', {
 			text: 'Copy',
+			cls: 'button-padding-right', // Add padding to the right
+		});
+
+		this.copyAllBtn = btnContainer.createEl('button', {
+			text: 'Copy All',
+			attr: {
+				style: 'display: none;',
+			},
+		});
+
+		this.copyAllBtn.addEventListener('click', () => {
+			if (!this.result || this.result.length === 0) {
+				new Notice('Nothing to copy');
+				return;
+			}
+
+			navigator.clipboard.writeText(this.result);
+			new Notice('Copied to clipboard');
 		});
 
 		// Add click event to copy button
@@ -78,7 +110,7 @@ export default class GenerationConfirmationModal extends Modal {
 				return;
 			}
 
-			navigator.clipboard.writeText(this.result);
+			navigator.clipboard.writeText(removeThinkingContent(this.result));
 			new Notice('Copied to clipboard');
 		});
 
