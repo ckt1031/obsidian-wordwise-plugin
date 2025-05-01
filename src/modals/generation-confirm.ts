@@ -4,6 +4,7 @@ import { Modal, Notice } from 'obsidian';
 
 export default class GenerationConfirmationModal extends Modal {
 	private result = '';
+	private promptName = '';
 	private resultEl: HTMLElement;
 	private copyAllBtn: HTMLButtonElement;
 	private acceptBtnEl: HTMLButtonElement;
@@ -16,11 +17,13 @@ export default class GenerationConfirmationModal extends Modal {
 
 	constructor(
 		plugin: WordWisePlugin,
+		promptName: string,
 		onAccept: (text: string) => void,
 		isStreaming = false,
 	) {
 		super(plugin.app);
 		this.plugin = plugin;
+		this.promptName = promptName;
 		this.onAccept = onAccept;
 		this.isStreaming = isStreaming;
 	}
@@ -67,6 +70,13 @@ export default class GenerationConfirmationModal extends Modal {
 		this.contentEl.empty();
 
 		this.setTitle('Generation Confirmation');
+
+		const metaDiv = this.contentEl.createDiv();
+
+		// Show prompt name
+		metaDiv.createEl('p', {
+			text: `Prompt: ${this.promptName}`,
+		});
 
 		const div = this.contentEl.createDiv({
 			cls: 'code-container',

@@ -195,6 +195,7 @@ export async function runPrompt(
 
 	const confirmationModal = new GenerationConfirmationModal(
 		plugin,
+		promptName,
 		(text) => onAccept(removeThinkingContent(text)),
 		enableStreaming,
 	);
