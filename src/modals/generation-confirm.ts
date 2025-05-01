@@ -7,6 +7,7 @@ export default class GenerationConfirmationModal extends Modal {
 	private resultEl: HTMLElement;
 	private copyAllBtn: HTMLButtonElement;
 	private acceptBtnEl: HTMLButtonElement;
+	private btnContainer: HTMLElement;
 
 	private plugin: WordWisePlugin;
 	private onAccept: (text: string) => void;
@@ -32,6 +33,16 @@ export default class GenerationConfirmationModal extends Modal {
 	appendResult(result: string) {
 		this.result = this.result + result;
 		this.resultEl.setText(this.result);
+	}
+
+	onError(errorMessage: string) {
+		this.setResult(errorMessage);
+
+		const acceptBtn = this.btnContainer.querySelector(
+			'#wd-accept-btn',
+		) as HTMLButtonElement;
+
+		if (acceptBtn) acceptBtn.style.display = 'none';
 	}
 
 	setStreamingCompleted() {
@@ -70,23 +81,26 @@ export default class GenerationConfirmationModal extends Modal {
 			},
 		});
 
-		const btnContainer = this.contentEl.createDiv({
+		this.btnContainer = this.contentEl.createDiv({
 			cls: 'button-container',
 		});
 
 		// Create accept button
-		this.acceptBtnEl = btnContainer.createEl('button', {
+		this.acceptBtnEl = this.btnContainer.createEl('button', {
+			attr: {
+				id: 'wd-accept-btn',
+			},
 			text: this.isStreaming ? 'Generating' : 'Accept',
 			cls: 'button-padding-right', // Add padding to the right
 		});
 		this.acceptBtnEl.disabled = this.isStreaming;
 
-		const copyBtn = btnContainer.createEl('button', {
+		const copyBtn = this.btnContainer.createEl('button', {
 			text: 'Copy',
 			cls: 'button-padding-right', // Add padding to the right
 		});
 
-		this.copyAllBtn = btnContainer.createEl('button', {
+		this.copyAllBtn = this.btnContainer.createEl('button', {
 			text: 'Copy All',
 			attr: {
 				style: 'display: none;',
