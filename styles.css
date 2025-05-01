@@ -25,13 +25,15 @@
 }
 
 .code-container {
-	height: 300px; /* Set the desired height */
-	overflow: auto; /* Enable scrolling */
-	border: 1px solid #4a4a4a; /* Optional: Add a border for visual clarity */
-	padding: 10px; /* Optional: Add some padding for spacing */
-	font-family: monospace; /* Optional: Use a monospace font for code */
-	white-space: pre-wrap; /* Optional: Preserve whitespace and wrap lines */
-	border-radius: 12px;
+	height: 300px;
+	overflow: auto;
+	border: 1px solid #555;
+	padding: 10px;
+	font-family: monospace;
+	white-space: pre-wrap;
+	border-radius: 8px;
+	user-select: text;
+	-webkit-user-select: text;
 }
 
 .button-padding-right {
