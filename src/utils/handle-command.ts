@@ -294,8 +294,11 @@ export async function runPrompt(
 
 		if (confirmModalWillShow) {
 			confirmationModal.open();
-			confirmationModal.onError(message);
-			return;
+			confirmationModal.onError(
+				typeof error.cause === 'string' || error.cause instanceof Error
+					? error.cause
+					: message,
+			);
 		}
 
 		// Show the error message
