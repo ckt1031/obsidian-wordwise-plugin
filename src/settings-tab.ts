@@ -1,4 +1,4 @@
-import type { App, ButtonComponent } from 'obsidian';
+import type { ButtonComponent } from 'obsidian';
 import { Notice, Platform, PluginSettingTab, Setting } from 'obsidian';
 
 import { wrapFetchModelComponent } from './components/fetch-model';
@@ -11,7 +11,7 @@ import ExportSettingsModal from './modals/export-settings';
 import ImportSettingsModal from './modals/import-settings';
 import { ForageStorage } from './utils/storage';
 
-export class SettingTab extends PluginSettingTab {
+export class SettingsTab extends PluginSettingTab {
 	plugin: WordWisePlugin;
 
 	// Settings elements
@@ -20,8 +20,8 @@ export class SettingTab extends PluginSettingTab {
 	providerEl: HTMLElement[] = [];
 	forage: ForageStorage;
 
-	constructor(app: App, plugin: WordWisePlugin) {
-		super(app, plugin);
+	constructor(plugin: WordWisePlugin) {
+		super(plugin.app, plugin);
 		this.plugin = plugin;
 		this.forage = new ForageStorage();
 	}

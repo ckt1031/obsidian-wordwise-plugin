@@ -17,7 +17,7 @@ import { moveConfig } from './migrations/localforage';
 import TextGenerationLogModal from './modals/generation-logs';
 import { retrieveAllPrompts } from './prompt';
 import { ObfuscatedPluginSettingsSchema } from './schemas';
-import { SettingTab } from './settings-tab';
+import { SettingsTab } from './settings-tab';
 import type { ObfuscatedPluginSettings, PluginSettings } from './types';
 import type { EnhancedEditor, OutputInternalPromptProps } from './types';
 import { runPrompt } from './utils/handle-command';
@@ -114,7 +114,7 @@ export default class WordWisePlugin extends Plugin {
 		);
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SettingTab(this.app, this));
+		this.addSettingTab(new SettingsTab(this));
 
 		this.registerObsidianProtocolHandler(
 			this.manifest.id,
