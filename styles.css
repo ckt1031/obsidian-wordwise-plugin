@@ -1,7 +1,8 @@
 .modal-text-area {
 	width: 100%;
+	min-width: 100%;
+	max-width: 100%;
 	min-height: 100px;
-	max-width: 400px;
 	max-height: 200px;
 }
 
@@ -21,7 +22,7 @@
 
 .log-search-box {
 	width: 100%;
-	margin-bottom: 4px;
+	margin-bottom: 7px;
 }
 
 .code-container {

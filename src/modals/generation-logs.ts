@@ -7,10 +7,25 @@ import { ForageStorage } from '@/utils/storage';
 import dayjs from 'dayjs';
 import Fuse from 'fuse.js';
 
+/**
+ * To introduce some advanced html fragments.
+ *
+ * Source: https://stackoverflow.com/questions/19929641/how-to-append-an-html-string-to-a-documentfragment
+ *
+ * Ref: https://github.com/remotely-save/remotely-save/blob/master/src/misc.ts
+ * @param string
+ * @returns
+ */
+const stringToFragment = (string: string) => {
+	const wrapper = document.createElement('template');
+	wrapper.innerHTML = string;
+	return wrapper.content;
+};
+
 export default class TextGenerationLogModal extends Modal {
 	private readonly plugin: WordWisePlugin;
 
-	private forageStore: ForageStorage;
+	private readonly forageStore: ForageStorage;
 
 	private enabled: boolean;
 	private logs: TextGenerationLog[];
@@ -28,11 +43,9 @@ export default class TextGenerationLogModal extends Modal {
 
 	// Called when the modal is opened
 	async initStates() {
-		const enabled = this.plugin.settings.enableGenerationLogging;
+		this.enabled = this.plugin.settings.enableGenerationLogging;
 
-		this.enabled = enabled;
-
-		if (!enabled) {
+		if (!this.enabled) {
 			this.logs = [];
 			new Notice('Text generation logging is disabled');
 			return;
@@ -51,7 +64,7 @@ export default class TextGenerationLogModal extends Modal {
 	}
 
 	renderLoggDetailView(id: string) {
-		const { titleEl, contentEl } = this;
+		const { contentEl } = this;
 
 		const log = this.logs.find((l) => l.id === id);
 
@@ -62,15 +75,19 @@ export default class TextGenerationLogModal extends Modal {
 
 		contentEl.empty();
 
-		titleEl.setText(dayjs(log.generatedAt).format('YYYY-MM-DD HH:mm:ss'));
+		this.setTitle(dayjs(log.generatedAt).format('YYYY-MM-DD HH:mm:ss'));
+
+		const buttonContainer = contentEl.createDiv();
 
 		// Add a button to go back to the list
-		const backButton = contentEl.createEl('button', { text: 'Back to List' });
+		const backButton = buttonContainer.createEl('button', {
+			text: 'Back to List',
+		});
 
 		backButton.onclick = () => this.renderIndexView();
 
 		// Add delete button
-		const deleteButton = contentEl.createEl('button', {
+		const deleteButton = buttonContainer.createEl('button', {
 			text: 'Delete Log',
 			cls: 'log-delete-button',
 		});
@@ -89,11 +106,8 @@ export default class TextGenerationLogModal extends Modal {
 			this.renderIndexView();
 		};
 
-		// Make text in <code> inside p tag
-
-		contentEl.createEl('p', { text: `Model: ${log.model}` });
-		contentEl.createEl('p', { text: `Provider: ${log.provider}` });
-		contentEl.createEl('p', { text: `Prompt name: ${log.by}` });
+		const metaData = `Model: <code>${log.model}</code></br>Provider: <code>${log.provider}</code></br>Prompt name: <code>${log.by}</code>`;
+		contentEl.createEl('p', { text: stringToFragment(metaData) });
 
 		// Show Text Custom Instruction if it exists
 		if (
@@ -139,11 +153,11 @@ export default class TextGenerationLogModal extends Modal {
 	}
 
 	renderIndexView() {
-		const { titleEl, contentEl } = this;
+		const { contentEl } = this;
 
 		contentEl.empty();
 
-		titleEl.setText('Text Generation Logs');
+		this.setTitle('Text Generation Logs');
 
 		const searchInputBox = contentEl.createEl('input', {
 			type: 'text',
@@ -151,9 +165,7 @@ export default class TextGenerationLogModal extends Modal {
 			cls: 'log-search-box',
 		});
 
-		const displayingLogs = this.logs;
-
-		const fuse = new Fuse(displayingLogs, {
+		const fuse = new Fuse(this.logs, {
 			keys: [
 				'id',
 				'generatedAt',
@@ -167,7 +179,7 @@ export default class TextGenerationLogModal extends Modal {
 			const queryText = (e.target as HTMLInputElement).value;
 
 			if (queryText === '') {
-				this.renderLogList(displayingLogs);
+				this.renderLogList(this.logs);
 				return;
 			}
 
@@ -178,21 +190,23 @@ export default class TextGenerationLogModal extends Modal {
 
 		this.contentEl.appendChild(this.textLogDiv);
 
-		this.renderLogList(displayingLogs);
+		this.renderLogList(this.logs);
 	}
 
 	onOpen() {
 		const { contentEl } = this;
 
+		this.setTitle('Text Generation Logs');
+
 		if (!this.enabled) {
-			new Notice('Text generation logging is disabled');
 			contentEl.empty();
+			contentEl.setText('Text generation logging is disabled');
 			return;
 		}
 
 		if (this.logs.length === 0) {
 			contentEl.empty();
-			new Notice('No logs found');
+			contentEl.setText('No logs found');
 			return;
 		}
 
