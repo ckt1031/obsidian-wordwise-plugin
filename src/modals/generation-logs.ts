@@ -5,7 +5,9 @@ import type WordWisePlugin from '@/main';
 import type { TextGenerationLog } from '@/types';
 import { ForageStorage } from '@/utils/storage';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import Fuse from 'fuse.js';
+dayjs.extend(relativeTime);
 
 /**
  * To introduce some advanced html fragments.
@@ -75,7 +77,8 @@ export default class TextGenerationLogModal extends Modal {
 
 		contentEl.empty();
 
-		this.setTitle(dayjs(log.generatedAt).format('YYYY-MM-DD HH:mm:ss'));
+		const djsObject = dayjs(log.generatedAt);
+		this.setTitle(djsObject.format('YYYY-MM-DD HH:mm:ss'));
 
 		const buttonContainer = contentEl.createDiv();
 
@@ -106,7 +109,7 @@ export default class TextGenerationLogModal extends Modal {
 			this.renderIndexView();
 		};
 
-		const metaData = `Model: <code>${log.model}</code></br>Provider: <code>${log.provider}</code></br>Prompt name: <code>${log.by}</code>`;
+		const metaData = `Generated <strong>${djsObject.fromNow()}</strong></br>Model: <code>${log.model}</code></br>Provider: <code>${log.provider}</code></br>Prompt name: <code>${log.by}</code>`;
 		contentEl.createEl('p', { text: stringToFragment(metaData) });
 
 		// Show Text Custom Instruction if it exists
@@ -142,11 +145,13 @@ export default class TextGenerationLogModal extends Modal {
 		// Clear the container
 		this.textLogDiv.empty();
 
-		// create a scrollable container
-		// create a list of logs
 		for (const log of displayingLogs) {
+			const djsObject = dayjs(log.generatedAt);
+			const strDate = djsObject.format('YYYY-MM-DD HH:mm:ss');
+			const timeFromNow = djsObject.fromNow(true /** without ago suffix */);
+
 			this.textLogDiv.createEl('p', {
-				text: dayjs(log.generatedAt).format('YYYY-MM-DD HH:mm:ss'),
+				text: `${strDate} (${timeFromNow})`,
 				cls: 'log-item',
 			}).onclick = () => this.renderLoggDetailView(log.id);
 		}
