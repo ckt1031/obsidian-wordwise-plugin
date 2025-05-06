@@ -455,7 +455,7 @@ export class SettingsTab extends PluginSettingTab {
 			.setName('Custom Model ID')
 			.setDesc(
 				"If you don't enter anything here, the model selected above will be used.",
-			) // Clarified
+			)
 			.addText((text) =>
 				text
 					.setPlaceholder('Enter the model name')
