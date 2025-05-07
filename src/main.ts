@@ -9,6 +9,7 @@ import {
 
 import localforage from 'localforage';
 import { merge } from 'rambda';
+import { debounce } from 'rambdax';
 import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
 
@@ -132,11 +133,27 @@ export default class WordWisePlugin extends Plugin {
 		// Load status bar
 		this.updateStatusBar();
 
+		this.registerEvent(
+			this.app.vault.on(
+				'modify',
+				debounce(async (file) => {
+					// Make sure the file is a markdown file
+					if (!file.name.endsWith('.md')) return;
+
+					this.prompts = await retrieveAllPrompts(this);
+				}, 1000),
+			),
+		);
+
 		console.info('Loaded WordWise Plugin');
 	}
 
 	onunload() {
-		// This is called when the plugin is deactivated
+		// Abort all generation requests
+		this.generationRequestAbortController?.abort();
+
+		// Clear off memory
+		this.prompts = [];
 	}
 
 	updateStatusBar(): void {
@@ -175,9 +192,7 @@ export default class WordWisePlugin extends Plugin {
 		setIcon(button, 'brain-cog');
 		setTooltip(button, 'WordWise Ready', { placement: 'top' });
 
-		button.onclick = () => {
-			new Notice('WordWise is ready');
-		};
+		button.onclick = () => new Notice('WordWise is ready');
 
 		this.statusBarEl.appendChild(button);
 	}
@@ -210,7 +225,11 @@ export default class WordWisePlugin extends Plugin {
 
 		this.settings = merge(DEFAULT_SETTINGS)(parsedData);
 
-		// Merge providers
+		/**
+		 * Merge providers when there is new native supported provider
+		 * This merge the EXISTING provider settings INTO the new provider settings
+		 * And save it back to the settings
+		 */
 		this.settings.aiProviderConfig = merge(DEFAULT_SETTINGS.aiProviderConfig)(
 			this.settings.aiProviderConfig,
 		);
