@@ -13,7 +13,7 @@ import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
 import { DEFAULT_SETTINGS } from './config';
 import AiIcon from './icons/ai.svg';
-import { moveConfig } from './migrations/localforage';
+import { upgradeLocalForageInstance } from './migrations/localforage';
 import TextGenerationLogModal from './modals/generation-logs';
 import { retrieveAllPrompts } from './prompt';
 import { ObfuscatedPluginSettingsSchema } from './schemas';
@@ -32,7 +32,7 @@ export default class WordWisePlugin extends Plugin {
 	private statusBarEl: HTMLElement | null = null;
 
 	async onload() {
-		await moveConfig(this);
+		await upgradeLocalForageInstance(this);
 
 		if (Platform.isDesktop) {
 			// This will add a status bar element, only available for Desktop app
@@ -41,7 +41,7 @@ export default class WordWisePlugin extends Plugin {
 
 		// Initialize localForage
 		localforage.config({
-			name: `${this.manifest.id}-${this.app.vault.getName()}`,
+			name: `${this.manifest.id}-${this.app.appId}`,
 		});
 
 		await this.loadSettings();
