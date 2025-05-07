@@ -129,7 +129,7 @@ export default class TextGenerationLogModal extends Modal {
 		contentEl.createEl('h4', { text: 'Original Text' });
 
 		contentEl.createEl('textarea', {
-			text: log.orginalText,
+			text: log.originalText,
 			cls: 'modal-text-area',
 			attr: { readonly: true },
 		});
@@ -176,7 +176,7 @@ export default class TextGenerationLogModal extends Modal {
 			keys: [
 				'id',
 				'generatedAt',
-				'orginalText',
+				'original',
 				'generatedText',
 				'customInstruction',
 			],

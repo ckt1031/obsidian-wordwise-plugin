@@ -255,7 +255,7 @@ export async function runPrompt(
 				generatedAt: new Date().toISOString(),
 				provider: plugin.settings.aiProvider,
 
-				orginalText: input,
+				originalText: input,
 				generatedText: result,
 
 				customInstruction: customInputInstructions,
