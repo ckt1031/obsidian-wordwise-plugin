@@ -44,6 +44,11 @@ function getNonEmptyString(str?: string): string | undefined {
 	return str.length > 0 ? str : undefined;
 }
 
+function noticeError(message: string) {
+	new Notice(message);
+	throw new Error(message);
+}
+
 export async function runPrompt(
 	editor: EnhancedEditor,
 	plugin: WordWisePlugin,
@@ -76,7 +81,7 @@ export async function runPrompt(
 
 	// Reject if not found
 	if (!actionData) {
-		throw new Error(`Could not find prompt data with name ${promptName}`);
+		return noticeError(`Could not find prompt data with name ${promptName}`);
 	}
 
 	/** Specifically for `PrePromptActions.CustomInstructions` prompt */
@@ -110,7 +115,7 @@ export async function runPrompt(
 	);
 
 	if (!providerSettingEntry) {
-		throw new Error(
+		return noticeError(
 			`Could not find provider settings with name "${providerNameToBeFound}"`,
 		);
 	}
@@ -122,7 +127,7 @@ export async function runPrompt(
 
 	// Reject if model is empty
 	if (!getNonEmptyString(model)) {
-		throw new Error('Please configure the model');
+		return noticeError('Please configure the model');
 	}
 
 	const providerDisplayName =
@@ -138,7 +143,7 @@ export async function runPrompt(
 	}
 
 	if (!taskPrompt) {
-		throw new Error(`No task prompt found for prompt ${promptName}`);
+		return noticeError(`No task prompt found for prompt ${promptName}`);
 	}
 
 	const systemPrompt: string = Mustache.render(
@@ -159,14 +164,13 @@ export async function runPrompt(
 		},
 	);
 
-	if (!providerEntry) {
-		throw new Error(`Could not find provider: ${provider}`);
-	}
+	if (!providerEntry)
+		return noticeError(`Could not find provider: ${provider}`);
 
 	const modelToCall = actionData.customPromptDefinedModel ?? model;
 
 	if (!modelToCall || modelToCall.length === 0) {
-		throw new Error(
+		return noticeError(
 			'Please fetch the models first and select a model first or set custom model',
 		);
 	}
