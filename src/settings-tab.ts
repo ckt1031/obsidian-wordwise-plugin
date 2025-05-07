@@ -1,6 +1,7 @@
 import type { ButtonComponent } from 'obsidian';
 import { Notice, Platform, PluginSettingTab, Setting } from 'obsidian';
 
+import { nanoid } from 'nanoid';
 import { wrapFetchModelComponent } from './components/fetch-model';
 import { wrapPasswordComponent } from './components/password';
 import { wrapAPITestComponent } from './components/test-api';
@@ -90,11 +91,7 @@ export class SettingsTab extends PluginSettingTab {
 					.addButton((cb: ButtonComponent) => {
 						cb.setButtonText('Create');
 						cb.onClick(async () => {
-							const numberOfCustomProviders = Object.values(
-								settings.aiProviderConfig,
-							).filter((x) => x.isCustom).length;
-
-							const newProvider = `Custom ${numberOfCustomProviders + 1}`;
+							const newProvider = `Custom ${nanoid(4)}`;
 							settings.aiProviderConfig[newProvider] = {
 								model: '',
 								apiKey: '',
@@ -128,6 +125,7 @@ export class SettingsTab extends PluginSettingTab {
 								}, 5000);
 							} else {
 								delete settings.aiProviderConfig[provider];
+								this.forage.removeModels(provider);
 								settings.aiProvider = APIProvider.OpenAI;
 								await plugin.saveSettings();
 								await this.restartSettingsTab(plugin);

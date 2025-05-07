@@ -102,4 +102,8 @@ export class ForageStorage {
 		});
 		if (success) await localforage.setItem(`${provider}-models`, output);
 	}
+
+	async removeModels(provider: string) {
+		await localforage.removeItem(`${provider}-models`);
+	}
 }
