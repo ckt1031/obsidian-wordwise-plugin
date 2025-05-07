@@ -1,5 +1,6 @@
-import type WordWisePlugin from '@/main';
 import { Modal, Notice, setIcon, setTooltip } from 'obsidian';
+
+import type WordWisePlugin from '@/main';
 
 export default class ErrorDialogModal extends Modal {
 	private readonly title: string;

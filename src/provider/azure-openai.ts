@@ -1,7 +1,9 @@
+import { Notice, request } from 'obsidian';
+
+import type OpenAI from 'openai';
+
 import type { APIProvider } from '@/config';
 import type { PluginSettings, ProviderTextAPIProps } from '@/types';
-import { Notice, request } from 'obsidian';
-import type OpenAI from 'openai';
 
 /**
  * Azure OpenAI API is pretty weird, it does not support CORS, I had to re-implement it natively with Obsidian request API to bypass CORS issue.

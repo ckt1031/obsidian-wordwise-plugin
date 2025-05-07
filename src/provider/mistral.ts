@@ -1,6 +1,7 @@
+import { parseAsync } from 'valibot';
+
 import { MistralModelsSchema } from '@/schemas/models';
 import type { Models } from '@/types';
-import { parseAsync } from 'valibot';
 
 export type ModelRequestProps = {
 	host: string;

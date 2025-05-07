@@ -1,6 +1,7 @@
+import { Notice } from 'obsidian';
+
 import type WordWisePlugin from '@/main';
 import type { PluginSettings } from '@/types';
-import { Notice } from 'obsidian';
 
 export interface UriParams {
 	data: string;

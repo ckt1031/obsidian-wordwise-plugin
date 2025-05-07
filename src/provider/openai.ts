@@ -1,12 +1,13 @@
+import { type GenerateTextOptions, generateText } from '@xsai/generate-text';
+import { type StreamTextOptions, streamText } from '@xsai/stream-text';
+import { createOpenAI } from '@xsai-ext/providers-cloud';
+// import { smoothStream, toAsyncIterator } from '@xsai/utils-stream';
+import { parseAsync } from 'valibot';
+
 import { APIProvider, DEFAULT_HOST } from '@/config';
 import { OpenAIModelsSchema } from '@/schemas/models';
 import type { Models, ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
-import { createOpenAI } from '@xsai-ext/providers-cloud';
-import { type GenerateTextOptions, generateText } from '@xsai/generate-text';
-import { type StreamTextOptions, streamText } from '@xsai/stream-text';
-// import { smoothStream, toAsyncIterator } from '@xsai/utils-stream';
-import { parseAsync } from 'valibot';
 
 const OpenRouterHeaders = {
 	'HTTP-Referer': 'https://github.com/ckt1031/obsidian-wordwise-plugin',

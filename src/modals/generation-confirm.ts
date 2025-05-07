@@ -1,6 +1,7 @@
+import { Modal, Notice } from 'obsidian';
+
 import type WordWisePlugin from '@/main';
 import { removeThinkingContent } from '@/utils/handle-command';
-import { Modal, Notice } from 'obsidian';
 
 export default class GenerationConfirmationModal extends Modal {
 	private result = '';

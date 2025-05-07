@@ -1,5 +1,6 @@
 import fm from 'front-matter';
 import * as v from 'valibot';
+
 import { PrePromptActions } from './config';
 import type WordWisePlugin from './main';
 import { INTERNAL_PROMPTS } from './prompts/commands';

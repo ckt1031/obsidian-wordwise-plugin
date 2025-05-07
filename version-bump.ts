@@ -1,4 +1,5 @@
 import { writeFileSync } from 'node:fs';
+
 import manifest from './manifest.json';
 import versions from './versions.json';
 

@@ -1,9 +1,12 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.0.0-beta.2/schema.json",
+	"files": {
+		"includes": ["src/**/*.ts", "*.ts"],
+		"ignoreUnknown": true
+	},
 	"formatter": {
 		"enabled": true,
 		"formatWithErrors": false,
-		"ignore": ["node_modules", "main.js", "dist"],
 		"indentStyle": "tab",
 		"indentWidth": 2,
 		"lineEnding": "lf",
@@ -18,10 +21,28 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true
-		},
-		"ignore": ["node_modules", "dist", "main.js"]
+		}
 	},
-	"organizeImports": {
-		"enabled": true
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": {
+					"level": "on",
+					"options": {
+						"groups": [
+							[":NODE:", ":BUN:"],
+							":BLANK_LINE:",
+							"obsidian",
+							":BLANK_LINE:",
+							":PACKAGE:",
+							":BLANK_LINE:",
+							[":ALIAS:", ":PATH:"],
+							":BLANK_LINE:",
+							"*.svg"
+						]
+					}
+				}
+			}
+		}
 	}
 }

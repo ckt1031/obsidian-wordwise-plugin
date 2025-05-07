@@ -1,6 +1,7 @@
+import { parseAsync } from 'valibot';
+
 import { GoogleGenAIModelsSchema } from '@/schemas/models';
 import type { Models } from '@/types';
-import { parseAsync } from 'valibot';
 import type { ModelRequestProps } from './openai';
 
 export async function getGoogleGenAIModels({

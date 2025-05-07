@@ -1,8 +1,8 @@
 import {
+	addIcon,
 	Notice,
 	Platform,
 	Plugin,
-	addIcon,
 	setIcon,
 	setTooltip,
 } from 'obsidian';
@@ -11,6 +11,7 @@ import localforage from 'localforage';
 import { merge } from 'rambda';
 import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
+
 import { DEFAULT_SETTINGS } from './config';
 import AiIcon from './icons/ai.svg';
 import { upgradeLocalForageInstance } from './migrations/localforage';
@@ -18,8 +19,12 @@ import TextGenerationLogModal from './modals/generation-logs';
 import { retrieveAllPrompts } from './prompt';
 import { ObfuscatedPluginSettingsSchema } from './schemas';
 import { SettingsTab } from './settings-tab';
-import type { ObfuscatedPluginSettings, PluginSettings } from './types';
-import type { EnhancedEditor, OutputInternalPromptProps } from './types';
+import type {
+	EnhancedEditor,
+	ObfuscatedPluginSettings,
+	OutputInternalPromptProps,
+	PluginSettings,
+} from './types';
 import { runPrompt } from './utils/handle-command';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 import SettingsExportImport from './utils/settings-sharing';

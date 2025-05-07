@@ -1,5 +1,6 @@
-import type WordWisePlugin from '@/main';
 import localforage from 'localforage';
+
+import type WordWisePlugin from '@/main';
 
 async function checkIfIndexedDBExists(name: string) {
 	const databases = await indexedDB.databases();

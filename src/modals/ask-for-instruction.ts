@@ -1,6 +1,7 @@
-import type WordWisePlugin from '@/main';
 import type { TextAreaComponent } from 'obsidian';
 import { Modal, Setting } from 'obsidian';
+
+import type WordWisePlugin from '@/main';
 
 export default class AskForInstructionModal extends Modal {
 	private instruction: string;

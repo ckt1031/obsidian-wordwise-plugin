@@ -1,6 +1,7 @@
+import { Modal, Notice, Setting, type TextComponent } from 'obsidian';
+
 import type WordWisePlugin from '@/main';
 import SettingsExportImport from '@/utils/settings-sharing';
-import { Modal, Notice, Setting, type TextComponent } from 'obsidian';
 
 export default class ImportSettingsModal extends Modal {
 	private data: string;

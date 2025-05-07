@@ -1,6 +1,8 @@
-import type CodeMirror from 'codemirror';
 import type { Editor, Menu } from 'obsidian';
+
+import type CodeMirror from 'codemirror';
 import type * as v from 'valibot';
+
 import type { APIProvider, PrePromptActions } from './config';
 import type WordWisePlugin from './main';
 import type {

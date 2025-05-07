@@ -1,8 +1,9 @@
+import { Notice, setIcon, setTooltip, type TextComponent } from 'obsidian';
+
 import { APIProvider } from '@/config';
 import type WordWisePlugin from '@/main';
 import ErrorDialogModal from '@/modals/error-dialog';
 import { callTextAPI } from '@/utils/call-api';
-import { Notice, type TextComponent, setIcon, setTooltip } from 'obsidian';
 
 type Props = {
 	text: TextComponent;

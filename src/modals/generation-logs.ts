@@ -1,12 +1,14 @@
 import { Modal, Notice } from 'obsidian';
 
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import Fuse from 'fuse.js';
+
 import { InternalPromptNames } from '@/config';
 import type WordWisePlugin from '@/main';
 import type { TextGenerationLog } from '@/types';
 import { ForageStorage } from '@/utils/storage';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import Fuse from 'fuse.js';
+
 dayjs.extend(relativeTime);
 
 /**

@@ -1,5 +1,8 @@
 import { Notice, Platform } from 'obsidian';
 
+import Mustache from 'mustache';
+import { nanoid } from 'nanoid';
+
 import {
 	APIProvider,
 	CustomBehavior,
@@ -11,10 +14,7 @@ import optionsMenu from '@/menus/optionsMenu';
 import AskForInstructionModal from '@/modals/ask-for-instruction';
 import GenerationConfirmationModal from '@/modals/generation-confirm';
 import { getFolderBasedPrompt } from '@/prompt';
-import type { TextGenerationLog } from '@/types';
-import type { EnhancedEditor } from '@/types';
-import Mustache from 'mustache';
-import { nanoid } from 'nanoid';
+import type { EnhancedEditor, TextGenerationLog } from '@/types';
 import { callTextAPI } from './call-api';
 import { ForageStorage } from './storage';
 

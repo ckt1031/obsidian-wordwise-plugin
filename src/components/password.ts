@@ -1,4 +1,4 @@
-import { type TextComponent, setIcon, setTooltip } from 'obsidian';
+import { setIcon, setTooltip, type TextComponent } from 'obsidian';
 
 // Main function to wrap the password component
 export const wrapPasswordComponent = (text: TextComponent) => {

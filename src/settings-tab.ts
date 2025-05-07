@@ -2,6 +2,7 @@ import type { ButtonComponent } from 'obsidian';
 import { Notice, Platform, PluginSettingTab, Setting } from 'obsidian';
 
 import { nanoid } from 'nanoid';
+
 import { wrapFetchModelComponent } from './components/fetch-model';
 import { wrapPasswordComponent } from './components/password';
 import { wrapAPITestComponent } from './components/test-api';
@@ -13,13 +14,13 @@ import ImportSettingsModal from './modals/import-settings';
 import { ForageStorage } from './utils/storage';
 
 export class SettingsTab extends PluginSettingTab {
-	plugin: WordWisePlugin;
+	private readonly plugin: WordWisePlugin;
+	private readonly forage: ForageStorage;
 
 	// Settings elements
-	advancedSettingsEl: HTMLElement;
-	filePromptsEl: HTMLElement;
-	providerEl: HTMLElement[] = [];
-	forage: ForageStorage;
+	private filePromptsEl: HTMLElement;
+	private advancedSettingsEl: HTMLElement;
+	private providerEl: HTMLElement[] = [];
 
 	constructor(plugin: WordWisePlugin) {
 		super(plugin.app, plugin);

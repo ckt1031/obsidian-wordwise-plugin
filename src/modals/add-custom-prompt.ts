@@ -1,6 +1,7 @@
+import { Modal, Notice, Setting } from 'obsidian';
+
 import type WordWisePlugin from '@/main';
 import { retrieveAllPrompts } from '@/prompt';
-import { Modal, Notice, Setting } from 'obsidian';
 
 export default class AddCustomPromptModal extends Modal {
 	private name: string;

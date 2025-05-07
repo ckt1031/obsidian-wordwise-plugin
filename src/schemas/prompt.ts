@@ -1,4 +1,5 @@
 import * as v from 'valibot';
+
 import { APIProvider, InternalPromptNames, PrePromptActions } from '../config';
 
 export const FilePromptPropertiesSchema = v.object({

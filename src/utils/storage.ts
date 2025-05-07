@@ -1,8 +1,9 @@
+import localforage from 'localforage';
+import { array, object, safeParseAsync } from 'valibot';
+
 import { TextGenerationLogSchema } from '@/schemas';
 import { OpenAIModelsSchema } from '@/schemas/models';
 import type { OpenAIModels, TextGenerationLog } from '@/types';
-import localforage from 'localforage';
-import { array, object, safeParseAsync } from 'valibot';
 
 export class ForageStorage {
 	private readonly keys = {

@@ -1,3 +1,12 @@
+import {
+	type DropdownComponent,
+	Notice,
+	Platform,
+	type Setting,
+	setIcon,
+	setTooltip,
+} from 'obsidian';
+
 import { APIProvider, DEFAULT_HOST } from '@/config';
 import type WordWisePlugin from '@/main';
 import { getAnthropicModels } from '@/provider/anthropic';
@@ -9,14 +18,6 @@ import { getOpenAIModels } from '@/provider/openai';
 import type { Models } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
 import { ForageStorage } from '@/utils/storage';
-import {
-	type DropdownComponent,
-	Notice,
-	Platform,
-	type Setting,
-	setIcon,
-	setTooltip,
-} from 'obsidian';
 
 type Props = {
 	setting: Setting;

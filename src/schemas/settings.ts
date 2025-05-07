@@ -1,5 +1,6 @@
-import { CustomBehavior } from '@/config';
 import * as v from 'valibot';
+
+import { CustomBehavior } from '@/config';
 import { InputPromptSchema } from './prompt';
 
 export const ObfuscatedPluginSettingsSchema = v.object({

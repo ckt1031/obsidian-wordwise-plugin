@@ -1,6 +1,7 @@
+import { Modal, Notice } from 'obsidian';
+
 import type WordWisePlugin from '@/main';
 import SettingsExportImport from '@/utils/settings-sharing';
-import { Modal, Notice } from 'obsidian';
 
 export default class ExportSettingsModal extends Modal {
 	private readonly plugin: WordWisePlugin;
