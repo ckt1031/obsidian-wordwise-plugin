@@ -640,6 +640,12 @@ export class SettingsTab extends PluginSettingTab {
 			.addButton((button) => {
 				button.setButtonText('Export').onClick(async () => {
 					const logs = await this.forage.getTextGenerationLogs();
+
+					if (logs.length === 0) {
+						new Notice('No text generation logs to export');
+						return;
+					}
+
 					const blob = new Blob([JSON.stringify(logs)], {
 						type: 'application/json',
 					});
