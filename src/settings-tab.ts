@@ -1,5 +1,10 @@
-import type { ButtonComponent } from 'obsidian';
-import { Notice, Platform, PluginSettingTab, Setting } from 'obsidian';
+import {
+	type ButtonComponent,
+	Notice,
+	Platform,
+	PluginSettingTab,
+	Setting,
+} from 'obsidian';
 
 import { nanoid } from 'nanoid';
 
@@ -11,6 +16,10 @@ import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
 import ExportSettingsModal from './modals/export-settings';
 import ImportSettingsModal from './modals/import-settings';
+import {
+	downloadFileWithFilePicker,
+	saveFileToObsidianConfigFolder,
+} from './utils/download';
 import { ForageStorage } from './utils/storage';
 
 export class SettingsTab extends PluginSettingTab {
@@ -635,18 +644,24 @@ export class SettingsTab extends PluginSettingTab {
 						type: 'application/json',
 					});
 
-					const url = URL.createObjectURL(blob);
-
-					const a = document.createElement('a');
-					a.href = url;
-
-					const vaultName = this.plugin.app.vault.getName();
 					const nowMS = new Date().getTime();
+					const vaultName = this.plugin.app.vault.getName();
+					const fileName = Platform.isMobileApp
+						? `text-generation-logs-${nowMS}.json`
+						: `${plugin.manifest.id}-text-generation-logs-${vaultName}-${nowMS}.json`;
 
-					a.download = `${plugin.manifest.id}-text-generation-logs-${vaultName}-${nowMS}.json`;
-					a.click();
+					if (!Platform.isMobileApp) {
+						await downloadFileWithFilePicker(blob, fileName);
+						return;
+					}
 
-					URL.revokeObjectURL(url);
+					const file = await saveFileToObsidianConfigFolder(
+						this.plugin,
+						blob,
+						fileName,
+					);
+
+					new Notice(`Saved to ${file}`);
 				});
 			});
 
