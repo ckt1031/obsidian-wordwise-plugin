@@ -9,7 +9,7 @@
 		"isolatedModules": true,
 		"lib": ["ESNext", "DOM", "dom.iterable", "DOM.AsyncIterable"],
 		"module": "ESNext",
-		"target": "ESNext",
+		"target": "ES2018",
 		"moduleResolution": "Node",
 		"noEmit": true,
 		"noImplicitAny": true,
