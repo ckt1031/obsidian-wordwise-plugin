@@ -5,6 +5,7 @@ import {
 	Plugin,
 	setIcon,
 	setTooltip,
+	TAbstractFile,
 } from 'obsidian';
 
 import localforage from 'localforage';
@@ -75,17 +76,21 @@ export default class WordWisePlugin extends Plugin {
 			},
 		);
 
-		this.registerEvent(
-			this.app.vault.on(
-				'modify',
-				debounce(async (file) => {
-					// Make sure the file is a markdown file
-					if (!file.name.endsWith('.md')) return;
+		const updateFromFile = async (file: TAbstractFile) => {
+			// Make sure the file is a markdown file
+			if (!file.name.endsWith('.md')) return;
 
-					this.prompts = await retrieveAllPrompts(this);
-				}, 1000),
-			),
+			this.prompts = await retrieveAllPrompts(this);
+			await this.initializePromptsToCommands();
+		};
+
+		this.registerEvent(
+			// Reduce CPU usage by debouncing the event
+			this.app.vault.on('modify', debounce(updateFromFile, 1000)),
 		);
+
+		// Delete event is immediate and does not need debouncing
+		this.registerEvent(this.app.vault.on('delete', updateFromFile));
 
 		this.app.workspace.onLayoutReady(() => this.initializePlugin());
 
@@ -120,8 +125,29 @@ export default class WordWisePlugin extends Plugin {
 		}
 	}
 
-	async initializePromptsToCommands() {
-		this.prompts = await retrieveAllPrompts(this);
+	async initializePromptsToCommands(prompts?: OutputInternalPromptProps[]) {
+		this.prompts = prompts ?? (await retrieveAllPrompts(this));
+
+		const oldPluginCommands = this.app.commands.commands;
+
+		// this.prompts is always the latest prompts, and it's updated on file change
+		// commands is old one, we will need to add all on plguin load or remove if not found in this.prompts
+		// so we need to compare the two and add or remove commands accordingly
+
+		// Get all commands that are not in this.prompts
+		const commandsToRemove = Object.keys(oldPluginCommands).filter(
+			(pluginCommand) =>
+				!this.prompts.some(
+					(prompt) =>
+						slugify(prompt.name) ===
+						pluginCommand.replace(`${this.manifest.id}:prompts-`, ''),
+				) && pluginCommand.startsWith(`${this.manifest.id}:prompts-`),
+		);
+
+		// Remove commands that are not in this.prompts
+		for (const command of commandsToRemove) {
+			this.removeCommand(command.replace(`${this.manifest.id}:`, ''));
+		}
 
 		for (const prompt of this.prompts) {
 			// slugify and remove spaces
@@ -130,8 +156,13 @@ export default class WordWisePlugin extends Plugin {
 			// Add icon if it exists
 			if (prompt.icon) addIcon(iconName, prompt.icon);
 
+			// Check if the command already exists
+			const commandId = `prompts-${slugify(prompt.name)}`;
+			if (oldPluginCommands[commandId]) return;
+
 			this.addCommand({
-				id: slugify(prompt.name),
+				// Prompts to mark it as a prompt command, to be identified in order to change later on.
+				id: commandId,
 				name: prompt.name,
 				icon: prompt.icon ? iconName : AiIcon,
 				editorCallback: (editor: EnhancedEditor) =>
@@ -156,7 +187,8 @@ export default class WordWisePlugin extends Plugin {
 
 		for (const command of obsidianCommands) {
 			this.addCommand({
-				id: slugify(command.name),
+				// Actions to mark it as a constant command
+				id: `actions-${slugify(command.name)}`,
 				name: command.name,
 				editorCallback: (editor: EnhancedEditor) => command.onClick(editor),
 			});
