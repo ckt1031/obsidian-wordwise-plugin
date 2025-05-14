@@ -37,62 +37,7 @@ export default class WordWisePlugin extends Plugin {
 
 	private statusBarEl: HTMLElement | null = null;
 
-	async onload() {
-		await upgradeLocalForageInstance(this);
-
-		if (Platform.isDesktop) {
-			// This will add a status bar element, only available for Desktop app
-			this.statusBarEl = this.addStatusBarItem();
-		}
-
-		// Initialize localForage
-		localforage.config({
-			name: `${this.manifest.id}-${this.app.appId}`,
-		});
-
-		await this.loadSettings();
-
-		addIcon('openai', AiIcon);
-
-		this.prompts = await retrieveAllPrompts(this);
-
-		for (const prompt of this.prompts) {
-			// slugify and remove spaces
-			const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
-
-			// Add icon if it exists
-			if (prompt.icon) addIcon(iconName, prompt.icon);
-
-			this.addCommand({
-				id: slugify(prompt.name),
-				name: prompt.name,
-				icon: prompt.icon ? iconName : AiIcon,
-				editorCallback: (editor: EnhancedEditor) =>
-					runPrompt(editor, this, prompt.name),
-			});
-		}
-
-		const obsidianCommands = [
-			{
-				name: 'Check Text Generation Logs',
-				onClick: async (_editor: EnhancedEditor) => {
-					const modal = new TextGenerationLogModal(this);
-
-					await modal.initStates();
-
-					modal.open();
-				},
-			},
-		];
-
-		for (const command of obsidianCommands) {
-			this.addCommand({
-				id: slugify(command.name),
-				name: command.name,
-				editorCallback: (editor: EnhancedEditor) => command.onClick(editor),
-			});
-		}
-
+	onload() {
 		this.registerEvent(
 			this.app.workspace.on('editor-menu', (menu, editor: EnhancedEditor) => {
 				menu.addItem((item) => {
@@ -130,9 +75,6 @@ export default class WordWisePlugin extends Plugin {
 			},
 		);
 
-		// Load status bar
-		this.updateStatusBar();
-
 		this.registerEvent(
 			this.app.vault.on(
 				'modify',
@@ -145,7 +87,80 @@ export default class WordWisePlugin extends Plugin {
 			),
 		);
 
+		this.app.workspace.onLayoutReady(() => this.initializePlugin());
+
 		console.info('Loaded WordWise Plugin');
+	}
+
+	// Initialize things up when layout is ready to optimize startup time
+	async initializePlugin(): Promise<void> {
+		// Load settings to memory, ensuring the plugin is ready to go
+		await this.loadSettings();
+
+		// Add icon
+		addIcon('openai', AiIcon);
+
+		// Migrate localForage instance from previous versions
+		await upgradeLocalForageInstance(this);
+
+		// Initialize localForage
+		localforage.config({
+			name: `${this.manifest.id}-${this.app.appId}`,
+		});
+
+		this.initializeConstantCommands();
+		this.initializePromptsToCommands();
+
+		if (Platform.isDesktop) {
+			// This will add a status bar element, only available for Desktop view
+			this.statusBarEl = this.addStatusBarItem();
+
+			// Load status bar
+			this.updateStatusBar();
+		}
+	}
+
+	async initializePromptsToCommands() {
+		this.prompts = await retrieveAllPrompts(this);
+
+		for (const prompt of this.prompts) {
+			// slugify and remove spaces
+			const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
+
+			// Add icon if it exists
+			if (prompt.icon) addIcon(iconName, prompt.icon);
+
+			this.addCommand({
+				id: slugify(prompt.name),
+				name: prompt.name,
+				icon: prompt.icon ? iconName : AiIcon,
+				editorCallback: (editor: EnhancedEditor) =>
+					runPrompt(editor, this, prompt.name),
+			});
+		}
+	}
+
+	initializeConstantCommands(): void {
+		const obsidianCommands = [
+			{
+				name: 'Check Text Generation Logs',
+				onClick: async (_editor: EnhancedEditor) => {
+					const modal = new TextGenerationLogModal(this);
+
+					await modal.initStates();
+
+					modal.open();
+				},
+			},
+		];
+
+		for (const command of obsidianCommands) {
+			this.addCommand({
+				id: slugify(command.name),
+				name: command.name,
+				editorCallback: (editor: EnhancedEditor) => command.onClick(editor),
+			});
+		}
 	}
 
 	onunload() {
