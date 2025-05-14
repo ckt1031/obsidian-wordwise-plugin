@@ -51,8 +51,7 @@ const obfuscateConfig = (
 	obfuscatedConfig = reverseString(obfuscatedConfig);
 
 	return {
-		_NOTICE:
-			'This configuration is sensitive and should not be modified or shared. Non-compliance may disrupt system functionality.',
+		_NOTICE: 'Obfuscated configuration, do not tamper with it.',
 		z: obfuscatedConfig,
 	};
 };
