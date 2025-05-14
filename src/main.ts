@@ -250,27 +250,22 @@ export default class WordWisePlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		const localData: ObfuscatedPluginSettings = await this.loadData();
+		// The data is either obfuscated or not, so we need to check for both
+		let localData: ObfuscatedPluginSettings | PluginSettings =
+			await this.loadData();
 
-		const { success } = await safeParseAsync(
+		// If the data is strictly an obfuscated settings, then we need to deobfuscate it
+		const { success: isObfuscated } = await safeParseAsync(
 			ObfuscatedPluginSettingsSchema,
 			localData,
 		);
 
-		if (!success) {
-			this.settings = DEFAULT_SETTINGS;
-			console.error('Failed to deobfuscate settings, using default settings.');
-			return;
-		}
-		const parsedData = deobfuscateConfig(localData);
-
-		if (parsedData === null) {
-			this.settings = DEFAULT_SETTINGS;
-			console.error('Failed to deobfuscate settings, using default settings.');
-			return;
+		// 'z' in localData to be TypeScript happy
+		if (isObfuscated && 'z' in localData) {
+			localData = deobfuscateConfig(localData) ?? DEFAULT_SETTINGS;
 		}
 
-		this.settings = merge(DEFAULT_SETTINGS)(parsedData);
+		this.settings = merge(DEFAULT_SETTINGS)(localData);
 
 		/**
 		 * Merge providers when there is new native supported provider
@@ -283,6 +278,12 @@ export default class WordWisePlugin extends Plugin {
 	}
 
 	async saveSettings() {
-		await this.saveData(obfuscateConfig(this.settings));
+		let dataToSave: unknown = this.settings;
+
+		if (this.settings.obfuscateConfig) {
+			dataToSave = obfuscateConfig(this.settings);
+		}
+
+		await this.saveData(dataToSave);
 	}
 }

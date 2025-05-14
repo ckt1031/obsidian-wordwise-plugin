@@ -62,4 +62,6 @@ export const PluginSettingsSchema = v.object({
 
 	// Custom Behavior
 	customBehavior: v.enum_(CustomBehavior),
+
+	obfuscateConfig: v.boolean(),
 });

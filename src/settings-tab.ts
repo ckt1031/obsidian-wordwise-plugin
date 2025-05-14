@@ -674,6 +674,18 @@ export class SettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName('Danger Zone').setHeading();
 
 		new Setting(containerEl)
+			.setName('Obfuscate Config')
+			.setDesc(
+				'Prevent API keys from being visible and tampered with. This might slow down the performance when loading settings.',
+			)
+			.addToggle((toggle) =>
+				toggle.setValue(settings.obfuscateConfig).onChange(async (value) => {
+					settings.obfuscateConfig = value;
+					await plugin.saveSettings();
+				}),
+			);
+
+		new Setting(containerEl)
 			.setName('Import and Export Settings')
 			.setDesc('Import or export settings using text or URL.')
 			.addButton((button) => {

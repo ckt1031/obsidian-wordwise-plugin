@@ -118,4 +118,6 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 
 	// Custom Behavior
 	customBehavior: CustomBehavior.Replace,
+
+	obfuscateConfig: true,
 };
