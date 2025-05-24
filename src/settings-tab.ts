@@ -7,6 +7,7 @@ import {
 } from 'obsidian';
 
 import { nanoid } from 'nanoid';
+import { debounce } from 'rambdax';
 
 import { wrapFetchModelComponent } from './components/fetch-model';
 import { wrapPasswordComponent } from './components/password';
@@ -589,10 +590,15 @@ export class SettingsTab extends PluginSettingTab {
 				text
 					.setPlaceholder('Enter the folder path')
 					.setValue(settings.customPromptsFromFolder.path)
-					.onChange(async (value) => {
-						settings.customPromptsFromFolder.path = value;
-						await plugin.saveSettings();
-					}),
+					.onChange(
+						debounce(async (value: string) => {
+							const folder = this.plugin.app.vault.getFolderByPath(value);
+							if (!folder) new Notice(`Folder (${value}) does not exist`);
+
+							settings.customPromptsFromFolder.path = value;
+							await plugin.saveSettings();
+						}, 1500),
+					),
 			);
 
 		new Setting(containerEl).setName('Text Generation Logging').setHeading();
