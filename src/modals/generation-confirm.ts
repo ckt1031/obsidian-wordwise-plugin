@@ -40,6 +40,11 @@ export default class GenerationConfirmationModal extends Modal {
 	}
 
 	onError(errorMessage: string) {
+		// If error message is abort error, we will rewrite the error message to "Text generation aborted"
+		if (errorMessage.includes('aborted')) {
+			errorMessage = 'Text generation aborted';
+		}
+
 		this.setResult(errorMessage);
 
 		const acceptBtn = this.btnContainer.querySelector(
@@ -55,7 +60,7 @@ export default class GenerationConfirmationModal extends Modal {
 		this.acceptBtnEl.textContent = 'Accept';
 
 		if (this.checkThinkingContentExists()) {
-			this.copyAllBtn.style = '';
+			this.copyAllBtn.style.display = 'block';
 		}
 	}
 
@@ -148,7 +153,6 @@ export default class GenerationConfirmationModal extends Modal {
 
 	onClose() {
 		this.contentEl.empty();
-		this.contentEl.remove();
 
 		// If the modal is closed while streaming, we need to abort the request
 		if (

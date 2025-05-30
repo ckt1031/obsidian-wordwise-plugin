@@ -165,17 +165,6 @@ export async function handleTextOpenAI({
 		if (props.stream) {
 			const { textStream } = await streamText(body);
 
-			// // Make the stream view smoother, some API or models might be streaming in weird ways
-			// const smoothTextStream = textStream.pipeThrough(
-			// 	smoothStream({
-			// 		delay: 15,
-			// 		chunking: 'word',
-			// 	}),
-			// );
-
-			// // https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility
-			// const iterableStream = toAsyncIterator(smoothTextStream);
-
 			const text: string[] = [];
 
 			for await (const textPart of textStream) {
