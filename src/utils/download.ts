@@ -1,4 +1,4 @@
-import WordWisePlugin from '@/main';
+import type WordWisePlugin from '@/main';
 
 export async function downloadFileWithFilePicker(blob: Blob, filename: string) {
 	const url = URL.createObjectURL(blob);
@@ -24,7 +24,7 @@ export async function saveFileToObsidianConfigFolder(
 	const storeFolderPath = `${vaultConfigFolderPath}/${configFolderName}`;
 
 	// Create new folder if it doesn't exist
-	let storeFolderExists =
+	const storeFolderExists =
 		await plugin.app.vault.adapter.exists(storeFolderPath);
 
 	if (!storeFolderExists) {

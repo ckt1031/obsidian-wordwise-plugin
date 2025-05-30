@@ -5,7 +5,7 @@ import {
 	Plugin,
 	setIcon,
 	setTooltip,
-	TAbstractFile,
+	type TAbstractFile,
 } from 'obsidian';
 
 import localforage from 'localforage';

@@ -656,7 +656,7 @@ export class SettingsTab extends PluginSettingTab {
 						type: 'application/json',
 					});
 
-					const nowMS = new Date().getTime();
+					const nowMS = Date.now();
 					const vaultName = this.plugin.app.vault.getName();
 					const fileName = Platform.isMobileApp
 						? `text-generation-logs-${nowMS}.json`

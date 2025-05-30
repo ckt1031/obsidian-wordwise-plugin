@@ -26,7 +26,7 @@ export default class ErrorDialogModal extends Modal {
 		try {
 			const json = JSON.parse(this.message);
 			message = JSON.stringify(json, null, 2);
-		} catch (e) {
+		} catch (_) {
 			// Nothing
 		}
 
