@@ -1,3 +1,5 @@
+import { requestUrl } from 'obsidian';
+
 import { parseAsync } from 'valibot';
 
 import { GitHubModelsSchema } from '@/schemas/models';
@@ -14,7 +16,8 @@ export async function getGitHubModels({
 	apiKey,
 	provider,
 }: ModelRequestProps): Promise<Models> {
-	const response = await fetch(`${host}/models`, {
+	const response = await requestUrl({
+		url: `${host}/models`,
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: `Bearer ${apiKey}`,
@@ -22,10 +25,10 @@ export async function getGitHubModels({
 	});
 
 	if (response.status !== 200) {
-		throw new Error(await response.text());
+		throw new Error(response.text);
 	}
 
-	let models = await parseAsync(GitHubModelsSchema, await response.json());
+	let models = await parseAsync(GitHubModelsSchema, response.json);
 
 	// Filter off models with name embed, whisper, tts
 	models = models.filter((model) => model.task === 'chat-completion');

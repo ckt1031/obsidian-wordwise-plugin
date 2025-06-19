@@ -1,3 +1,5 @@
+import { requestUrl } from 'obsidian';
+
 import { parseAsync } from 'valibot';
 
 import { MistralModelsSchema } from '@/schemas/models';
@@ -14,7 +16,8 @@ export async function getMistralModels({
 	apiKey,
 	provider,
 }: ModelRequestProps): Promise<Models> {
-	const response = await fetch(`${host}/v1/models`, {
+	const response = await requestUrl({
+		url: `${host}/v1/models`,
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: `Bearer ${apiKey}`,
@@ -22,10 +25,10 @@ export async function getMistralModels({
 	});
 
 	if (response.status !== 200) {
-		throw new Error(await response.text());
+		throw new Error(response.text);
 	}
 
-	const models = await parseAsync(MistralModelsSchema, await response.json());
+	const models = await parseAsync(MistralModelsSchema, response.json);
 
 	// Filter off models with name embed, whisper, tts
 	models.data = models.data.filter(

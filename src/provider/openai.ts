@@ -1,7 +1,8 @@
+import { requestUrl } from 'obsidian';
+
 import { type GenerateTextOptions, generateText } from '@xsai/generate-text';
 import { type StreamTextOptions, streamText } from '@xsai/stream-text';
 import { createOpenAI } from '@xsai-ext/providers-cloud';
-// import { smoothStream, toAsyncIterator } from '@xsai/utils-stream';
 import { parseAsync } from 'valibot';
 
 import { APIProvider, DEFAULT_HOST } from '@/config';
@@ -36,15 +37,16 @@ export async function getOpenAIModels({
 		path = `/api${path}`;
 	}
 
-	const response = await fetch(`${host}${path}`, {
+	const response = await requestUrl({
+		url: `${host}${path}`,
 		headers,
 	});
 
 	if (response.status !== 200) {
-		throw new Error(await response.text());
+		throw new Error(response.text);
 	}
 
-	const models = await parseAsync(OpenAIModelsSchema, await response.json());
+	const models = await parseAsync(OpenAIModelsSchema, response.json);
 
 	if (provider === APIProvider.OpenAI) {
 		// Filter off models with name embed, whisper, tts

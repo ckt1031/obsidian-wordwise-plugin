@@ -1,3 +1,5 @@
+import { requestUrl } from 'obsidian';
+
 import { parseAsync } from 'valibot';
 
 import { GoogleGenAIModelsSchema } from '@/schemas/models';
@@ -10,13 +12,13 @@ export async function getGoogleGenAIModels({
 }: ModelRequestProps): Promise<Models> {
 	const url = `${host}/v1beta/models?key=${apiKey}`;
 
-	const response = await fetch(url);
+	const response = await requestUrl(url);
 
 	if (response.status !== 200) {
-		throw new Error(await response.text());
+		throw new Error(response.text);
 	}
 
-	const data = await parseAsync(GoogleGenAIModelsSchema, await response.json());
+	const data = await parseAsync(GoogleGenAIModelsSchema, response.json);
 
 	const list: Models = [];
 

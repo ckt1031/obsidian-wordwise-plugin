@@ -1,4 +1,4 @@
-import { Notice, request } from 'obsidian';
+import { Notice, requestUrl } from 'obsidian';
 
 import type OpenAI from 'openai';
 
@@ -73,14 +73,18 @@ export async function handleTextAzure({
 	const path = `/openai/deployments/${model}/chat/completions?api-version=${(providerSettings as PluginSettings['aiProviderConfig'][APIProvider.AzureOpenAI]).apiVersion}`;
 
 	try {
-		const response = await request({
+		const response = await requestUrl({
 			url: `${baseURL}${path}`,
 			headers,
 			method: 'POST',
 			body: JSON.stringify(body),
 		});
 
-		const resData: OpenAI.ChatCompletion = JSON.parse(response);
+		if (response.status !== 200) {
+			throw new Error(response.text);
+		}
+
+		const resData: OpenAI.ChatCompletion = response.json;
 
 		// Check if it has choices and return the first one
 		if (!resData.choices || resData.choices.length === 0) {

@@ -1,3 +1,5 @@
+import { requestUrl } from 'obsidian';
+
 import { parseAsync } from 'valibot';
 
 import { CohereModelsSchema } from '@/schemas/models';
@@ -15,18 +17,16 @@ export async function getCohereModels({
 		Authorization: `Bearer ${apiKey}`,
 	};
 
-	const response = await fetch(url, {
+	const response = await requestUrl({
+		url: url,
 		headers: headers,
 	});
 
 	if (response.status !== 200) {
-		throw new Error(await response.text());
+		throw new Error(response.text);
 	}
 
-	const { models } = await parseAsync(
-		CohereModelsSchema,
-		await response.json(),
-	);
+	const { models } = await parseAsync(CohereModelsSchema, response.json);
 
 	const list: Models = [];
 
