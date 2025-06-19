@@ -1,19 +1,13 @@
 import { requestUrl } from 'obsidian';
 
-import { type GenerateTextOptions, generateText } from '@xsai/generate-text';
-import { type StreamTextOptions, streamText } from '@xsai/stream-text';
-import { createOpenAI } from '@xsai-ext/providers-cloud';
+import type OpenAI from 'openai';
 import { parseAsync } from 'valibot';
 
 import { APIProvider, DEFAULT_HOST } from '@/config';
 import { OpenAIModelsSchema } from '@/schemas/models';
 import type { Models, ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
-
-const OpenRouterHeaders = {
-	'HTTP-Referer': 'https://github.com/ckt1031/obsidian-wordwise-plugin',
-	'X-Title': 'Obsidian Wordwise Plugin',
-};
+import { streamText } from '@/utils/stream-text';
 
 export type ModelRequestProps = {
 	host: string;
@@ -77,7 +71,10 @@ export async function handleTextOpenAI({
 		plugin.updateStatusBar(); // Show status bar loader
 	}
 
-	let headers: Record<string, string> = {};
+	let headers: Record<string, string> = {
+		'Content-Type': 'application/json',
+		Authorization: `Bearer ${apiKey}`,
+	};
 
 	const host = getAPIHost(
 		baseURL,
@@ -89,6 +86,11 @@ export async function handleTextOpenAI({
 	let suffixPath = '/v1/';
 
 	if (provider === APIProvider.OpenRouter) {
+		const OpenRouterHeaders = {
+			'HTTP-Referer': 'https://github.com/ckt1031/obsidian-wordwise-plugin',
+			'X-Title': 'Obsidian Wordwise Plugin',
+		};
+
 		headers = {
 			...headers,
 			...OpenRouterHeaders,
@@ -122,11 +124,10 @@ export async function handleTextOpenAI({
 		suffixPath = suffixPath.replace('/v1/', '/');
 	}
 
-	const providerBody = createOpenAI(apiKey, `${host}${suffixPath}`);
+	// const providerBody = createOpenAI(apiKey, `${host}${suffixPath}`);
 
-	const body: GenerateTextOptions & StreamTextOptions = {
-		...providerBody.chat(model),
-		headers,
+	const body: OpenAI.ChatCompletionCreateParamsNonStreaming = {
+		model,
 		temperature: plugin.settings.temperature,
 		messages: [
 			// We will add system message here later if needed
@@ -141,10 +142,6 @@ export async function handleTextOpenAI({
 				max_tokens: plugin.settings.maxTokens,
 			}),
 		}),
-		// Allowing interruptible request
-		abortSignal: isTesting
-			? undefined
-			: plugin.generationRequestAbortController?.signal,
 	};
 
 	if (messages.system.length > 0) {
@@ -163,9 +160,29 @@ export async function handleTextOpenAI({
 		}
 	}
 
+	const url = `${host}${suffixPath}chat/completions`;
+
 	try {
+		const response = await fetch(url, {
+			headers,
+			method: 'POST',
+			body: JSON.stringify({ ...body, stream: props.stream }),
+			// Allowing interruptible request
+			signal: isTesting
+				? undefined
+				: plugin.generationRequestAbortController?.signal,
+		});
+
+		if (!response.body) {
+			throw new Error('Response body is not readable.');
+		}
+
+		if (!response.ok || response.status !== 200) {
+			throw new Error(await response.text());
+		}
+
 		if (props.stream) {
-			const { textStream } = await streamText(body);
+			const { textStream } = await streamText(response.body);
 
 			const text: string[] = [];
 
@@ -179,9 +196,9 @@ export async function handleTextOpenAI({
 			return text.join('');
 		}
 
-		const { text } = await generateText(body);
+		const resData: OpenAI.ChatCompletion = await response.json();
 
-		return text;
+		return resData.choices[0].message.content;
 	} catch (error) {
 		throw new Error('Request failed', {
 			cause:
