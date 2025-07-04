@@ -60,7 +60,13 @@ export default class WordWisePlugin extends Plugin {
 		}
 
 		if (!iconIDOrSVG) {
-			const letter = iconIdentifier.charAt(0).toUpperCase();
+			// Get the first letter except "-" and " "
+			const letter = iconIdentifier
+				.replace(/-/g, '')
+				.replace(/\s/g, '')
+				.charAt(0)
+				.toUpperCase();
+
 			const icon = setLetterWithCog(letter);
 
 			addIcon(iconIdentifier, icon);
