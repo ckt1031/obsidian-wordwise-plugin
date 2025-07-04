@@ -16,13 +16,15 @@ export function setLetterWithCog(letter: string): string {
 		'http://www.w3.org/2000/svg',
 		'text',
 	);
-	letterPath.setAttribute('x', '8');
+	letterPath.setAttribute('x', '10');
 	letterPath.setAttribute('y', '15');
 	letterPath.setAttribute('font-family', 'Arial, sans-serif');
 	letterPath.setAttribute('text-anchor', 'middle');
 	letterPath.setAttribute('dominant-baseline', 'middle');
 	letterPath.setAttribute('font-size', '20');
-	letterPath.setAttribute('stroke-width', '2');
+	letterPath.setAttribute('stroke-width', '0.5');
+	letterPath.setAttribute('stroke', 'currentColor');
+	letterPath.setAttribute('fill', 'currentColor');
 	letterPath.textContent = letter;
 	originalIcon.appendChild(letterPath);
 
@@ -72,7 +74,7 @@ export function addBrainCogIcon(originalIcon: SVGSVGElement | null): string {
 	maskCircle.setAttribute('cx', '21');
 	maskCircle.setAttribute('cy', '3');
 	// 111: r="7.75"
-	maskCircle.setAttribute('r', '11');
+	maskCircle.setAttribute('r', '9');
 	maskCircle.setAttribute('fill', 'black'); // Black area is masked out
 
 	mask.append(maskRect, maskCircle);
@@ -95,7 +97,7 @@ export function addBrainCogIcon(originalIcon: SVGSVGElement | null): string {
 	);
 	brainCogGroup.setAttribute(
 		'transform',
-		'translate(21, 3) scale(0.55) translate(-18, -7)',
+		'translate(21, 3) scale(0.50) translate(-18, -7)',
 	);
 	// Remove all attributes from the brain-cog icon
 	Array.from(brainCogIcon.attributes).forEach((attr) =>

@@ -39,34 +39,34 @@ export default class WordWisePlugin extends Plugin {
 
 	private statusBarEl: HTMLElement | null = null;
 
-	private iconCache = new Map<string, string>();
+	// This function is to ensure the icon is being generated and add to Obsidian Icon database once.
+	// After it was added, we can use the icon everwhere.
+	constructIcon(iconIdentifier: string, iconIDOrSVG?: string) {
+		// If icon exists in cache, return the name of the icon
+		if (getIcon(iconIdentifier)) {
+			return iconIdentifier;
+		}
 
-	constructIcon(name: string, iconIDOrSVG?: string) {
 		// Add icon if it exists
 		if (iconIDOrSVG?.startsWith('<')) {
-			addIcon(name, iconIDOrSVG);
+			addIcon(iconIdentifier, iconIDOrSVG);
 		}
 
 		if (iconIDOrSVG && !iconIDOrSVG.startsWith('<')) {
 			const icon = getIcon(iconIDOrSVG);
-			const brainCogIcon =
-				this.iconCache.get(iconIDOrSVG) ?? addBrainCogIcon(icon);
+			const brainCogIcon = addBrainCogIcon(icon);
 
-			addIcon(name, brainCogIcon);
-
-			this.iconCache.set(iconIDOrSVG, brainCogIcon);
+			addIcon(iconIdentifier, brainCogIcon);
 		}
 
 		if (!iconIDOrSVG) {
-			const letter = name.charAt(0).toUpperCase();
-			const icon = this.iconCache.get(letter) ?? setLetterWithCog(letter);
+			const letter = iconIdentifier.charAt(0).toUpperCase();
+			const icon = setLetterWithCog(letter);
 
-			addIcon(name, icon);
-
-			this.iconCache.set(name, icon);
+			addIcon(iconIdentifier, icon);
 		}
 
-		return name;
+		return iconIdentifier;
 	}
 
 	onload() {
@@ -138,9 +138,6 @@ export default class WordWisePlugin extends Plugin {
 			name: `${this.manifest.id}-${this.app.appId}`,
 		});
 
-		this.initializeConstantCommands();
-		this.initializePromptsToCommands();
-
 		if (Platform.isDesktop) {
 			// This will add a status bar element, only available for Desktop view
 			this.statusBarEl = this.addStatusBarItem();
@@ -148,6 +145,9 @@ export default class WordWisePlugin extends Plugin {
 			// Load status bar
 			this.updateStatusBar();
 		}
+
+		this.initializeConstantCommands();
+		await this.initializePromptsToCommands();
 	}
 
 	async initializePromptsToCommands(prompts?: OutputInternalPromptProps[]) {
@@ -197,6 +197,7 @@ export default class WordWisePlugin extends Plugin {
 		const obsidianCommands = [
 			{
 				name: 'Check Text Generation Logs',
+				icon: 'memory-stick',
 				onClick: async (_editor: EnhancedEditor) => {
 					const modal = new TextGenerationLogModal(this);
 
@@ -212,6 +213,7 @@ export default class WordWisePlugin extends Plugin {
 				// Actions to mark it as a constant command
 				id: `actions-${slugify(command.name)}`,
 				name: command.name,
+				icon: this.constructIcon(slugify(command.name), command.icon),
 				editorCallback: (editor: EnhancedEditor) => command.onClick(editor),
 			});
 		}
