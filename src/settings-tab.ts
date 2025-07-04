@@ -659,8 +659,8 @@ export class SettingsTab extends PluginSettingTab {
 					const nowMS = Date.now();
 					const vaultName = this.plugin.app.vault.getName();
 					const fileName = Platform.isMobileApp
-						? `text-generation-logs-${nowMS}.json`
-						: `${plugin.manifest.id}-text-generation-logs-${vaultName}-${nowMS}.json`;
+						? `logs-${nowMS}.json`
+						: `${plugin.manifest.id}-logs-${vaultName}-${nowMS}.json`;
 
 					if (!Platform.isMobileApp) {
 						await downloadFileWithFilePicker(blob, fileName);
