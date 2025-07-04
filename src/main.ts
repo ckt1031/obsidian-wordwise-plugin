@@ -39,6 +39,36 @@ export default class WordWisePlugin extends Plugin {
 
 	private statusBarEl: HTMLElement | null = null;
 
+	private iconCache = new Map<string, string>();
+
+	constructIcon(name: string, iconIDOrSVG?: string) {
+		// Add icon if it exists
+		if (iconIDOrSVG?.startsWith('<')) {
+			addIcon(name, iconIDOrSVG);
+		}
+
+		if (iconIDOrSVG && !iconIDOrSVG.startsWith('<')) {
+			const icon = getIcon(iconIDOrSVG);
+			const brainCogIcon =
+				this.iconCache.get(iconIDOrSVG) ?? addBrainCogIcon(icon);
+
+			addIcon(name, brainCogIcon);
+
+			this.iconCache.set(iconIDOrSVG, brainCogIcon);
+		}
+
+		if (!iconIDOrSVG) {
+			const letter = name.charAt(0).toUpperCase();
+			const icon = this.iconCache.get(letter) ?? setLetterWithCog(letter);
+
+			addIcon(name, icon);
+
+			this.iconCache.set(name, icon);
+		}
+
+		return name;
+	}
+
 	onload() {
 		this.registerEvent(
 			this.app.workspace.on('editor-menu', (menu, editor: EnhancedEditor) => {
@@ -51,28 +81,11 @@ export default class WordWisePlugin extends Plugin {
 						// slugify and remove spaces
 						const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
 
-						// Add icon if it exists
-						if (prompt.icon?.startsWith('<')) {
-							addIcon(iconName, prompt.icon);
-						}
-
-						if (prompt.icon && !prompt.icon.startsWith('<')) {
-							const icon = getIcon(prompt.icon);
-
-							if (icon) addIcon(iconName, addBrainCogIcon(icon));
-						}
-
-						if (!prompt.icon) {
-							const letter = prompt.name.charAt(0).toUpperCase();
-
-							addIcon(iconName, setLetterWithCog(letter));
-						}
-
 						// Add prompt to sub-menu
 						subMenu.addItem((item) => {
 							item
 								.setTitle(prompt.name)
-								.setIcon(iconName)
+								.setIcon(this.constructIcon(iconName, prompt.icon))
 								.onClick(() => runPrompt(editor, this, prompt.name));
 						});
 					}
@@ -165,9 +178,6 @@ export default class WordWisePlugin extends Plugin {
 			// slugify and remove spaces
 			const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
 
-			// Add icon if it exists
-			if (prompt.icon) addIcon(iconName, prompt.icon);
-
 			// Check if the command already exists
 			const commandId = `prompts-${slugify(prompt.name)}`;
 			if (oldPluginCommands[commandId]) return;
@@ -176,7 +186,7 @@ export default class WordWisePlugin extends Plugin {
 				// Prompts to mark it as a prompt command, to be identified in order to change later on.
 				id: commandId,
 				name: prompt.name,
-				icon: prompt.icon ? iconName : '',
+				icon: this.constructIcon(iconName, prompt.icon),
 				editorCallback: (editor: EnhancedEditor) =>
 					runPrompt(editor, this, prompt.name),
 			});
