@@ -1,7 +1,7 @@
 import { writeFileSync } from 'node:fs';
 
-import manifest from './manifest.json';
-import versions from './versions.json';
+import manifest from '../manifest.json';
+import versions from '../versions.json';
 
 const targetVersion = process.env.npm_package_version;
 

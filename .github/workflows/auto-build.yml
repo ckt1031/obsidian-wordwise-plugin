@@ -30,6 +30,8 @@ jobs:
         env:
           SETTINGS_OBFUSCATE_KEY: ${{ secrets.SETTINGS_OBFUSCATE_KEY }}
 
+      - run: bun run scripts/auto-build-version.ts
+
       - uses: actions/upload-artifact@v4
         with:
           name: plugin

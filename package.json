@@ -13,7 +13,7 @@
 		"lint": "tsc --noEmit --skipLibCheck && biome check .",
 		"lint:fix": "tsc --noEmit --skipLibCheck && biome check --write .",
 		"test": "vitest run",
-		"version": "bun version-bump.ts && biome format manifest.json versions.json --write && git add manifest.json versions.json",
+		"version": "bun scripts/version-bump.ts && biome format manifest.json versions.json --write && git add manifest.json versions.json",
 		"prepare": "husky || true",
 		"lint-staged": "lint-staged"
 	},
