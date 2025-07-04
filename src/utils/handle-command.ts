@@ -62,7 +62,11 @@ export async function runPrompt(
 	}
 	let input = editor.getSelection();
 
-	if (input.length === 0) {
+	if (
+		input.length === 0 &&
+		promptName !== InternalPromptNames.CustomInstructions &&
+		promptName in InternalPromptNames
+	) {
 		new Notice('No input selected');
 		return;
 	}
