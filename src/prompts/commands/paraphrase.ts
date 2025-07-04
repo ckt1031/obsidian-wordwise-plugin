@@ -1,5 +1,4 @@
 import { InternalPromptNames, PrePromptActions } from '@/config';
-import ParaphraseIcon from '@/icons/paraphrase.svg';
 import type { InputPromptProps } from '@/types';
 
 const prompt = `
@@ -13,7 +12,7 @@ const prompt = `
 
 const promptData: InputPromptProps = {
 	name: InternalPromptNames.Paraphrase,
-	icon: ParaphraseIcon,
+	icon: 'pilcrow',
 	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };

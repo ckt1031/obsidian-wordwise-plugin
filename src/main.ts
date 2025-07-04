@@ -1,5 +1,6 @@
 import {
 	addIcon,
+	getIcon,
 	Notice,
 	Platform,
 	Plugin,
@@ -15,7 +16,6 @@ import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
 
 import { DEFAULT_SETTINGS } from './config';
-import AiIcon from './icons/ai.svg';
 import { upgradeLocalForageInstance } from './migrations/localforage';
 import TextGenerationLogModal from './modals/generation-logs';
 import { retrieveAllPrompts } from './prompt';
@@ -27,6 +27,7 @@ import type {
 	OutputInternalPromptProps,
 	PluginSettings,
 } from './types';
+import { addBrainCogIcon, setLetterWithCog } from './utils/edit-svg';
 import { runPrompt } from './utils/handle-command';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 import SettingsExportImport from './utils/settings-sharing';
@@ -51,13 +52,27 @@ export default class WordWisePlugin extends Plugin {
 						const iconName = prompt.name.toLowerCase().replaceAll(/\s/g, '-');
 
 						// Add icon if it exists
-						if (prompt.icon) addIcon(iconName, prompt.icon);
+						if (prompt.icon?.startsWith('<')) {
+							addIcon(iconName, prompt.icon);
+						}
+
+						if (prompt.icon && !prompt.icon.startsWith('<')) {
+							const icon = getIcon(prompt.icon);
+
+							if (icon) addIcon(iconName, addBrainCogIcon(icon));
+						}
+
+						if (!prompt.icon) {
+							const letter = prompt.name.charAt(0).toUpperCase();
+
+							addIcon(iconName, setLetterWithCog(letter));
+						}
 
 						// Add prompt to sub-menu
 						subMenu.addItem((item) => {
 							item
 								.setTitle(prompt.name)
-								.setIcon(prompt.icon ? iconName : AiIcon)
+								.setIcon(iconName)
 								.onClick(() => runPrompt(editor, this, prompt.name));
 						});
 					}
@@ -101,9 +116,6 @@ export default class WordWisePlugin extends Plugin {
 	async initializePlugin(): Promise<void> {
 		// Load settings to memory, ensuring the plugin is ready to go
 		await this.loadSettings();
-
-		// Add icon
-		addIcon('openai', AiIcon);
 
 		// Migrate localForage instance from previous versions
 		await upgradeLocalForageInstance(this);
@@ -164,7 +176,7 @@ export default class WordWisePlugin extends Plugin {
 				// Prompts to mark it as a prompt command, to be identified in order to change later on.
 				id: commandId,
 				name: prompt.name,
-				icon: prompt.icon ? iconName : AiIcon,
+				icon: prompt.icon ? iconName : '',
 				editorCallback: (editor: EnhancedEditor) =>
 					runPrompt(editor, this, prompt.name),
 			});

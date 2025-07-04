@@ -1,5 +1,4 @@
 import { InternalPromptNames, PrePromptActions } from '@/config';
-import MakeLongerIcon from '@/icons/make-longer.svg';
 import type { InputPromptProps } from '@/types';
 
 const prompt = `
@@ -10,7 +9,7 @@ const prompt = `
 
 const promptData: InputPromptProps = {
 	name: InternalPromptNames.MakeLonger,
-	icon: MakeLongerIcon,
+	icon: 'scroll-text',
 	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };

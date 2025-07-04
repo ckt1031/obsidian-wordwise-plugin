@@ -1,5 +1,4 @@
 import { InternalPromptNames, PrePromptActions } from '@/config';
-import FixGrammarIcon from '@/icons/fix-grammar.svg';
 import type { InputPromptProps } from '@/types';
 
 const prompt = `
@@ -11,7 +10,7 @@ const prompt = `
 
 const promptData: InputPromptProps = {
 	name: InternalPromptNames.FixGrammar,
-	icon: FixGrammarIcon,
+	icon: 'square-function',
 	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };

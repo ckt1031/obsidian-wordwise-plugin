@@ -1,5 +1,4 @@
 import { InternalPromptNames, PrePromptActions } from '@/config';
-import ImproveWritingIcon from '@/icons/improve-writing.svg';
 import type { InputPromptProps } from '@/types';
 
 const prompt = `
@@ -21,7 +20,7 @@ const prompt = `
 
 const promptData: InputPromptProps = {
 	name: InternalPromptNames.ImproveWriting,
-	icon: ImproveWritingIcon,
+	icon: 'star',
 	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };

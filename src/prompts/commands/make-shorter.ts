@@ -1,5 +1,4 @@
 import { InternalPromptNames, PrePromptActions } from '@/config';
-import MakeShorterIcon from '@/icons/make-shorter.svg';
 import type { InputPromptProps } from '@/types';
 
 const prompt = `
@@ -9,7 +8,7 @@ const prompt = `
 
 const promptData: InputPromptProps = {
 	name: InternalPromptNames.MakeShorter,
-	icon: MakeShorterIcon,
+	icon: 'brush',
 	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };

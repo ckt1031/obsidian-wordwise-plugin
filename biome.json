@@ -37,8 +37,7 @@
 							":PACKAGE:",
 							":BLANK_LINE:",
 							[":ALIAS:", ":PATH:"],
-							":BLANK_LINE:",
-							"*.svg"
+							":BLANK_LINE:"
 						]
 					}
 				}

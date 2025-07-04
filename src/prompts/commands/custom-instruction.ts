@@ -1,5 +1,4 @@
 import { InternalPromptNames, PrePromptActions } from '@/config';
-import CustomInstructions from '@/icons/custom-instructions.svg';
 import type { InputPromptProps } from '@/types';
 
 const prompt = `
@@ -13,7 +12,7 @@ const prompt = `
 
 const promptData: InputPromptProps = {
 	name: InternalPromptNames.CustomInstructions,
-	icon: CustomInstructions,
+	icon: 'message-square',
 	action: PrePromptActions.CustomInstructions,
 	data: prompt,
 };

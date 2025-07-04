@@ -1,5 +1,4 @@
 import { InternalPromptNames, PrePromptActions } from '@/config';
-import FindSynonymIcon from '@/icons/find-synonym.svg';
 import type { InputPromptProps } from '@/types';
 
 const prompt = `
@@ -12,7 +11,7 @@ const prompt = `
 
 const promptData: InputPromptProps = {
 	name: InternalPromptNames.FindSynonym,
-	icon: FindSynonymIcon,
+	icon: 'languages',
 	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };

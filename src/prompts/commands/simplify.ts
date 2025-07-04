@@ -1,5 +1,4 @@
 import { InternalPromptNames, PrePromptActions } from '@/config';
-import SimplifyIcon from '@/icons/simplify-text.svg';
 import type { InputPromptProps } from '@/types';
 
 const prompt = `
@@ -14,7 +13,7 @@ const prompt = `
 
 const promptData: InputPromptProps = {
 	name: InternalPromptNames.SimplifyText,
-	icon: SimplifyIcon,
+	icon: 'recycle',
 	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };

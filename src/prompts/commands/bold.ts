@@ -1,5 +1,4 @@
 import { InternalPromptNames, PrePromptActions } from '@/config';
-import HighlightMainPointIcon from '@/icons/highlight-mainpoint.svg';
 import type { InputPromptProps } from '@/types';
 
 const prompt = `
@@ -14,7 +13,7 @@ const prompt = `
 
 const promptData: InputPromptProps = {
 	name: InternalPromptNames.Bold,
-	icon: HighlightMainPointIcon,
+	icon: 'highlighter',
 	action: PrePromptActions.DirectReplacement,
 	data: prompt,
 };

@@ -44,9 +44,6 @@ const context = await esbuild.context({
 	treeShaking: true,
 	outfile: process.env.OUTPUT ?? 'main.js',
 	minify: prod,
-	loader: {
-		'.svg': 'text',
-	},
 	define: {
 		// Remove inline Vitest code
 		'import.meta.vitest': 'undefined',
