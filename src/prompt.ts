@@ -104,7 +104,7 @@ function readFile(fileContent: string): InputPromptProps | undefined {
 
 	return {
 		name: attributes.name,
-		icon: undefined,
+		icon: attributes.icon,
 		data: content.body,
 		isFilePrompt: true,
 		customPromptDefinedModel: attributes.model,

@@ -39,29 +39,29 @@ export default class WordWisePlugin extends Plugin {
 
 	private statusBarEl: HTMLElement | null = null;
 
-	// This function is to ensure the icon is being generated and add to Obsidian Icon database once.
-	// After it was added, we can use the icon everwhere.
-	constructIcon(iconIdentifier: string, iconIDOrSVG?: string) {
-		// If icon exists in cache, return the name of the icon
-		if (getIcon(iconIdentifier)) {
-			return iconIdentifier;
-		}
+	private iconSetCache = new Map<string, string>();
 
-		// Add icon if it exists
-		if (iconIDOrSVG?.startsWith('<')) {
-			addIcon(iconIdentifier, iconIDOrSVG);
-		}
+	// Generates and registers a custom icon in Obsidian's icon database.
+	// Once registered, the icon can be used throughout the application.
+	// We will cache the icon and the ID in order to know when to re-generate the icon.
+	// @param iconNameOwner - The unique identifier/name for the icon
+	// @param iconIDorIconContent - Optional existing icon ID or content to modify
+	constructIcon(iconNameOwner: string, iconIDorIconContent?: string) {
+		// If icon exists in Obsidian icon cache and the content is the same, return the name of the icon
+		if (this.iconSetCache.get(iconNameOwner) === (iconIDorIconContent || ''))
+			return iconNameOwner;
 
-		if (iconIDOrSVG && !iconIDOrSVG.startsWith('<')) {
-			const icon = getIcon(iconIDOrSVG);
+		// The icon is lucide icon.
+		if (iconIDorIconContent && getIcon(iconIDorIconContent)) {
+			const icon = getIcon(iconIDorIconContent);
 			const brainCogIcon = addBrainCogIcon(icon);
 
-			addIcon(iconIdentifier, brainCogIcon);
-		}
-
-		if (!iconIDOrSVG) {
+			addIcon(iconNameOwner, brainCogIcon);
+		} else {
+			// The icon is not a lucide icon, we might use the first letter of the icon name to generate a custom icon.
+			// If icon is not provided, we will use the icon name owner to generate a custom icon.
 			// Get the first letter except "-" and " "
-			const letter = iconIdentifier
+			const letter = (iconIDorIconContent || iconNameOwner)
 				.replace(/-/g, '')
 				.replace(/\s/g, '')
 				.charAt(0)
@@ -69,10 +69,13 @@ export default class WordWisePlugin extends Plugin {
 
 			const icon = setLetterWithCog(letter);
 
-			addIcon(iconIdentifier, icon);
+			addIcon(iconNameOwner, icon);
 		}
 
-		return iconIdentifier;
+		// Cache the icon
+		this.iconSetCache.set(iconNameOwner, iconIDorIconContent || '');
+
+		return iconNameOwner;
 	}
 
 	onload() {

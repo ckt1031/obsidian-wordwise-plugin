@@ -11,6 +11,7 @@ export const FilePromptPropertiesSchema = v.object({
 	model: v.optional(v.string()),
 	provider: v.optional(v.union([v.enum_(APIProvider), v.string()])),
 	systemPrompt: v.optional(v.string()),
+	icon: v.optional(v.string()),
 });
 
 export const InputPromptSchema = v.object({
