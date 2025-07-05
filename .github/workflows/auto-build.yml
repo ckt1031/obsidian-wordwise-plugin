@@ -39,6 +39,6 @@ jobs:
         with:
           name: plugin
           path: |
-            main.js
+            dist/main.js
             manifest.json
-            styles.css
+            dist/styles.css

@@ -51,8 +51,8 @@ jobs:
               uses: softprops/action-gh-release@v2
               with:
                   files: |
-                      main.js
+                      dist/main.js
                       manifest.json
-                      styles.css
+                      dist/styles.css
                   draft: false
                   prerelease: ${{ contains(steps.version.outputs.name, '-beta') }}
