@@ -113,3 +113,16 @@ export function addBrainCogIcon(originalIcon: SVGSVGElement | null): string {
 
 	return originalIcon.outerHTML;
 }
+
+export function isFirstTextEmoji(text: string): boolean {
+	const emojiRegex = /^[\u{1F600}-\u{1F64F}]/u;
+	return emojiRegex.test(text);
+}
+
+export function getFirstTextEmoji(text: string): string {
+	const emojiRegex = /^[\u{1F600}-\u{1F64F}]/u;
+
+	// Get the first emoji
+	const emoji = text.match(emojiRegex);
+	return emoji ? emoji[0] : '';
+}

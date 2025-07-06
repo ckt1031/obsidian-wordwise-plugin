@@ -27,7 +27,12 @@ import type {
 	OutputInternalPromptProps,
 	PluginSettings,
 } from './types';
-import { addBrainCogIcon, setLetterWithCog } from './utils/edit-svg';
+import {
+	addBrainCogIcon,
+	getFirstTextEmoji,
+	isFirstTextEmoji,
+	setLetterWithCog,
+} from './utils/edit-svg';
 import { runPrompt } from './utils/handle-command';
 import { deobfuscateConfig, obfuscateConfig } from './utils/obfuscate-config';
 import SettingsExportImport from './utils/settings-sharing';
@@ -61,11 +66,18 @@ export default class WordWisePlugin extends Plugin {
 			// The icon is not a lucide icon, we might use the first letter of the icon name to generate a custom icon.
 			// If icon is not provided, we will use the icon name owner to generate a custom icon.
 			// Get the first letter except "-" and " "
-			const letter = (iconIDorIconContent || iconNameOwner)
+			let letter = (iconIDorIconContent || iconNameOwner)
 				.replace(/-/g, '')
 				.replace(/\s/g, '')
-				.charAt(0)
 				.toUpperCase();
+
+			console.log('letter', letter);
+
+			if (isFirstTextEmoji(letter)) {
+				letter = getFirstTextEmoji(letter);
+			} else {
+				letter = letter.charAt(0);
+			}
 
 			const icon = setLetterWithCog(letter);
 
