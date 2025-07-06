@@ -21,6 +21,7 @@ import {
 	downloadFileWithFilePicker,
 	saveFileToObsidianConfigFolder,
 } from './utils/download';
+import stringToFragment from './utils/stirng-fragment';
 import { ForageStorage } from './utils/storage';
 
 export class SettingsTab extends PluginSettingTab {
@@ -564,7 +565,11 @@ export class SettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('File Prompts')
-			.setDesc('Use instructions from files in a specific folder.')
+			.setDesc(
+				stringToFragment(
+					'Use instructions from files in a specific folder, check <a href="https://github.com/ckt1031/obsidian-wordwise-plugin/wiki/File-Based-Prompts">wiki</a> for more details.',
+				),
+			)
 			.addToggle((toggle) =>
 				toggle
 					.setValue(settings.customPromptsFromFolder.enabled)
