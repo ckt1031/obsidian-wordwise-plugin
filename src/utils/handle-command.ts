@@ -168,7 +168,7 @@ export async function runPrompt(
 
 	const startTime = Date.now(); // Capture start time
 
-	const modelToCall = promptProperties.customPromptDefinedModel ?? model;
+	const modelToCall = promptProperties.customPromptDefinedModel || model;
 
 	if (!modelToCall || modelToCall.length === 0) {
 		return noticeError(

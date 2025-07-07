@@ -4,7 +4,11 @@ import * as v from 'valibot';
 import { PrePromptActions } from './config';
 import type WordWisePlugin from './main';
 import { INTERNAL_PROMPTS } from './prompts/commands';
-import defaultPluginSystemPrompt from './prompts/system';
+import {
+	excludeOriginalText,
+	systemBasePrompt,
+	withOriginalText,
+} from './prompts/system';
 import { FilePromptPropertiesSchema } from './schemas';
 import type { InputPromptProps, OutputInternalPromptProps } from './types';
 
@@ -33,12 +37,16 @@ export async function retrieveAllPrompts(
 				action = prompt.action as PrePromptActions;
 			}
 
+			const defaultSystemPrompt = prompt.excludeOriginalText
+				? `${systemBasePrompt}\n${excludeOriginalText}`
+				: `${systemBasePrompt}\n${withOriginalText}`;
+
 			return {
 				name: prompt.name,
 				icon: prompt.icon,
 				action,
 				taskPrompt: prompt.data,
-				systemPrompt: prompt.systemPrompt ?? defaultPluginSystemPrompt,
+				systemPrompt: prompt.systemPrompt ?? defaultSystemPrompt,
 				isFilePrompt: prompt.isFilePrompt,
 				filePath: prompt.filePath,
 
@@ -117,6 +125,7 @@ function readFile(fileContent: string): InputPromptProps | undefined {
 		customBehavior: attributes.behavior,
 		customPromptDefinedModel: attributes.model,
 		customPromptDefinedProvider: attributes.provider,
+		excludeOriginalText: attributes.omitOriginal,
 		// filePath <-- Is set in getAllFolderBasedPrompt
 	};
 }
