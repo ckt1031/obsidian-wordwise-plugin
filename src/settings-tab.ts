@@ -28,21 +28,10 @@ export class SettingsTab extends PluginSettingTab {
 	private readonly plugin: WordWisePlugin;
 	private readonly forage: ForageStorage;
 
-	// Settings elements
-	private filePromptsEl: HTMLElement;
-	private advancedSettingsEl: HTMLElement;
-	private providerEl: HTMLElement[] = [];
-
 	constructor(plugin: WordWisePlugin) {
 		super(plugin.app, plugin);
 		this.plugin = plugin;
 		this.forage = new ForageStorage();
-	}
-
-	async restartSettingsTab(plugin: WordWisePlugin) {
-		await plugin.app.setting.close();
-		await plugin.app.setting.open();
-		await plugin.app.setting.openTabById(plugin.manifest.id);
 	}
 
 	display(): void {
@@ -67,35 +56,17 @@ export class SettingsTab extends PluginSettingTab {
 			dropDown.onChange(async (value) => {
 				settings.aiProvider = value as APIProvider;
 				await plugin.saveSettings();
-
-				// Hide all provider settings
-				for (const provider of this.providerEl) {
-					provider.style.display = 'none';
-
-					if (provider.className === `provider-settings-${value}`) {
-						provider.style.display = 'block';
-					}
-				}
+				this.display(); // Refresh the settings tab
 			});
 		});
 
 		for (const provider of Object.keys(settings.aiProviderConfig)) {
-			const providerSettingsEl = containerEl.createDiv(
-				`provider-settings-${provider}`,
-			);
-
-			// Divider
-			new Setting(providerSettingsEl);
-
 			if (settings.aiProvider !== provider) {
-				providerSettingsEl.style.display = 'none';
+				continue;
 			}
 
-			// Add to the providerEl array
-			this.providerEl.push(providerSettingsEl);
-
 			if (settings.aiProviderConfig[provider].isCustom) {
-				const c = new Setting(providerSettingsEl);
+				const c = new Setting(containerEl);
 				c.setName('Create New Custom Provider')
 					.setDesc(
 						"Create a provider with a different API endpoint.  Make sure it's compatible with OpenAI.",
@@ -112,7 +83,7 @@ export class SettingsTab extends PluginSettingTab {
 							};
 							settings.aiProvider = newProvider;
 							await plugin.saveSettings();
-							await this.restartSettingsTab(plugin);
+							this.display(); // Refresh the settings tab
 						});
 					});
 
@@ -140,13 +111,13 @@ export class SettingsTab extends PluginSettingTab {
 								this.forage.removeModels(provider);
 								settings.aiProvider = APIProvider.OpenAI;
 								await plugin.saveSettings();
-								await this.restartSettingsTab(plugin);
+								this.display(); // Refresh the settings tab
 							}
 						});
 					});
 				}
 
-				new Setting(providerSettingsEl)
+				new Setting(containerEl)
 					.setName('Provider Display Name')
 					.addText((text) =>
 						text
@@ -171,7 +142,7 @@ export class SettingsTab extends PluginSettingTab {
 					);
 			}
 
-			new Setting(providerSettingsEl).setName('API Key').addText((text) => {
+			new Setting(containerEl).setName('API Key').addText((text) => {
 				wrapPasswordComponent(text);
 				wrapAPITestComponent({ text, plugin });
 				text
@@ -190,7 +161,7 @@ export class SettingsTab extends PluginSettingTab {
 				// provider === APIProvider.Custom
 				settings.aiProviderConfig[provider].isCustom
 			) {
-				new Setting(providerSettingsEl)
+				new Setting(containerEl)
 					.setName('API Base URL')
 					.setDesc(
 						'Enter the web address for the API. Do not include a trailing slash or any extra parts of the address.',
@@ -209,7 +180,7 @@ export class SettingsTab extends PluginSettingTab {
 
 			if (provider === APIProvider.AzureOpenAI) {
 				// API Version
-				new Setting(providerSettingsEl).setName('API Version').addText((text) =>
+				new Setting(containerEl).setName('API Version').addText((text) =>
 					text
 						.setPlaceholder('2023-05-15')
 						.setValue(settings.aiProviderConfig[provider].apiVersion || '')
@@ -221,7 +192,7 @@ export class SettingsTab extends PluginSettingTab {
 				);
 			}
 
-			const modelSetting = new Setting(providerSettingsEl);
+			const modelSetting = new Setting(containerEl);
 
 			modelSetting.setName('Model');
 
@@ -415,23 +386,13 @@ export class SettingsTab extends PluginSettingTab {
 				toggle.setValue(settings.advancedSettings).onChange(async (value) => {
 					settings.advancedSettings = value;
 					await plugin.saveSettings();
-					// Toggle advanced settings visibility
-					this.advancedSettingsEl.style.display = value ? 'block' : 'none';
+					this.display(); // Refresh the settings tab
 				}),
 			);
 
-		// Initialize advanced settings container
-		this.advancedSettingsEl = containerEl.createDiv('advanced-settings');
-		// Hide advanced settings by default
-		this.advancedSettingsEl.style.display = settings.advancedSettings
-			? 'block'
-			: 'none';
+		new Setting(containerEl).setName('Advanced API Settings').setHeading();
 
-		new Setting(this.advancedSettingsEl)
-			.setName('Advanced API Settings')
-			.setHeading();
-
-		new Setting(this.advancedSettingsEl)
+		new Setting(containerEl)
 			.setName('Disable System Instructions')
 			.setDesc(
 				'Some AI models might not work with system instructions.  Try turning this on if you have problems.',
@@ -445,7 +406,7 @@ export class SettingsTab extends PluginSettingTab {
 					}),
 			);
 
-		new Setting(this.advancedSettingsEl)
+		new Setting(containerEl)
 			.setName('Omit Version Prefix')
 			.setDesc(
 				'Use the web address without the version number (e.g., /chat/completions instead of /v1/chat/completions). Some providers might do this automatically.',
@@ -463,7 +424,7 @@ export class SettingsTab extends PluginSettingTab {
 					}),
 			);
 
-		new Setting(this.advancedSettingsEl)
+		new Setting(containerEl)
 			.setName('Custom Model ID')
 			.setDesc(
 				"If you don't enter anything here, the model selected above will be used.",
@@ -481,7 +442,7 @@ export class SettingsTab extends PluginSettingTab {
 					}),
 			);
 
-		new Setting(this.advancedSettingsEl)
+		new Setting(containerEl)
 			.setName('Max Tokens')
 			.setDesc(
 				'The maximum number of words or characters the AI can generate. Set to 0 to use the default.',
@@ -570,6 +531,7 @@ export class SettingsTab extends PluginSettingTab {
 								(p) => p.name !== prompts.name,
 							);
 							await plugin.saveSettings();
+							this.display(); // Refresh the settings tab
 						}
 					});
 				});
@@ -588,35 +550,29 @@ export class SettingsTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						settings.customPromptsFromFolder.enabled = value;
 						await plugin.saveSettings();
-						// Toggle file prompts visibility
-						this.filePromptsEl.style.display = value ? 'block' : 'none';
+						this.display(); // Refresh the settings tab
 					}),
 			);
 
-		// Initialize file prompts container
-		this.filePromptsEl = containerEl.createDiv('file-prompts');
-		// Hide file prompts by default
-		this.filePromptsEl.style.display = settings.customPromptsFromFolder.enabled
-			? 'block'
-			: 'none';
+		if (settings.customPromptsFromFolder.enabled) {
+			new Setting(containerEl)
+				.setName('Folder Path')
+				.setDesc('The folder where your prompt files are located.')
+				.addText((text) =>
+					text
+						.setPlaceholder('Enter the folder path')
+						.setValue(settings.customPromptsFromFolder.path)
+						.onChange(
+							debounce(async (value: string) => {
+								const folder = this.plugin.app.vault.getFolderByPath(value);
+								if (!folder) new Notice(`Folder (${value}) does not exist`);
 
-		new Setting(this.filePromptsEl)
-			.setName('Folder Path')
-			.setDesc('The folder where your prompt files are located.')
-			.addText((text) =>
-				text
-					.setPlaceholder('Enter the folder path')
-					.setValue(settings.customPromptsFromFolder.path)
-					.onChange(
-						debounce(async (value: string) => {
-							const folder = this.plugin.app.vault.getFolderByPath(value);
-							if (!folder) new Notice(`Folder (${value}) does not exist`);
-
-							settings.customPromptsFromFolder.path = value;
-							await plugin.saveSettings();
-						}, 1500),
-					),
-			);
+								settings.customPromptsFromFolder.path = value;
+								await plugin.saveSettings();
+							}, 1500),
+						),
+				);
+		}
 
 		new Setting(containerEl).setName('Text Generation Logging').setHeading();
 
@@ -746,7 +702,7 @@ export class SettingsTab extends PluginSettingTab {
 						// This has already been clicked once, so reset the settings
 						await plugin.resetSettings();
 						new Notice('Resetting settings to default values');
-						await this.restartSettingsTab(plugin);
+						this.display(); // Refresh the settings tab
 					}
 				});
 			});
