@@ -71,8 +71,6 @@ export default class WordWisePlugin extends Plugin {
 				.replace(/\s/g, '')
 				.toUpperCase();
 
-			console.log('letter', letter);
-
 			if (isFirstTextEmoji(letter)) {
 				letter = getFirstTextEmoji(letter);
 			} else {

@@ -60,7 +60,7 @@ export const PluginSettingsSchema = v.object({
 	/** Show a confirmation UI before inserting generated text */
 	enableConfirmationModal: v.boolean(),
 
-	// Custom Behavior
+	// What to do with the generated text and the original text
 	customBehavior: v.enum_(CustomBehavior),
 
 	obfuscateConfig: v.boolean(),

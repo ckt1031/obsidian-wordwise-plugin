@@ -62,6 +62,7 @@ export interface OutputInternalPromptProps {
 	systemPrompt?: string;
 	isFilePrompt?: boolean;
 	filePath?: string;
+	customBehavior?: string;
 	customPromptDefinedModel?: string;
 	customPromptDefinedProvider?: string;
 }

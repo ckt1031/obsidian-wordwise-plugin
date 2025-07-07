@@ -41,6 +41,9 @@ export async function retrieveAllPrompts(
 				systemPrompt: prompt.systemPrompt ?? defaultPluginSystemPrompt,
 				isFilePrompt: prompt.isFilePrompt,
 				filePath: prompt.filePath,
+
+				// Customized values for the prompt
+				customBehavior: prompt.customBehavior,
 				customPromptDefinedModel: prompt.customPromptDefinedModel,
 				customPromptDefinedProvider: prompt.customPromptDefinedProvider,
 			};
@@ -106,7 +109,12 @@ function readFile(fileContent: string): InputPromptProps | undefined {
 		name: attributes.name,
 		icon: attributes.icon,
 		data: content.body,
+
+		// File prompt properties
 		isFilePrompt: true,
+
+		// Customized values for the prompt
+		customBehavior: attributes.behavior,
 		customPromptDefinedModel: attributes.model,
 		customPromptDefinedProvider: attributes.provider,
 		// filePath <-- Is set in getAllFolderBasedPrompt

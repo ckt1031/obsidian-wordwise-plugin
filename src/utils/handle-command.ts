@@ -2,6 +2,7 @@ import { Notice, Platform } from 'obsidian';
 
 import Mustache from 'mustache';
 import { nanoid } from 'nanoid';
+import slugify from 'slugify';
 
 import {
 	APIProvider,
@@ -81,17 +82,17 @@ export async function runPrompt(
 	}
 
 	// Find form global store
-	const actionData = plugin.prompts.find((p) => p.name === promptName);
+	const promptProperties = plugin.prompts.find((p) => p.name === promptName);
 
 	// Reject if not found
-	if (!actionData) {
+	if (!promptProperties) {
 		return noticeError(`Could not find prompt data with name ${promptName}`);
 	}
 
 	/** Specifically for `PrePromptActions.CustomInstructions` prompt */
 	let customInputInstructions = '';
 
-	if (actionData.action === PrePromptActions.CustomInstructions) {
+	if (promptProperties.action === PrePromptActions.CustomInstructions) {
 		const modal = new AskForInstructionModal(plugin);
 		modal.open();
 		customInputInstructions = await modal.promise;
@@ -100,10 +101,10 @@ export async function runPrompt(
 	// Priority: Command specific > Custom Model > Provider Model
 	const settingsCustomModel = getNonEmptyString(plugin.settings.customAiModel);
 	const commandSpecificModel = getNonEmptyString(
-		actionData.customPromptDefinedModel,
+		promptProperties.customPromptDefinedModel,
 	);
 	const commandSpecificProviderName = getNonEmptyString(
-		actionData.customPromptDefinedProvider,
+		promptProperties.customPromptDefinedProvider,
 	);
 
 	// Tried to find provider settings from name given (Current we have command specific and settings)
@@ -137,12 +138,13 @@ export async function runPrompt(
 	const providerDisplayName =
 		// Still need to ensure if the display name is not empty
 		getNonEmptyString(providerSettings?.displayName) ?? providerSettingEntry[0]; // Get the key if display name is empty
+
 	new Notice(`${promptName} with ${providerDisplayName}`);
 
-	let taskPrompt = actionData.taskPrompt;
+	let taskPrompt = promptProperties.taskPrompt;
 
-	if (actionData.isFilePrompt && actionData.filePath) {
-		const _data = await getFolderBasedPrompt(plugin, actionData.filePath);
+	if (promptProperties.isFilePrompt && promptProperties.filePath) {
+		const _data = await getFolderBasedPrompt(plugin, promptProperties.filePath);
 		taskPrompt = _data?.data;
 	}
 
@@ -151,7 +153,7 @@ export async function runPrompt(
 	}
 
 	const systemPrompt: string = Mustache.render(
-		`${actionData.systemPrompt}\n\n${taskPrompt}`,
+		`${promptProperties.systemPrompt}\n\n${taskPrompt}`,
 		{
 			instructions: customInputInstructions,
 		},
@@ -160,7 +162,7 @@ export async function runPrompt(
 	const startTime = Date.now(); // Capture start time
 
 	const provider =
-		actionData.customPromptDefinedProvider ?? plugin.settings.aiProvider;
+		promptProperties.customPromptDefinedProvider ?? plugin.settings.aiProvider;
 
 	const providerEntry = Object.entries(plugin.settings.aiProviderConfig).find(
 		([key, d]) => {
@@ -171,7 +173,7 @@ export async function runPrompt(
 	if (!providerEntry)
 		return noticeError(`Could not find provider: ${provider}`);
 
-	const modelToCall = actionData.customPromptDefinedModel ?? model;
+	const modelToCall = promptProperties.customPromptDefinedModel ?? model;
 
 	if (!modelToCall || modelToCall.length === 0) {
 		return noticeError(
@@ -180,12 +182,15 @@ export async function runPrompt(
 	}
 
 	const onAccept = async (text: string) => {
-		switch (plugin.settings.customBehavior) {
-			case CustomBehavior.InsertFirst:
+		const behaviour =
+			promptProperties.customBehavior ?? plugin.settings.customBehavior;
+
+		switch (slugify(behaviour, { lower: true })) {
+			case slugify(CustomBehavior.InsertFirst, { lower: true }):
 				// Insert the generated text at the beginning of the editor
 				editor.replaceRange(text, { line: get.line, ch: 0 });
 				break;
-			case CustomBehavior.InsertLast:
+			case slugify(CustomBehavior.InsertLast, { lower: true }):
 				editor.replaceRange(text, { line: get.line + 1, ch: 0 });
 				break;
 			default:

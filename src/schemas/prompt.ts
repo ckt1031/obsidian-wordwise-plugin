@@ -12,6 +12,8 @@ export const FilePromptPropertiesSchema = v.object({
 	provider: v.optional(v.union([v.enum_(APIProvider), v.string()])),
 	systemPrompt: v.optional(v.string()),
 	icon: v.optional(v.string()),
+
+	behavior: v.optional(v.string()),
 });
 
 export const InputPromptSchema = v.object({
@@ -28,6 +30,7 @@ export const InputPromptSchema = v.object({
 	action: v.optional(v.enum_(PrePromptActions)),
 	icon: v.optional(v.string()),
 	isFilePrompt: v.optional(v.boolean()),
+	customBehavior: v.optional(v.string()),
 	customPromptDefinedModel: v.optional(v.string()),
 	customPromptDefinedProvider: v.optional(v.string()),
 });
