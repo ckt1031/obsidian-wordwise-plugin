@@ -46,6 +46,21 @@ jobs:
                     fi
               shell: bash
 
+            - name: Check tag matches manifest version
+              run: |
+                TAG_VERSION="${{ steps.version.outputs.name }}"
+                if [[ "$TAG_VERSION" == *-beta* ]]; then
+                  MANIFEST_FILE="manifest-beta.json"
+                else
+                  MANIFEST_FILE="manifest.json"
+                fi
+                MANIFEST_VERSION=$(jq -r .version "$MANIFEST_FILE")
+                if [[ "$TAG_VERSION" != "$MANIFEST_VERSION" ]]; then
+                  echo "Tag version ($TAG_VERSION) does not match $MANIFEST_FILE version ($MANIFEST_VERSION)." >&2
+                  exit 1
+                fi
+              shell: bash
+
             - name: Release
               if: startsWith(github.ref, 'refs/tags/')
               uses: softprops/action-gh-release@v2

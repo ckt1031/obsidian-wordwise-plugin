@@ -1,0 +1,24 @@
+# Read refs from stdin
+while read local_ref local_sha remote_ref remote_sha
+do
+  # Check if this is a tag push
+  if [[ "$local_ref" == refs/tags/* ]]; then
+    TAG_VERSION="${local_ref#refs/tags/}"
+
+    # Determine which manifest to check
+    if [[ "$TAG_NAME" == *-beta* ]]; then
+        MANIFEST_FILE="manifest-beta.json"
+    else
+        MANIFEST_FILE="manifest.json"
+    fi
+
+    # Extract version from manifest
+    MANIFEST_VERSION=$(jq -r .version "$MANIFEST_FILE")
+
+    # Compare and print result
+    if [[ "$TAG_VERSION" != "$MANIFEST_VERSION" ]]; then
+        echo "Tag version ($TAG_VERSION) does not match $MANIFEST_FILE version ($MANIFEST_VERSION)." >&2
+        exit 1
+    fi
+  fi
+done
