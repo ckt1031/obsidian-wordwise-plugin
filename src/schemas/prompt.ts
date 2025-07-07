@@ -38,3 +38,5 @@ export const InputPromptSchema = v.object({
 	customPromptDefinedModel: v.optional(v.string()),
 	customPromptDefinedProvider: v.optional(v.string()),
 });
+
+export type InputPrompt = v.InferOutput<typeof InputPromptSchema>;

@@ -108,7 +108,9 @@ export async function runPrompt(
 
 	// Tried to find provider settings from name given (Current we have command specific and settings)
 	const providerNameToBeFound =
-		commandSpecificProviderName || plugin.settings.aiProvider;
+		(commandSpecificProviderName === 'inherit'
+			? plugin.settings.aiProvider
+			: commandSpecificProviderName) || plugin.settings.aiProvider;
 
 	const providerSettingEntry = Object.entries(
 		plugin.settings.aiProviderConfig,
@@ -164,18 +166,6 @@ export async function runPrompt(
 
 	const startTime = Date.now(); // Capture start time
 
-	const provider =
-		promptProperties.customPromptDefinedProvider ?? plugin.settings.aiProvider;
-
-	const providerEntry = Object.entries(plugin.settings.aiProviderConfig).find(
-		([key, d]) => {
-			return d.displayName === provider || key === provider;
-		},
-	);
-
-	if (!providerEntry)
-		return noticeError(`Could not find provider: ${provider}`);
-
 	const modelToCall = promptProperties.customPromptDefinedModel ?? model;
 
 	if (!modelToCall || modelToCall.length === 0) {
@@ -204,7 +194,7 @@ export async function runPrompt(
 	const enableStreaming =
 		plugin.settings.enableStreaming &&
 		promptName !== 'Find Synonym' &&
-		providerEntry[0] !== APIProvider.AzureOpenAI;
+		providerSettingEntry[0] !== APIProvider.AzureOpenAI;
 
 	const confirmModalWillShow =
 		enableStreaming || plugin.settings.enableConfirmationModal;
@@ -231,7 +221,7 @@ export async function runPrompt(
 			baseURL: providerSettings.baseUrl,
 			apiKey: providerSettings.apiKey,
 			model: modelToCall,
-			provider: providerEntry[0],
+			provider: providerSettingEntry[0],
 			providerSettings: providerSettings,
 			stream: enableStreaming,
 			onStreamText: (text: string) => {

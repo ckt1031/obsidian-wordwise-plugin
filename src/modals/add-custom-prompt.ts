@@ -3,11 +3,13 @@ import { Modal, Notice, Setting } from 'obsidian';
 import { CustomBehavior } from '@/config';
 import type WordWisePlugin from '@/main';
 import { retrieveAllPrompts } from '@/prompt';
+import type { InputPrompt } from '@/schemas';
 
 export default class AddCustomPromptModal extends Modal {
 	private name: string;
 	private data: string;
 	private behavior: string;
+	private provider: string;
 
 	// Readonly property, since this is required to locate the prompt in the settings before it has been edited
 	private readonly originalName: string;
@@ -53,10 +55,11 @@ export default class AddCustomPromptModal extends Modal {
 			return;
 		}
 
-		const updatedPrompt = {
+		const updatedPrompt: InputPrompt = {
 			name: this.name,
 			data: this.data,
 			customBehavior: this.behavior,
+			customPromptDefinedProvider: this.provider,
 		};
 
 		if (this.isEdit) {
@@ -110,6 +113,26 @@ export default class AddCustomPromptModal extends Modal {
 			});
 			dropdown.onChange((value) => {
 				this.behavior = value;
+			});
+		});
+
+		new Setting(contentEl).setName('Provider:').addDropdown((dropdown) => {
+			// Add inherited provider
+			dropdown.addOption('inherit', 'Inherit from settings');
+
+			// Add all the API Providers, use value as option value
+			for (const [providerName, data] of Object.entries(
+				this.plugin.settings.aiProviderConfig,
+			)) {
+				const display =
+					data.isCustom && data.displayName && data.displayName.length > 0
+						? `Custom: ${data.displayName}`
+						: providerName;
+				dropdown.addOption(providerName, display);
+			}
+
+			dropdown.onChange((value) => {
+				this.provider = value;
 			});
 		});
 
