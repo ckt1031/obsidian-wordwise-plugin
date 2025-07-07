@@ -10,6 +10,10 @@ export const FilePromptPropertiesSchema = v.object({
 	disabled: v.optional(v.boolean()),
 	model: v.optional(v.string()),
 	provider: v.optional(v.union([v.enum_(APIProvider), v.string()])),
+	/** Text or Markdown file path (Relative to the Obsidian vault)
+	 *
+	 * OS Absolute path and Relative path to the markdown file **are not supported**.
+	 */
 	systemPrompt: v.optional(v.string()),
 	icon: v.optional(v.string()),
 	behavior: v.optional(v.string()),

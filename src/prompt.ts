@@ -68,7 +68,8 @@ export async function getFolderBasedPrompt(
 	if (!exists) return undefined;
 
 	const fileContent = await plugin.app.vault.adapter.read(path);
-	return readFile(fileContent);
+
+	return await readFile(plugin, fileContent);
 }
 
 export async function getAllFolderBasedPrompt(plugin: WordWisePlugin) {
@@ -91,7 +92,7 @@ export async function getAllFolderBasedPrompt(plugin: WordWisePlugin) {
 	// Read all files
 	for (const file of files.files) {
 		const fileContent = await plugin.app.vault.adapter.read(file);
-		const parsed = readFile(fileContent);
+		const parsed = await readFile(plugin, fileContent);
 
 		if (parsed) prompts.push({ ...parsed, filePath: file });
 	}
@@ -99,7 +100,10 @@ export async function getAllFolderBasedPrompt(plugin: WordWisePlugin) {
 	return prompts;
 }
 
-function readFile(fileContent: string): InputPromptProps | undefined {
+async function readFile(
+	plugin: WordWisePlugin,
+	fileContent: string,
+): Promise<InputPromptProps | undefined> {
 	const content = fm(fileContent);
 
 	// Ignore if content.attributes is {}
@@ -113,6 +117,22 @@ function readFile(fileContent: string): InputPromptProps | undefined {
 
 	if (attributes.disabled) return;
 
+	let systemPrompt = attributes.systemPrompt;
+
+	// We might check if the attributes.systemPrompt is a relative path to the markdown file
+	// We ONLY support relative path from Obsidian vault to the markdown file.
+	// Starting with `~` as root directory of vault.
+	if (systemPrompt?.startsWith('~/')) {
+		const vault = plugin.app.vault;
+		const absolutePath = systemPrompt.replace('~/', '');
+		const exists = await vault.adapter.exists(absolutePath);
+
+		if (exists) {
+			const fileContent = await vault.adapter.read(absolutePath);
+			systemPrompt = fileContent;
+		}
+	}
+
 	return {
 		name: attributes.name,
 		icon: attributes.icon,
@@ -120,6 +140,8 @@ function readFile(fileContent: string): InputPromptProps | undefined {
 
 		// File prompt properties
 		isFilePrompt: true,
+
+		systemPrompt,
 
 		// Customized values for the prompt
 		customBehavior: attributes.behavior,
