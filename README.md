@@ -12,6 +12,12 @@ This plugin is built as a **lightweight**, **easy-to-use** tool specifically foc
 
 Other plugins can have complex interfaces that might feel overwhelming or slow things down. Some popular AI plugins don't work well on mobile devices, feeling laggy or not being supported at all. This plugin is designed to work smoothly on all devices, including mobile.
 
+## How to Use
+
+We offer a wiki page to help you get started: [How to Use](https://github.com/ckt1031/obsidian-wordwise-plugin/wiki).
+
+Learn more about file based prompts: [File Based Prompts](https://github.com/ckt1031/obsidian-wordwise-plugin/wiki/File-Based-Prompts).
+
 ## Installation
 
 ### Community Plugins
