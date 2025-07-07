@@ -131,6 +131,15 @@ export default class AddCustomPromptModal extends Modal {
 			});
 		});
 
+		new Setting(contentEl).setName('Model:').addText((text) => {
+			text.inputEl.style.width = '100%';
+			text.setPlaceholder('Model (example: gpt-4o)');
+			text.onChange((value) => {
+				this.prompt.customPromptDefinedModel = value;
+			});
+			text.setValue(this.prompt.customPromptDefinedModel ?? '');
+		});
+
 		new Setting(contentEl).addButton((btn) =>
 			btn
 				.setButtonText('Confirm')
