@@ -35,12 +35,12 @@ export interface CallTextAPIProps {
 		user: string;
 	};
 	model: string;
-	baseURL: string;
-	apiKey: string;
+
+	/** Unique Identifier, NOT the display name */
 	provider: string;
+	providerSettings: PluginSettings['aiProviderConfig'][APIProvider];
 
 	plugin: WordWisePlugin;
-	providerSettings: PluginSettings['aiProviderConfig'][APIProvider];
 
 	isTesting?: boolean;
 

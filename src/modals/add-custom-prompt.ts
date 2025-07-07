@@ -6,10 +6,7 @@ import { retrieveAllPrompts } from '@/prompt';
 import type { InputPrompt } from '@/schemas';
 
 export default class AddCustomPromptModal extends Modal {
-	private name: string;
-	private data: string;
-	private behavior: string;
-	private provider: string;
+	private prompt: InputPrompt;
 
 	// Readonly property, since this is required to locate the prompt in the settings before it has been edited
 	private readonly originalName: string;
@@ -18,36 +15,34 @@ export default class AddCustomPromptModal extends Modal {
 	private readonly plugin: WordWisePlugin;
 
 	// Action sync function or async function
-	constructor(
-		plugin: WordWisePlugin,
-		isEdit: boolean,
-		name?: string,
-		data?: string,
-	) {
+	constructor(plugin: WordWisePlugin, isEdit: boolean, prompt?: InputPrompt) {
 		super(plugin.app);
-		this.name = '';
-		this.data = '';
+
 		this.plugin = plugin;
 
 		this.isEdit = isEdit;
 
 		if (isEdit) {
-			this.name = name ?? '';
-			this.data = data ?? '';
+			this.prompt = prompt ?? {
+				name: '',
+				data: '',
+				customBehavior: '',
+				customPromptDefinedProvider: '',
+			};
 		}
 
-		this.originalName = name ?? '';
+		this.originalName = prompt?.name ?? '';
 	}
 
 	async submitForm(): Promise<void> {
-		if (this.name === '' || this.data === '') {
+		if (this.prompt.name === '' || this.prompt.data === '') {
 			new Notice('Please fill out all fields');
 			return;
 		}
 
 		// Check if name is already in use
 		const result = this.plugin.settings.customPrompts.find(
-			(prompt) => prompt.name === this.name,
+			(prompt) => prompt.name === this.prompt.name,
 		);
 
 		if (!this.isEdit && result) {
@@ -56,10 +51,7 @@ export default class AddCustomPromptModal extends Modal {
 		}
 
 		const updatedPrompt: InputPrompt = {
-			name: this.name,
-			data: this.data,
-			customBehavior: this.behavior,
-			customPromptDefinedProvider: this.provider,
+			...this.prompt,
 		};
 
 		if (this.isEdit) {
@@ -83,7 +75,7 @@ export default class AddCustomPromptModal extends Modal {
 	}
 
 	onOpen() {
-		const { contentEl, data, name } = this;
+		const { contentEl } = this;
 
 		contentEl.empty();
 
@@ -93,26 +85,27 @@ export default class AddCustomPromptModal extends Modal {
 			text.inputEl.style.width = '100%';
 			text.setPlaceholder('Name (example: text-tone-helper)');
 			text.onChange((value: string) => {
-				this.name = value;
+				this.prompt.name = value;
 			});
-			text.setValue(name);
+			text.setValue(this.prompt.name);
 		});
 
 		new Setting(contentEl).setName('Prompt:').addTextArea((textArea) => {
 			textArea.inputEl.className = 'modal-text-area';
 			textArea.setPlaceholder('Change the tone of the text');
 			textArea.onChange((value) => {
-				this.data = value;
+				this.prompt.data = value;
 			});
-			textArea.setValue(data);
+			textArea.setValue(this.prompt.data);
 		});
 
 		new Setting(contentEl).setName('Behavior:').addDropdown((dropdown) => {
 			Object.values(CustomBehavior).forEach((behavior) => {
 				dropdown.addOption(behavior, behavior);
 			});
+			dropdown.setValue(this.prompt.customBehavior ?? CustomBehavior.Replace);
 			dropdown.onChange((value) => {
-				this.behavior = value;
+				this.prompt.customBehavior = value;
 			});
 		});
 
@@ -131,8 +124,10 @@ export default class AddCustomPromptModal extends Modal {
 				dropdown.addOption(providerName, display);
 			}
 
+			dropdown.setValue(this.prompt.customPromptDefinedProvider ?? 'inherit');
+
 			dropdown.onChange((value) => {
-				this.provider = value;
+				this.prompt.customPromptDefinedProvider = value;
 			});
 		});
 

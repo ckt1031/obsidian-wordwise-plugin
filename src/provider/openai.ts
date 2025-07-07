@@ -56,11 +56,9 @@ export async function getOpenAIModels({
 }
 
 export async function handleTextOpenAI({
-	baseURL,
 	model,
 	provider,
 	messages,
-	apiKey,
 	plugin,
 	providerSettings,
 	isTesting = false,
@@ -71,13 +69,15 @@ export async function handleTextOpenAI({
 		plugin.updateStatusBar(); // Show status bar loader
 	}
 
+	const { apiKey, baseUrl } = providerSettings;
+
 	let headers: Record<string, string> = {
 		'Content-Type': 'application/json',
 		Authorization: `Bearer ${apiKey}`,
 	};
 
 	const host = getAPIHost(
-		baseURL,
+		baseUrl,
 		plugin.settings.aiProvider in DEFAULT_HOST
 			? DEFAULT_HOST[plugin.settings.aiProvider as keyof typeof DEFAULT_HOST]
 			: '',

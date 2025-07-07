@@ -60,11 +60,7 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 			const result = await callTextAPI({
 				plugin,
 				providerSettings,
-
-				baseURL: providerSettings.baseUrl,
 				model: modelToCall,
-				apiKey: providerSettings.apiKey,
-
 				provider: plugin.settings.aiProvider,
 				messages: {
 					system: '',

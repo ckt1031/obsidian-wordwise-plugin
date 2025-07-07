@@ -497,12 +497,7 @@ export class SettingsTab extends PluginSettingTab {
 						if (!prompt) return;
 
 						await plugin.app.setting.close();
-						new AddCustomPromptModal(
-							plugin,
-							true,
-							prompts.name,
-							prompt.data,
-						).open();
+						new AddCustomPromptModal(plugin, true, prompts).open();
 					});
 				})
 				.addButton((button) => {

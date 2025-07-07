@@ -2,15 +2,12 @@ import { Notice, requestUrl } from 'obsidian';
 
 import type OpenAI from 'openai';
 
-import type { APIProvider } from '@/config';
-import type { PluginSettings, ProviderTextAPIProps } from '@/types';
+import type { ProviderTextAPIProps } from '@/types';
 
 /**
  * Azure OpenAI API is pretty weird, it does not support CORS, I had to re-implement it natively with Obsidian request API to bypass CORS issue.
  */
 export async function handleTextAzure({
-	baseURL,
-	model,
 	messages,
 	plugin,
 	providerSettings,
@@ -71,11 +68,13 @@ export async function handleTextAzure({
 		'api-key': providerSettings.apiKey,
 	};
 
-	const path = `/openai/deployments/${model}/chat/completions?api-version=${(providerSettings as PluginSettings['aiProviderConfig'][APIProvider.AzureOpenAI]).apiVersion}`;
+	const { baseUrl, model, apiVersion } = providerSettings;
+
+	const path = `/openai/deployments/${model}/chat/completions?api-version=${apiVersion}`;
 
 	try {
 		const response = await requestUrl({
-			url: `${baseURL}${path}`,
+			url: `${baseUrl}${path}`,
 			headers,
 			method: 'POST',
 			body: JSON.stringify(body),

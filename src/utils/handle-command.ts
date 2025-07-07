@@ -137,7 +137,9 @@ export async function runPrompt(
 
 	// Reject if model is empty
 	if (!getNonEmptyString(model)) {
-		return noticeError('Please configure the model');
+		return noticeError(
+			`Please configure the model for ${providerSettingEntry[0]}`,
+		);
 	}
 
 	const providerDisplayName =
@@ -218,8 +220,6 @@ export async function runPrompt(
 				system: systemPrompt,
 				user: input,
 			},
-			baseURL: providerSettings.baseUrl,
-			apiKey: providerSettings.apiKey,
 			model: modelToCall,
 			provider: providerSettingEntry[0],
 			providerSettings: providerSettings,
