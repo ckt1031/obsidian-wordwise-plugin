@@ -1,11 +1,13 @@
 import { Modal, Notice, Setting } from 'obsidian';
 
+import { CustomBehavior } from '@/config';
 import type WordWisePlugin from '@/main';
 import { retrieveAllPrompts } from '@/prompt';
 
 export default class AddCustomPromptModal extends Modal {
 	private name: string;
 	private data: string;
+	private behavior: string;
 
 	// Readonly property, since this is required to locate the prompt in the settings before it has been edited
 	private readonly originalName: string;
@@ -51,20 +53,20 @@ export default class AddCustomPromptModal extends Modal {
 			return;
 		}
 
+		const updatedPrompt = {
+			name: this.name,
+			data: this.data,
+			customBehavior: this.behavior,
+		};
+
 		if (this.isEdit) {
 			const index = this.plugin.settings.customPrompts.findIndex(
 				(prompt) => prompt.name === this.originalName,
 			);
 
-			this.plugin.settings.customPrompts[index] = {
-				name: this.name,
-				data: this.data,
-			};
+			this.plugin.settings.customPrompts[index] = updatedPrompt;
 		} else {
-			this.plugin.settings.customPrompts.push({
-				name: this.name,
-				data: this.data,
-			});
+			this.plugin.settings.customPrompts.push(updatedPrompt);
 		}
 
 		await this.plugin.saveSettings();
@@ -85,6 +87,7 @@ export default class AddCustomPromptModal extends Modal {
 		this.setTitle(this.isEdit ? 'Edit Custom Prompt' : 'Add Custom Prompt');
 
 		new Setting(contentEl).setName('Name:').addText((text) => {
+			text.inputEl.style.width = '100%';
 			text.setPlaceholder('Name (example: text-tone-helper)');
 			text.onChange((value: string) => {
 				this.name = value;
@@ -99,6 +102,15 @@ export default class AddCustomPromptModal extends Modal {
 				this.data = value;
 			});
 			textArea.setValue(data);
+		});
+
+		new Setting(contentEl).setName('Behavior:').addDropdown((dropdown) => {
+			Object.values(CustomBehavior).forEach((behavior) => {
+				dropdown.addOption(behavior, behavior);
+			});
+			dropdown.onChange((value) => {
+				this.behavior = value;
+			});
 		});
 
 		new Setting(contentEl).addButton((btn) =>

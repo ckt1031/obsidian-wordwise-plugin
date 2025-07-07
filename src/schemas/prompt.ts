@@ -29,7 +29,11 @@ export const InputPromptSchema = v.object({
 	// Optional Values
 	action: v.optional(v.enum_(PrePromptActions)),
 	icon: v.optional(v.string()),
+
+	// File prompt properties
 	isFilePrompt: v.optional(v.boolean()),
+
+	// Customized values for the prompt
 	customBehavior: v.optional(v.string()),
 	customPromptDefinedModel: v.optional(v.string()),
 	customPromptDefinedProvider: v.optional(v.string()),
