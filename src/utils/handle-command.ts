@@ -99,7 +99,6 @@ export async function runPrompt(
 	}
 
 	// Priority: Command specific > Custom Model > Provider Model
-	const settingsCustomModel = getNonEmptyString(plugin.settings.customAiModel);
 	const commandSpecificModel = getNonEmptyString(
 		promptProperties.customPromptDefinedModel,
 	);
@@ -124,6 +123,10 @@ export async function runPrompt(
 			`Could not find provider settings with name "${providerNameToBeFound}"`,
 		);
 	}
+
+	const settingsCustomModel = getNonEmptyString(
+		providerSettingEntry[1].customModelId,
+	);
 
 	// providerSettingEntry = [key, provider <--]
 	const providerSettings = providerSettingEntry[1];

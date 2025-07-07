@@ -385,9 +385,11 @@ export class SettingsTab extends PluginSettingTab {
 			.addSlider((slider) => {
 				slider.setDynamicTooltip();
 				slider.setLimits(0.0, 1.0, 0.1);
-				slider.setValue(settings.temperature);
+				slider.setValue(
+					settings.aiProviderConfig[settings.aiProvider].temperature || 0.6,
+				);
 				slider.onChange(async (value) => {
-					settings.temperature = value;
+					settings.aiProviderConfig[settings.aiProvider].temperature = value;
 					await plugin.saveSettings();
 				});
 			});
@@ -469,9 +471,12 @@ export class SettingsTab extends PluginSettingTab {
 			.addText((text) =>
 				text
 					.setPlaceholder('Enter the model name')
-					.setValue(settings.customAiModel)
+					.setValue(
+						settings.aiProviderConfig[settings.aiProvider].customModelId || '',
+					)
 					.onChange(async (value) => {
-						settings.customAiModel = value;
+						settings.aiProviderConfig[settings.aiProvider].customModelId =
+							value;
 						await plugin.saveSettings();
 					}),
 			);
@@ -482,16 +487,23 @@ export class SettingsTab extends PluginSettingTab {
 				'The maximum number of words or characters the AI can generate. Set to 0 to use the default.',
 			)
 			.addText((text) =>
-				text.setValue(settings.maxTokens.toString()).onChange(async (value) => {
-					// Should be a number and not negative or zero
-					if (
-						!Number.isNaN(Number.parseInt(value)) &&
-						Number.parseInt(value) >= 0
-					) {
-						settings.maxTokens = Number.parseInt(value);
-						await plugin.saveSettings();
-					}
-				}),
+				text
+					.setValue(
+						settings.aiProviderConfig[
+							settings.aiProvider
+						].maxTokens?.toString() || '',
+					)
+					.onChange(async (value) => {
+						// Should be a number and not negative or zero
+						if (
+							!Number.isNaN(Number.parseInt(value)) &&
+							Number.parseInt(value) >= 0
+						) {
+							settings.aiProviderConfig[settings.aiProvider].maxTokens =
+								Number.parseInt(value);
+							await plugin.saveSettings();
+						}
+					}),
 			);
 
 		new Setting(containerEl).setName('Custom Prompts').setHeading();

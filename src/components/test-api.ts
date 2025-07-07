@@ -31,8 +31,9 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 			plugin.settings.aiProviderConfig[plugin.settings.aiProvider];
 
 		const modelToCall =
-			plugin.settings.customAiModel.length > 0
-				? plugin.settings.customAiModel
+			providerSettings.customModelId &&
+			providerSettings.customModelId.length > 0
+				? providerSettings.customModelId
 				: providerSettings.model;
 
 		const hasNoModelConfigurated = !modelToCall || modelToCall.length === 0;

@@ -31,7 +31,7 @@ export async function handleTextAzure({
 
 	const body: Omit<OpenAI.ChatCompletionCreateParams, 'model'> = {
 		stream: false,
-		temperature: plugin.settings.temperature,
+		temperature: providerSettings.temperature || 0.6,
 
 		messages: [
 			// Will be added later
@@ -43,9 +43,10 @@ export async function handleTextAzure({
 
 		// Advanced settings here:
 		...(plugin.settings.advancedSettings && {
-			...(plugin.settings.maxTokens > 0 && {
-				max_tokens: plugin.settings.maxTokens,
-			}),
+			...(providerSettings.maxTokens &&
+				providerSettings.maxTokens > 0 && {
+					max_tokens: providerSettings.maxTokens,
+				}),
 		}),
 	};
 

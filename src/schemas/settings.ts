@@ -25,13 +25,15 @@ export const PluginSettingsSchema = v.object({
 			isCustom: v.optional(v.boolean()),
 			displayName: v.optional(v.string()),
 			omitVersionPrefix: v.optional(v.boolean()),
+
+			maxTokens: v.optional(v.number()),
+			temperature: v.optional(v.number()),
+
+			customModelId: v.optional(v.string()),
 		}),
 	),
 
 	advancedSettings: v.boolean(),
-	customAiModel: v.string(),
-	maxTokens: v.number(),
-	temperature: v.number(),
 
 	/** Exclusive to desktop view */
 	enableStatusBarButton: v.boolean(),

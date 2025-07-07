@@ -128,7 +128,7 @@ export async function handleTextOpenAI({
 
 	const body: OpenAI.ChatCompletionCreateParamsNonStreaming = {
 		model,
-		temperature: plugin.settings.temperature,
+		temperature: providerSettings.temperature || 0.6,
 		messages: [
 			// We will add system message here later if needed
 			{
@@ -138,9 +138,10 @@ export async function handleTextOpenAI({
 		],
 		// Advanced settings here:
 		...(plugin.settings.advancedSettings && {
-			...(plugin.settings.maxTokens > 0 && {
-				max_tokens: plugin.settings.maxTokens,
-			}),
+			...(providerSettings.maxTokens &&
+				providerSettings.maxTokens > 0 && {
+					max_tokens: providerSettings.maxTokens,
+				}),
 		}),
 	};
 

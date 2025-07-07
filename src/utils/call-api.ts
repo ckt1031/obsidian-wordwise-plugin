@@ -6,14 +6,15 @@ import type { CallTextAPIProps } from '@/types';
 export async function callTextAPI(
 	props: CallTextAPIProps,
 ): Promise<string | null | undefined> {
-	const { model, plugin } = props;
+	const { model, plugin, providerSettings } = props;
 	let requestModel = model;
 
 	if (
-		plugin.settings.customAiModel.length > 0 &&
+		providerSettings.customModelId &&
+		providerSettings.customModelId.length > 0 &&
 		plugin.settings.advancedSettings
 	) {
-		requestModel = plugin.settings.customAiModel;
+		requestModel = providerSettings.customModelId;
 	}
 
 	if (props.provider === APIProvider.AzureOpenAI) {
