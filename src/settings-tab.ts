@@ -16,6 +16,7 @@ import { APIProvider, CustomBehavior } from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
 import ExportSettingsModal from './modals/export-settings';
+import TextGenerationLogModal from './modals/generation-logs';
 import ImportSettingsModal from './modals/import-settings';
 import SystemInstructionsModal from './modals/system-instructions';
 import ViewLoadedPromptsModal from './modals/view-loaded-prompts';
@@ -589,6 +590,18 @@ export class SettingsTab extends PluginSettingTab {
 						await plugin.saveSettings();
 					}),
 			);
+
+		new Setting(containerEl)
+			.setName('View Text Generation Logs')
+			.setDesc('View all text generation logs with search and details.')
+			.addButton((button) => {
+				button.setButtonText('View Logs');
+				button.onClick(async () => {
+					const modal = new TextGenerationLogModal(this.plugin);
+					await modal.initStates();
+					modal.open();
+				});
+			});
 
 		new Setting(containerEl)
 			.setName('Import and Export Logs')

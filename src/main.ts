@@ -18,6 +18,7 @@ import { safeParseAsync } from 'valibot';
 import { DEFAULT_SETTINGS } from './config';
 import { upgradeLocalForageInstance } from './migrations/localforage';
 import TextGenerationLogModal from './modals/generation-logs';
+import ViewLoadedPromptsModal from './modals/view-loaded-prompts';
 import { retrieveAllPrompts } from './prompt';
 import { ObfuscatedPluginSettingsSchema } from './schemas';
 import { SettingsTab } from './settings-tab';
@@ -166,7 +167,7 @@ export default class WordWisePlugin extends Plugin {
 		}
 
 		this.initializeConstantCommands();
-		await this.initializePromptsToCommands();
+		this.initializePromptsToCommands();
 	}
 
 	async initializePromptsToCommands(prompts?: OutputInternalPromptProps[]) {
@@ -204,7 +205,7 @@ export default class WordWisePlugin extends Plugin {
 			this.addCommand({
 				// Prompts to mark it as a prompt command, to be identified in order to change later on.
 				id: commandId,
-				name: prompt.name,
+				name: `Prompt - ${prompt.name}`,
 				icon: this.constructIcon(iconName, prompt.icon),
 				editorCallback: (editor: EnhancedEditor) =>
 					runPrompt(editor, this, prompt.name),
@@ -215,14 +216,19 @@ export default class WordWisePlugin extends Plugin {
 	initializeConstantCommands(): void {
 		const obsidianCommands = [
 			{
-				name: 'Check Text Generation Logs',
+				name: 'View Text Generation Logs',
 				icon: 'memory-stick',
 				onClick: async (_editor: EnhancedEditor) => {
 					const modal = new TextGenerationLogModal(this);
-
 					await modal.initStates();
-
 					modal.open();
+				},
+			},
+			{
+				name: 'View Loaded Prompts',
+				icon: 'View-chevron-right',
+				onClick: async (_editor: EnhancedEditor) => {
+					new ViewLoadedPromptsModal(this).open();
 				},
 			},
 		];
