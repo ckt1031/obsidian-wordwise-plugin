@@ -394,7 +394,7 @@ export class SettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName('Advanced API Settings').setHeading();
 
 		new Setting(containerEl)
-			.setName('Disable System Instructions')
+			.setName("Don't Pass System Instructions to API")
 			.setDesc(
 				'Some AI models might not work with system instructions.  Try turning this on if you have problems.',
 			)
