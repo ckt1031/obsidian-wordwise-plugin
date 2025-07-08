@@ -18,4 +18,10 @@ export const INTERNAL_PROMPTS = [
 	makeShorter,
 	paraphrase,
 	simplify,
-];
+].map((prompt) => {
+	return {
+		...prompt,
+		// Mark as internal prompt for the view loaded prompts modal
+		internal: true,
+	};
+});

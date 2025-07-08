@@ -27,6 +27,9 @@ export const InputPromptSchema = v.object({
 	/** Body prompt, will be passed in system message in LLM API */
 	data: v.string(),
 
+	disabled: v.optional(v.boolean()),
+	internal: v.optional(v.boolean()),
+
 	filePath: v.optional(v.string()),
 	systemPrompt: v.optional(v.string()),
 

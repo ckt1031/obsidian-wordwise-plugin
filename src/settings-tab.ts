@@ -18,6 +18,7 @@ import AddCustomPromptModal from './modals/add-custom-prompt';
 import ExportSettingsModal from './modals/export-settings';
 import ImportSettingsModal from './modals/import-settings';
 import SystemInstructionsModal from './modals/system-instructions';
+import ViewLoadedPromptsModal from './modals/view-loaded-prompts';
 import {
 	downloadFileWithFilePicker,
 	saveFileToObsidianConfigFolder,
@@ -662,6 +663,18 @@ export class SettingsTab extends PluginSettingTab {
 				button.setButtonText('View Instructions');
 				button.onClick(() => {
 					new SystemInstructionsModal(this.plugin).open();
+				});
+			});
+
+		new Setting(containerEl)
+			.setName('View Loaded Prompts')
+			.setDesc(
+				'View all loaded prompts including internal, custom, and file-based prompts with search and details.',
+			)
+			.addButton((button) => {
+				button.setButtonText('View Prompts');
+				button.onClick(() => {
+					new ViewLoadedPromptsModal(this.plugin).open();
 				});
 			});
 

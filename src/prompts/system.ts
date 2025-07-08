@@ -4,7 +4,7 @@ const systemBasePrompt = `
 `;
 
 const excludeOriginalText = `
-You will be given a text and you should only respond the text following to the instructions, and never respond with the original text.
+- You will be given a text and you should only respond the text following to the instructions, and never respond with the original text.
 `;
 
 const withOriginalText = `

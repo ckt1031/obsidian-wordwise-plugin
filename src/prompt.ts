@@ -14,6 +14,7 @@ import type { InputPromptProps, OutputInternalPromptProps } from './types';
 
 export async function retrieveAllPrompts(
 	plugin: WordWisePlugin,
+	ignoreDisabled = true,
 ): Promise<OutputInternalPromptProps[]> {
 	const settings = plugin.settings;
 
@@ -21,42 +22,55 @@ export async function retrieveAllPrompts(
 	const configCustomPrompts = settings.customPrompts;
 
 	// Internal prompts hard coded in the plugin
-	const internalPrompts = settings.disableInternalPrompts
-		? []
-		: INTERNAL_PROMPTS;
+	const internalPrompts =
+		settings.disableInternalPrompts && ignoreDisabled ? [] : INTERNAL_PROMPTS;
 
 	const folderPrompts = await getAllFolderBasedPrompt(plugin);
 
 	// Add basePromptEnding to all prompts ending
-	return [...internalPrompts, ...configCustomPrompts, ...folderPrompts].map(
-		(prompt) => {
-			let action = PrePromptActions.DirectReplacement;
+	const results = [
+		...internalPrompts,
+		...configCustomPrompts,
+		...folderPrompts,
+	].map((prompt) => {
+		let action = PrePromptActions.DirectReplacement;
 
-			// Check if prompt has it's own action mode
-			if ('action' in prompt) {
-				action = prompt.action as PrePromptActions;
-			}
+		// Check if prompt has it's own action mode
+		if ('action' in prompt) {
+			action = prompt.action as PrePromptActions;
+		}
 
-			const defaultSystemPrompt = prompt.excludeOriginalText
-				? `${systemBasePrompt}\n${excludeOriginalText}`
-				: `${systemBasePrompt}\n${withOriginalText}`;
+		const defaultSystemPrompt = prompt.excludeOriginalText
+			? `${systemBasePrompt.trim()}\n${excludeOriginalText.trim()}`.trim()
+			: `${systemBasePrompt.trim()}\n${withOriginalText.trim()}`.trim();
 
-			return {
-				name: prompt.name,
-				icon: prompt.icon,
-				action,
-				taskPrompt: prompt.data,
-				systemPrompt: prompt.systemPrompt ?? defaultSystemPrompt,
-				isFilePrompt: prompt.isFilePrompt,
-				filePath: prompt.filePath,
+		let disabled = prompt.disabled;
 
-				// Customized values for the prompt
-				customBehavior: prompt.customBehavior,
-				customPromptDefinedModel: prompt.customPromptDefinedModel,
-				customPromptDefinedProvider: prompt.customPromptDefinedProvider,
-			};
-		},
-	);
+		// Check if prompt is internal and disabled is not set
+		if (prompt.internal && settings.disableInternalPrompts) {
+			disabled = true;
+		}
+
+		return {
+			name: prompt.name,
+			icon: prompt.icon,
+			action,
+			taskPrompt: prompt.data.trim(),
+			systemPrompt: prompt.systemPrompt ?? defaultSystemPrompt,
+			isFilePrompt: prompt.isFilePrompt,
+			filePath: prompt.filePath,
+			disabled,
+
+			// Customized values for the prompt
+			customBehavior: prompt.customBehavior,
+			customPromptDefinedModel: prompt.customPromptDefinedModel,
+			customPromptDefinedProvider: prompt.customPromptDefinedProvider,
+		};
+	});
+
+	return ignoreDisabled
+		? results.filter((prompt) => !prompt.disabled)
+		: results;
 }
 
 export async function getFolderBasedPrompt(
@@ -115,8 +129,6 @@ async function readFile(
 
 	const attributes = prompt.output;
 
-	if (attributes.disabled) return;
-
 	let systemPrompt = attributes.systemPrompt;
 
 	// We might check if the attributes.systemPrompt is a relative path to the markdown file
@@ -137,6 +149,8 @@ async function readFile(
 		name: attributes.name,
 		icon: attributes.icon,
 		data: content.body,
+
+		disabled: attributes.disabled ?? false,
 
 		// File prompt properties
 		isFilePrompt: true,
