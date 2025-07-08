@@ -22,14 +22,12 @@ export default class AddCustomPromptModal extends Modal {
 
 		this.isEdit = isEdit;
 
-		if (isEdit) {
-			this.prompt = prompt ?? {
-				name: '',
-				data: '',
-				customBehavior: '',
-				customPromptDefinedProvider: '',
-			};
-		}
+		this.prompt = prompt ?? {
+			name: '',
+			data: '',
+			customBehavior: CustomBehavior.Replace,
+			customPromptDefinedProvider: 'inherit',
+		};
 
 		this.originalName = prompt?.name ?? '';
 	}
