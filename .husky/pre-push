@@ -5,8 +5,8 @@ do
   if [[ "$local_ref" == refs/tags/* ]]; then
     TAG_VERSION="${local_ref#refs/tags/}"
 
-    # Determine which manifest to check
-    if [[ "$TAG_NAME" == *-beta* ]]; then
+    # Determine which manifest to check, check if -beta exists
+    if [[ "$TAG_VERSION" == *-beta* ]]; then
         MANIFEST_FILE="manifest-beta.json"
     else
         MANIFEST_FILE="manifest.json"
