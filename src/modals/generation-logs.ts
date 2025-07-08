@@ -107,24 +107,30 @@ export default class TextGenerationLogModal extends Modal {
 		) {
 			contentEl.createEl('textarea', {
 				text: log.customInstruction,
-				cls: 'modal-text-area',
+				cls: 'prompt-textarea',
 				attr: { readonly: true },
 			});
 		}
 
-		contentEl.createEl('h4', { text: 'Original Text' });
+		contentEl.createEl('h4', {
+			text: 'Original Text',
+			cls: 'info-section-h4',
+		});
 
 		contentEl.createEl('textarea', {
 			text: log.originalText,
-			cls: 'modal-text-area',
+			cls: 'prompt-textarea',
 			attr: { readonly: true },
 		});
 
-		contentEl.createEl('h4', { text: 'Generated Text' });
+		contentEl.createEl('h4', {
+			text: 'Generated Text',
+			cls: 'info-section-h4',
+		});
 
 		contentEl.createEl('textarea', {
 			text: log.generatedText,
-			cls: 'modal-text-area',
+			cls: 'prompt-textarea',
 			attr: { readonly: true },
 		});
 	}

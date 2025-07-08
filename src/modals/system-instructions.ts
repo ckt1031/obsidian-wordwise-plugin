@@ -22,12 +22,11 @@ export default class SystemInstructionsModal extends Modal {
 			text: 'System instructions are used to guide AI text generation. They are applied to all text generation tasks.',
 		});
 
-		// Base System Prompt
-		contentEl.createEl('p', {
-			text: 'Base System Prompt',
-		});
+		const section = contentEl.createDiv('info-section');
+		section.createEl('h4', { text: 'Base System Prompt' });
 
-		contentEl.createEl('textarea', {
+		section.createEl('textarea', {
+			cls: 'prompt-textarea',
 			attr: {
 				disabled: true,
 				rows: 5,
@@ -38,11 +37,15 @@ export default class SystemInstructionsModal extends Modal {
 		});
 
 		// Exclude Original Text
-		contentEl.createEl('p', {
+		section.createEl('h4', {
 			text: 'Exclude Original Text Instructions',
+			attr: {
+				style: 'margin-top: 10px;',
+			},
 		});
 
-		contentEl.createEl('textarea', {
+		section.createEl('textarea', {
+			cls: 'prompt-textarea',
 			attr: {
 				disabled: true,
 				rows: 5,
@@ -53,11 +56,15 @@ export default class SystemInstructionsModal extends Modal {
 		});
 
 		// With Original Text
-		contentEl.createEl('p', {
+		section.createEl('h4', {
 			text: 'With Original Text Instructions',
+			attr: {
+				style: 'margin-top: 10px;',
+			},
 		});
 
-		contentEl.createEl('textarea', {
+		section.createEl('textarea', {
+			cls: 'prompt-textarea',
 			attr: {
 				disabled: true,
 				rows: 5,
