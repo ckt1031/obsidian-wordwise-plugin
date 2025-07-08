@@ -40,3 +40,31 @@
 .button-padding-right {
 	margin-right: 5px;
 }
+
+.system-instructions-info {
+	margin: 20px 0;
+	padding: 15px;
+	background-color: var(--background-secondary);
+	border-radius: 8px;
+	border-left: 4px solid var(--interactive-accent);
+}
+
+.system-instructions-info h4 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	color: var(--text-accent);
+}
+
+.system-instructions-info ul {
+	margin: 10px 0;
+	padding-left: 20px;
+}
+
+.system-instructions-info li {
+	margin: 5px 0;
+}
+
+.system-instructions-info p {
+	margin: 10px 0;
+	line-height: 1.5;
+}

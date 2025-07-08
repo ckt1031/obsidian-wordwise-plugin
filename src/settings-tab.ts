@@ -17,6 +17,7 @@ import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
 import ExportSettingsModal from './modals/export-settings';
 import ImportSettingsModal from './modals/import-settings';
+import SystemInstructionsModal from './modals/system-instructions';
 import {
 	downloadFileWithFilePicker,
 	saveFileToObsidianConfigFolder,
@@ -647,6 +648,20 @@ export class SettingsTab extends PluginSettingTab {
 					);
 
 					new Notice(`Saved to ${file}`);
+				});
+			});
+
+		new Setting(containerEl).setName('Information Zone').setHeading();
+
+		new Setting(containerEl)
+			.setName('View System Instructions')
+			.setDesc(
+				"View the plugin's system instructions that guide AI text generation.",
+			)
+			.addButton((button) => {
+				button.setButtonText('View Instructions');
+				button.onClick(() => {
+					new SystemInstructionsModal(this.plugin).open();
 				});
 			});
 
