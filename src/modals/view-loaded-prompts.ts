@@ -296,25 +296,33 @@ class PromptDetailModal extends Modal {
 			this.createInfoRow(basicInfo, 'File Path', prompt.filePath);
 		}
 
-		// Custom settings
-		const customInfo = infoGrid.createDiv('info-section');
-		customInfo.createEl('h4', { text: 'Custom Settings' });
+		// Custom settings (only show if there are actual custom values)
+		if (
+			prompt.customBehavior ||
+			prompt.customPromptDefinedProvider ||
+			prompt.customPromptDefinedModel
+		) {
+			const customInfo = infoGrid.createDiv('info-section');
+			customInfo.createEl('h4', { text: 'Custom Settings' });
 
-		this.createInfoRow(
-			customInfo,
-			'Behavior',
-			prompt.customBehavior || 'Inherit from settings',
-		);
-		this.createInfoRow(
-			customInfo,
-			'Provider',
-			prompt.customPromptDefinedProvider || 'Inherit from settings',
-		);
-		this.createInfoRow(
-			customInfo,
-			'Model',
-			prompt.customPromptDefinedModel || 'Inherit from settings',
-		);
+			if (prompt.customBehavior) {
+				this.createInfoRow(customInfo, 'Behavior', prompt.customBehavior);
+			}
+			if (prompt.customPromptDefinedProvider) {
+				this.createInfoRow(
+					customInfo,
+					'Provider',
+					prompt.customPromptDefinedProvider,
+				);
+			}
+			if (prompt.customPromptDefinedModel) {
+				this.createInfoRow(
+					customInfo,
+					'Model',
+					prompt.customPromptDefinedModel,
+				);
+			}
+		}
 
 		// Task Prompt
 		const taskSection = contentEl.createDiv('prompt-section');
