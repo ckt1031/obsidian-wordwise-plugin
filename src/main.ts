@@ -16,7 +16,6 @@ import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
 
 import { DEFAULT_SETTINGS } from './config';
-import { upgradeLocalForageInstance } from './migrations/localforage';
 import TextGenerationLogModal from './modals/generation-logs';
 import ViewLoadedPromptsModal from './modals/view-loaded-prompts';
 import { retrieveAllPrompts } from './prompt';
@@ -149,9 +148,6 @@ export default class WordWisePlugin extends Plugin {
 	async initializePlugin(): Promise<void> {
 		// Load settings to memory, ensuring the plugin is ready to go
 		await this.loadSettings();
-
-		// Migrate localForage instance from previous versions
-		await upgradeLocalForageInstance(this);
 
 		// Initialize localForage
 		localforage.config({
