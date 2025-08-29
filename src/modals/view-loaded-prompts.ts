@@ -96,22 +96,21 @@ export default class ViewLoadedPromptsModal extends Modal {
 		const enabled = this.allPrompts.filter((p) => !p.disabled).length;
 		const disabled = total - enabled;
 
-		container.innerHTML = `
-			<div class="prompt-stats-grid">
-				<div class="stat-item">
-					<span class="stat-label">Total:</span>
-					<span class="stat-value">${total}</span>
-				</div>
-				<div class="stat-item">
-					<span class="stat-label">Enabled:</span>
-					<span class="stat-value enabled">${enabled}</span>
-				</div>
-				<div class="stat-item">
-					<span class="stat-label">Disabled:</span>
-					<span class="stat-value disabled">${disabled}</span>
-				</div>
-			</div>
-		`;
+		const row = container.createDiv('prompt-stats-row');
+
+		// Helper function to create a card with a label and value
+		const makeCard = (label: string, value: number, extraClass?: string) => {
+			const item = row.createDiv('stat-item');
+			item.createEl('span', { text: `${label}:`, cls: 'stat-label' });
+			item.createEl('span', {
+				text: String(value),
+				cls: `stat-value${extraClass ? ` ${extraClass}` : ''}`,
+			});
+		};
+
+		makeCard('Total', total);
+		makeCard('Enabled', enabled, 'enabled');
+		makeCard('Disabled', disabled, 'disabled');
 	}
 
 	private renderPrompts(container?: HTMLElement) {
@@ -134,9 +133,6 @@ export default class ViewLoadedPromptsModal extends Modal {
 		// Create scrollable container
 		const scrollContainer = targetContainer.createDiv({
 			cls: 'prompts-scroll-container',
-			attr: {
-				style: 'display: flex; flex-direction: column; gap: 10px;',
-			},
 		});
 
 		// Sort prompts by disabled status and then by name
@@ -161,13 +157,19 @@ export default class ViewLoadedPromptsModal extends Modal {
 				const icon = getIcon(prompt.icon);
 
 				if (icon) {
-					// Add this as SVG to the nameDiv
-					nameDiv.innerHTML = icon.outerHTML;
+					const iconContainer = nameDiv.createSpan({ cls: 'prompt-icon' });
+					iconContainer.appendChild(icon);
 				}
 			}
-			nameDiv.createEl('span', {
+			const titleEl = nameDiv.createEl('span', {
 				text: prompt.name,
 				cls: 'prompt-title',
+			});
+
+			// Make title clickable to open details
+			titleEl.style.cursor = 'pointer';
+			titleEl.addEventListener('click', () => {
+				this.showPromptDetails(prompt);
 			});
 
 			// Status badge
@@ -204,15 +206,15 @@ export default class ViewLoadedPromptsModal extends Modal {
 				cls: 'preview-text',
 			});
 
-			// Action button
-			const actionDiv = promptDiv.createDiv('prompt-actions');
-			new Setting(actionDiv).addButton((button) => {
-				button.setButtonText('View Details');
-				button.setCta();
-				button.onClick(() => {
-					this.showPromptDetails(prompt);
-				});
-			});
+			// // Action button
+			// const actionDiv = promptDiv.createDiv('prompt-actions');
+			// new Setting(actionDiv).addButton((button) => {
+			// 	button.setButtonText('View Details');
+			// 	button.setCta();
+			// 	button.onClick(() => {
+			// 		this.showPromptDetails(prompt);
+			// 	});
+			// });
 		}
 
 		// Update stats
@@ -258,7 +260,8 @@ class PromptDetailModal extends Modal {
 			if (icon) {
 				icon.style.width = '28px';
 				icon.style.height = '28px';
-				headerDiv.innerHTML = icon.outerHTML;
+				const iconWrap = headerDiv.createSpan({ cls: 'prompt-detail-icon' });
+				iconWrap.appendChild(icon);
 			}
 		}
 
