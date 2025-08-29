@@ -1,4 +1,10 @@
-import { Notice, setIcon, setTooltip, type TextComponent } from 'obsidian';
+import {
+	Notice,
+	type Setting,
+	setIcon,
+	setTooltip,
+	type TextComponent,
+} from 'obsidian';
 
 import { APIProvider } from '@/config';
 import type WordWisePlugin from '@/main';
@@ -6,27 +12,49 @@ import ErrorDialogModal from '@/modals/error-dialog';
 import { callTextAPI } from '@/utils/call-api';
 
 type Props = {
+	setting: Setting;
 	text: TextComponent;
 	plugin: WordWisePlugin;
 };
 
-// Main function to wrap the password component
-export const wrapAPITestComponent = ({ text, plugin }: Props) => {
-	// Create a new hider element
-	const button = text.inputEl.insertAdjacentElement(
-		'beforebegin',
-		document.createElement('button'),
-	) as HTMLElement;
+export const wrapAPIKeyComponent = ({ setting, text, plugin }: Props) => {
+	// Container to hold the action buttons (password toggle + test)
+	const buttonContainer = document.createElement('div');
+	buttonContainer.className = 'settings-button-row';
 
-	if (!button) return;
+	// Configure the parent control element to allow wrapping
+	setting.controlEl.className = 'settings-input-wrapper';
 
-	setTooltip(button, 'Test API');
+	// Create buttons
+	const toggleButton = document.createElement('button') as HTMLButtonElement;
+	const testButton = document.createElement('button') as HTMLButtonElement;
 
-	// Set the initial icon for the hider element
-	setIcon(button, 'fan');
+	// Add buttons to container
+	buttonContainer.appendChild(toggleButton);
+	buttonContainer.appendChild(testButton);
 
-	// Add a click event listener to the hider element
-	button.addEventListener('click', async () => {
+	// Insert the container before the input element
+	text.inputEl.insertAdjacentElement('beforebegin', buttonContainer);
+
+	// Setup password toggle button
+	setTooltip(toggleButton, 'Toggle password visibility');
+	setIcon(toggleButton, 'eye-off');
+
+	toggleButton.addEventListener('click', () => {
+		const isText = text.inputEl.getAttribute('type') === 'text';
+		const icon = isText ? 'eye-off' : 'eye';
+		const type = isText ? 'password' : 'text';
+		setIcon(toggleButton, icon);
+		text.inputEl.setAttribute('type', type);
+		text.inputEl.focus();
+	});
+
+	// Initial type is password
+	text.inputEl.setAttribute('type', 'password');
+
+	// Setup test button
+	testButton.textContent = 'Test';
+	testButton.addEventListener('click', async () => {
 		const providerSettings =
 			plugin.settings.aiProviderConfig[plugin.settings.aiProvider];
 
@@ -38,7 +66,6 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 
 		const hasNoModelConfigurated = !modelToCall || modelToCall.length === 0;
 
-		// Warn if Azure OpenAI has no model
 		if (
 			plugin.settings.aiProvider === APIProvider.AzureOpenAI &&
 			hasNoModelConfigurated
@@ -62,11 +89,7 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 				providerSettings,
 				model: modelToCall,
 				provider: plugin.settings.aiProvider,
-				messages: {
-					system: '',
-					user: 'Say word hello only.',
-				},
-
+				messages: { system: '', user: 'Say word hello only.' },
 				isTesting: true,
 				stream: false,
 			});
@@ -77,22 +100,15 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 			}
 
 			new Notice('API is working properly');
-
-			// Set the icon to success
-			setIcon(button, 'badge-check');
-			// Set icon green with effect
-			button.style.color = '#28FF1E';
+			testButton.textContent = 'Success';
+			testButton.style.color = '#28FF1E';
 		} catch (error) {
-			// Set the icon to error
-			setIcon(button, 'server-crash');
-			// Set icon red with effect
-			button.style.color = '#FF0000';
+			testButton.textContent = 'Error';
+			testButton.style.color = '#FF0000';
 
 			let message = 'API is not working properly';
-
 			if (error instanceof Error) {
 				message += `: ${error.message}`;
-
 				if (typeof error.cause === 'string' || error.cause instanceof Error) {
 					new ErrorDialogModal(
 						plugin,
@@ -102,9 +118,7 @@ export const wrapAPITestComponent = ({ text, plugin }: Props) => {
 				}
 			}
 
-			// Log the error to the console
 			console.info(error);
-
 			new Notice(message);
 		}
 	});

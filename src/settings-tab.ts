@@ -9,9 +9,8 @@ import {
 import { nanoid } from 'nanoid';
 import { debounce } from 'rambdax';
 
+import { wrapAPIKeyComponent } from './components/api-key';
 import { wrapFetchModelComponent } from './components/fetch-model';
-import { wrapPasswordComponent } from './components/password';
-import { wrapAPITestComponent } from './components/test-api';
 import { APIProvider, CustomBehavior } from './config';
 import type WordWisePlugin from './main';
 import AddCustomPromptModal from './modals/add-custom-prompt';
@@ -145,9 +144,10 @@ export class SettingsTab extends PluginSettingTab {
 					);
 			}
 
-			new Setting(containerEl).setName('API Key').addText((text) => {
-				wrapPasswordComponent(text);
-				wrapAPITestComponent({ text, plugin });
+			const apiKeySetting = new Setting(containerEl);
+			apiKeySetting.setName('API Key').addText((text) => {
+				wrapAPIKeyComponent({ setting: apiKeySetting, text, plugin });
+
 				text
 					.setPlaceholder('Enter your API Key')
 					.setValue(settings.aiProviderConfig[provider].apiKey)
@@ -272,6 +272,8 @@ export class SettingsTab extends PluginSettingTab {
 			}
 		}
 
+		new Setting(containerEl).setName('Behavior').setHeading();
+
 		new Setting(containerEl)
 			.setName('Generation Behavior')
 			.setDesc(
@@ -393,82 +395,85 @@ export class SettingsTab extends PluginSettingTab {
 				}),
 			);
 
-		new Setting(containerEl).setName('Advanced API Settings').setHeading();
+		if (settings.advancedSettings) {
+			new Setting(containerEl).setName('Advanced API Settings').setHeading();
 
-		new Setting(containerEl)
-			.setName("Don't Pass System Instructions to API")
-			.setDesc(
-				'Some AI models might not work with system instructions.  Try turning this on if you have problems.',
-			)
-			.addToggle((toggle) =>
-				toggle
-					.setValue(settings.disableSystemInstructions)
-					.onChange(async (value) => {
-						settings.disableSystemInstructions = value;
-						await plugin.saveSettings();
-					}),
-			);
-
-		new Setting(containerEl)
-			.setName('Omit Version Prefix')
-			.setDesc(
-				'Use the web address without the version number (e.g., /chat/completions instead of /v1/chat/completions). Some providers might do this automatically.',
-			)
-			.addToggle((toggle) =>
-				toggle
-					.setValue(
-						settings.aiProviderConfig[settings.aiProvider].omitVersionPrefix ||
-							false,
-					)
-					.onChange(async (value) => {
-						settings.aiProviderConfig[settings.aiProvider].omitVersionPrefix =
-							value;
-						await plugin.saveSettings();
-					}),
-			);
-
-		new Setting(containerEl)
-			.setName('Custom Model ID')
-			.setDesc(
-				"If you don't enter anything here, the model selected above will be used.",
-			)
-			.addText((text) =>
-				text
-					.setPlaceholder('Enter the model name')
-					.setValue(
-						settings.aiProviderConfig[settings.aiProvider].customModelId || '',
-					)
-					.onChange(async (value) => {
-						settings.aiProviderConfig[settings.aiProvider].customModelId =
-							value;
-						await plugin.saveSettings();
-					}),
-			);
-
-		new Setting(containerEl)
-			.setName('Max Tokens')
-			.setDesc(
-				'The maximum number of words or characters the AI can generate. Set to 0 to use the default.',
-			)
-			.addText((text) =>
-				text
-					.setValue(
-						settings.aiProviderConfig[
-							settings.aiProvider
-						].maxTokens?.toString() || '',
-					)
-					.onChange(async (value) => {
-						// Should be a number and not negative or zero
-						if (
-							!Number.isNaN(Number.parseInt(value)) &&
-							Number.parseInt(value) >= 0
-						) {
-							settings.aiProviderConfig[settings.aiProvider].maxTokens =
-								Number.parseInt(value);
+			new Setting(containerEl)
+				.setName("Don't Pass System Instructions to API")
+				.setDesc(
+					'Some AI models might not work with system instructions.  Try turning this on if you have problems.',
+				)
+				.addToggle((toggle) =>
+					toggle
+						.setValue(settings.disableSystemInstructions)
+						.onChange(async (value) => {
+							settings.disableSystemInstructions = value;
 							await plugin.saveSettings();
-						}
-					}),
-			);
+						}),
+				);
+
+			new Setting(containerEl)
+				.setName('Omit Version Prefix')
+				.setDesc(
+					'Use the web address without the version number (e.g., /chat/completions instead of /v1/chat/completions). Some providers might do this automatically.',
+				)
+				.addToggle((toggle) =>
+					toggle
+						.setValue(
+							settings.aiProviderConfig[settings.aiProvider]
+								.omitVersionPrefix || false,
+						)
+						.onChange(async (value) => {
+							settings.aiProviderConfig[settings.aiProvider].omitVersionPrefix =
+								value;
+							await plugin.saveSettings();
+						}),
+				);
+
+			new Setting(containerEl)
+				.setName('Custom Model ID')
+				.setDesc(
+					"If you don't enter anything here, the model selected above will be used.",
+				)
+				.addText((text) =>
+					text
+						.setPlaceholder('Enter the model name')
+						.setValue(
+							settings.aiProviderConfig[settings.aiProvider].customModelId ||
+								'',
+						)
+						.onChange(async (value) => {
+							settings.aiProviderConfig[settings.aiProvider].customModelId =
+								value;
+							await plugin.saveSettings();
+						}),
+				);
+
+			new Setting(containerEl)
+				.setName('Max Tokens')
+				.setDesc(
+					'The maximum number of words or characters the AI can generate. Set to 0 to use the default.',
+				)
+				.addText((text) =>
+					text
+						.setValue(
+							settings.aiProviderConfig[
+								settings.aiProvider
+							].maxTokens?.toString() || '',
+						)
+						.onChange(async (value) => {
+							// Should be a number and not negative or zero
+							if (
+								!Number.isNaN(Number.parseInt(value)) &&
+								Number.parseInt(value) >= 0
+							) {
+								settings.aiProviderConfig[settings.aiProvider].maxTokens =
+									Number.parseInt(value);
+								await plugin.saveSettings();
+							}
+						}),
+				);
+		}
 
 		new Setting(containerEl).setName('Custom Prompts').setHeading();
 
@@ -693,17 +698,19 @@ export class SettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName('Danger Zone').setHeading();
 
-		new Setting(containerEl)
-			.setName('Obfuscate Config')
-			.setDesc(
-				'Prevent API keys from being visible and tampered with. This might slow down the performance when loading settings.',
-			)
-			.addToggle((toggle) =>
-				toggle.setValue(settings.obfuscateConfig).onChange(async (value) => {
-					settings.obfuscateConfig = value;
-					await plugin.saveSettings();
-				}),
-			);
+		if (settings.advancedSettings) {
+			new Setting(containerEl)
+				.setName('Obfuscate Config')
+				.setDesc(
+					'Prevent API keys from being visible and tampered with. This might slow down the performance when loading settings.',
+				)
+				.addToggle((toggle) =>
+					toggle.setValue(settings.obfuscateConfig).onChange(async (value) => {
+						settings.obfuscateConfig = value;
+						await plugin.saveSettings();
+					}),
+				);
+		}
 
 		new Setting(containerEl)
 			.setName('Import and Export Settings')

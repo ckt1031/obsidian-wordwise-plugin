@@ -1,7 +1,6 @@
 import {
 	type DropdownComponent,
 	Notice,
-	Platform,
 	type Setting,
 	setIcon,
 	setTooltip,
@@ -36,9 +35,9 @@ export const wrapFetchModelComponent = ({
 }: Props) => {
 	// Create a container for the buttons
 	const buttonContainer = document.createElement('div');
-	buttonContainer.style.display = 'flex'; // Optional: Style for horizontal layout
-	buttonContainer.style.flexDirection = 'row'; // Stack buttons horizontally
-	buttonContainer.style.gap = '10px'; // Optional: Add some space between buttons
+	buttonContainer.className = 'settings-button-row';
+
+	setting.controlEl.className = 'settings-input-wrapper';
 
 	const fetchButton = document.createElement('button') as HTMLButtonElement;
 	const resetButton = document.createElement('button') as HTMLButtonElement;
@@ -47,18 +46,11 @@ export const wrapFetchModelComponent = ({
 	buttonContainer.appendChild(fetchButton);
 	buttonContainer.appendChild(resetButton);
 
-	// Set dropDown.selectEl style
-	setting.controlEl.style.display = 'flex';
-	setting.controlEl.style.flexDirection = 'column'; // Stack dropdown and buttons vertically
-	setting.controlEl.style.alignItems = Platform.isDesktop
-		? 'flex-end'
-		: 'flex-start'; // Align to the right on desktop, left on mobile
-
 	// Insert the container before the dropdown
 	dropDown.selectEl.insertAdjacentElement('beforebegin', buttonContainer);
 
 	// Add text
-	fetchButton.textContent = 'Fetch Models';
+	fetchButton.textContent = 'Fetch';
 	resetButton.textContent = 'Reset';
 
 	const { setModels } = new ForageStorage();
