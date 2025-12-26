@@ -19,7 +19,6 @@
 	},
 	"dependencies": {
 		"@types/mustache": "^4.2.6",
-		"dayjs": "1.11.13",
 		"front-matter": "^4.0.2",
 		"fuse.js": "7.1.0",
 		"localforage": "1.10.0",

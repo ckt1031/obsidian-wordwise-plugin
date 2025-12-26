@@ -1,16 +1,13 @@
 import { Modal, Notice } from 'obsidian';
 
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import Fuse from 'fuse.js';
 
 import { InternalPromptNames } from '@/config';
 import type WordWisePlugin from '@/main';
 import type { TextGenerationLog } from '@/types';
+import { formatTimestamp, getRelativeTime } from '@/utils/date';
 import stringToFragment from '@/utils/stirng-fragment';
 import { ForageStorage } from '@/utils/storage';
-
-dayjs.extend(relativeTime);
 
 export default class TextGenerationLogModal extends Modal {
 	private readonly plugin: WordWisePlugin;
@@ -65,8 +62,8 @@ export default class TextGenerationLogModal extends Modal {
 
 		contentEl.empty();
 
-		const djsObject = dayjs(log.generatedAt);
-		this.setTitle(djsObject.format('YYYY-MM-DD HH:mm:ss'));
+		const date = new Date(log.generatedAt);
+		this.setTitle(formatTimestamp(date));
 
 		const buttonContainer = contentEl.createDiv();
 
@@ -97,7 +94,11 @@ export default class TextGenerationLogModal extends Modal {
 			this.renderIndexView();
 		};
 
-		const metaData = `Generated <strong>${djsObject.fromNow()}</strong></br>Model: <code>${log.model}</code></br>Provider: <code>${log.provider}</code></br>Prompt name: <code>${log.by}</code>`;
+		const metaData = `Generated<strong>${getRelativeTime(
+			date,
+		)}</strong></br>Model: <code>${log.model}</code></br>Provider: <code>${
+			log.provider
+		}</code></br>Prompt name: <code>${log.by}</code>`;
 		contentEl.createEl('p', { text: stringToFragment(metaData) });
 
 		// Show Text Custom Instruction if it exists
@@ -140,9 +141,9 @@ export default class TextGenerationLogModal extends Modal {
 		this.textLogDiv.empty();
 
 		for (const log of displayingLogs) {
-			const djsObject = dayjs(log.generatedAt);
-			const strDate = djsObject.format('YYYY-MM-DD HH:mm:ss');
-			const timeFromNow = djsObject.fromNow(true /** without ago suffix */);
+			const date = new Date(log.generatedAt);
+			const strDate = formatTimestamp(date);
+			const timeFromNow = getRelativeTime(date, true /** without ago suffix */);
 
 			this.textLogDiv.createEl('p', {
 				text: `${strDate} (${timeFromNow})`,
