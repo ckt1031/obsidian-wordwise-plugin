@@ -88,7 +88,9 @@ export function addBrainCogIcon(originalIcon: SVGSVGElement | null): string {
 	// Move all existing children from the original icon into the new group
 	// Create a static array from the live HTMLCollection to avoid iteration issues
 	const originalChildren = Array.from(originalIcon.children);
-	originalChildren.forEach((child) => group.appendChild(child));
+	originalChildren.forEach((child) => {
+		group.appendChild(child);
+	});
 
 	// Rename brainCogIcon from svg to g element
 	const brainCogGroup = document.createElementNS(
@@ -100,12 +102,12 @@ export function addBrainCogIcon(originalIcon: SVGSVGElement | null): string {
 		'translate(21, 3) scale(0.50) translate(-18, -7)',
 	);
 	// Remove all attributes from the brain-cog icon
-	Array.from(brainCogIcon.attributes).forEach((attr) =>
-		brainCogIcon.removeAttribute(attr.name),
-	);
-	Array.from(brainCogIcon.children).forEach((child) =>
-		brainCogGroup.appendChild(child),
-	);
+	Array.from(brainCogIcon.attributes).forEach((attr) => {
+		brainCogIcon.removeAttribute(attr.name);
+	});
+	Array.from(brainCogIcon.children).forEach((child) => {
+		brainCogGroup.appendChild(child);
+	});
 
 	// The order is important: defs must come first, then the masked content,
 	// and finally the overlay icon.

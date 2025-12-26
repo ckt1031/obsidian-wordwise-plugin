@@ -237,7 +237,7 @@ export default class ViewLoadedPromptsModal extends Modal {
 }
 
 class PromptDetailModal extends Modal {
-	private readonly prompt: ExtendedPromptProps;
+	readonly prompt: ExtendedPromptProps;
 
 	constructor(plugin: WordWisePlugin, prompt: ExtendedPromptProps) {
 		super(plugin.app);

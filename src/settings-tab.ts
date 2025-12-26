@@ -464,11 +464,11 @@ export class SettingsTab extends PluginSettingTab {
 						.onChange(async (value) => {
 							// Should be a number and not negative or zero
 							if (
-								!Number.isNaN(Number.parseInt(value)) &&
-								Number.parseInt(value) >= 0
+								!Number.isNaN(Number.parseInt(value, 10)) &&
+								Number.parseInt(value, 10) >= 0
 							) {
 								settings.aiProviderConfig[settings.aiProvider].maxTokens =
-									Number.parseInt(value);
+									Number.parseInt(value, 10);
 								await plugin.saveSettings();
 							}
 						}),
