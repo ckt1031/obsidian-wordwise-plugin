@@ -23,8 +23,8 @@ import {
 	downloadFileWithFilePicker,
 	saveFileToObsidianConfigFolder,
 } from './utils/download';
-import stringToFragment from './utils/stirng-fragment';
 import { ForageStorage } from './utils/storage';
+import stringToFragment from './utils/string-fragment';
 
 export class SettingsTab extends PluginSettingTab {
 	private readonly plugin: WordWisePlugin;

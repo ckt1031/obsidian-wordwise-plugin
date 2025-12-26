@@ -6,8 +6,8 @@ import { InternalPromptNames } from '@/config';
 import type WordWisePlugin from '@/main';
 import type { TextGenerationLog } from '@/types';
 import { formatTimestamp, getRelativeTime } from '@/utils/date';
-import stringToFragment from '@/utils/stirng-fragment';
 import { ForageStorage } from '@/utils/storage';
+import stringToFragment from '@/utils/string-fragment';
 
 export default class TextGenerationLogModal extends Modal {
 	private readonly plugin: WordWisePlugin;
