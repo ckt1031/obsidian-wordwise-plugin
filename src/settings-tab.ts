@@ -17,7 +17,6 @@ import AddCustomPromptModal from './modals/add-custom-prompt';
 import ExportSettingsModal from './modals/export-settings';
 import TextGenerationLogModal from './modals/generation-logs';
 import ImportSettingsModal from './modals/import-settings';
-import ViewLoadedPromptsModal from './modals/view-loaded-prompts';
 import {
 	downloadFileWithFilePicker,
 	saveFileToObsidianConfigFolder,
@@ -670,18 +669,6 @@ export class SettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl).setName('Information Zone').setHeading();
-
-		new Setting(containerEl)
-			.setName('View Loaded Prompts')
-			.setDesc(
-				'View all loaded prompts including internal, custom, and file-based prompts with search and details.',
-			)
-			.addButton((button) => {
-				button.setButtonText('View Prompts');
-				button.onClick(() => {
-					new ViewLoadedPromptsModal(this.plugin).open();
-				});
-			});
 
 		new Setting(containerEl).setName('Danger Zone').setHeading();
 

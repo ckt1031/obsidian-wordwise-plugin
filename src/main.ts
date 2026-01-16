@@ -17,7 +17,6 @@ import { safeParseAsync } from 'valibot';
 
 import { DEFAULT_SETTINGS } from './config';
 import TextGenerationLogModal from './modals/generation-logs';
-import ViewLoadedPromptsModal from './modals/view-loaded-prompts';
 import { retrieveAllPrompts } from './prompt';
 import { ObfuscatedPluginSettingsSchema } from './schemas';
 import { SettingsTab } from './settings-tab';
@@ -218,13 +217,6 @@ export default class WordWisePlugin extends Plugin {
 					const modal = new TextGenerationLogModal(this);
 					await modal.initStates();
 					modal.open();
-				},
-			},
-			{
-				name: 'View Loaded Prompts',
-				icon: 'View-chevron-right',
-				onClick: async (_editor: EnhancedEditor) => {
-					new ViewLoadedPromptsModal(this).open();
 				},
 			},
 		];
