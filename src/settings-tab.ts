@@ -668,8 +668,6 @@ export class SettingsTab extends PluginSettingTab {
 				});
 			});
 
-		new Setting(containerEl).setName('Information Zone').setHeading();
-
 		new Setting(containerEl).setName('Danger Zone').setHeading();
 
 		if (settings.advancedSettings) {
