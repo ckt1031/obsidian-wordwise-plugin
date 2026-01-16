@@ -7,7 +7,6 @@ import type WordWisePlugin from '@/main';
 import type { TextGenerationLog } from '@/types';
 import { formatTimestamp, getRelativeTime } from '@/utils/date';
 import { ForageStorage } from '@/utils/storage';
-import stringToFragment from '@/utils/string-fragment';
 
 export default class TextGenerationLogModal extends Modal {
 	private readonly plugin: WordWisePlugin;
@@ -46,11 +45,9 @@ export default class TextGenerationLogModal extends Modal {
 			(a, b) =>
 				new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime(),
 		);
-
-		this.logs = logs;
 	}
 
-	renderLoggDetailView(id: string) {
+	renderLogDetailView(id: string) {
 		const { contentEl } = this;
 
 		const log = this.logs.find((l) => l.id === id);
@@ -65,7 +62,7 @@ export default class TextGenerationLogModal extends Modal {
 		const date = new Date(log.generatedAt);
 		this.setTitle(formatTimestamp(date));
 
-		const buttonContainer = contentEl.createDiv();
+		const buttonContainer = contentEl.createDiv({ cls: 'log-action-row' });
 
 		// Add a button to go back to the list
 		const backButton = buttonContainer.createEl('button', {
@@ -94,12 +91,11 @@ export default class TextGenerationLogModal extends Modal {
 			this.renderIndexView();
 		};
 
-		const metaData = `Generated<strong>${getRelativeTime(
-			date,
-		)}</strong></br>Model: <code>${log.model}</code></br>Provider: <code>${
-			log.provider
-		}</code></br>Prompt name: <code>${log.by}</code>`;
-		contentEl.createEl('p', { text: stringToFragment(metaData) });
+		const metaContainer = contentEl.createEl('div', { cls: 'log-meta' });
+		metaContainer.createDiv({ text: `Generated ${getRelativeTime(date)}` });
+		metaContainer.createDiv({ text: `Model: ${log.model}` });
+		metaContainer.createDiv({ text: `Provider: ${log.provider}` });
+		metaContainer.createDiv({ text: `Prompt name: ${log.by}` });
 
 		// Show Text Custom Instruction if it exists
 		if (
@@ -148,7 +144,7 @@ export default class TextGenerationLogModal extends Modal {
 			this.textLogDiv.createEl('p', {
 				text: `${strDate} (${timeFromNow})`,
 				cls: 'log-item',
-			}).onclick = () => this.renderLoggDetailView(log.id);
+			}).onclick = () => this.renderLogDetailView(log.id);
 		}
 	}
 
@@ -169,13 +165,13 @@ export default class TextGenerationLogModal extends Modal {
 			keys: [
 				'id',
 				'generatedAt',
-				'original',
+				'originalText',
 				'generatedText',
 				'customInstruction',
 			],
 		});
 
-		searchInputBox.onchange = (e) => {
+		searchInputBox.oninput = (e) => {
 			const queryText = (e.target as HTMLInputElement).value;
 
 			if (queryText === '') {

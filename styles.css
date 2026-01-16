@@ -7,13 +7,22 @@
 }
 
 .scroll-container {
-	max-height: 300px;
+	max-height: 320px;
 	overflow-y: auto;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 8px;
+	padding: 8px 10px;
 }
 
 .log-item {
 	cursor: pointer;
-	margin: 7px 0;
+	margin: 0;
+	padding: 6px 4px;
+	border-radius: 6px;
+}
+
+.log-item:hover {
+	background-color: var(--background-secondary);
 }
 
 .log-delete-button {
@@ -22,7 +31,22 @@
 
 .log-search-box {
 	width: 100%;
-	margin-bottom: 7px;
+	margin-bottom: 10px;
+	padding: 6px 8px;
+	border-radius: 6px;
+}
+
+.log-action-row {
+	display: flex;
+	gap: 4px;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.log-meta {
+	margin: 8px 0 16px 0;
+	line-height: 1.5;
+	color: var(--text-normal);
 }
 
 .code-container {
