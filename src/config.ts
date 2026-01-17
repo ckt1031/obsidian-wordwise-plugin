@@ -30,7 +30,7 @@ export enum APIProvider {
 	/** https://docs.mistral.ai/getting-started/quickstart */
 	Mistral = 'Mistral',
 	/** https://docs.x.ai/docs/api-reference#chat-completions */
-	XAI = 'X.AI',
+	XAI = 'xAI',
 	/** https://docs.github.com/en/github-models/prototyping-with-ai-models */
 	GitHub = 'GitHub',
 
