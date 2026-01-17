@@ -16,7 +16,6 @@ import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
 
 import { DEFAULT_SETTINGS } from './config';
-import TextGenerationLogModal from './modals/generation-logs';
 import { retrieveAllPrompts } from './prompt';
 import { ObfuscatedPluginSettingsSchema } from './schemas';
 import { SettingsTab } from './settings-tab';
@@ -161,7 +160,6 @@ export default class WordWisePlugin extends Plugin {
 			this.updateStatusBar();
 		}
 
-		this.initializeConstantCommands();
 		this.initializePromptsToCommands();
 	}
 
@@ -204,30 +202,6 @@ export default class WordWisePlugin extends Plugin {
 				icon: this.constructIcon(iconName, prompt.icon),
 				editorCallback: (editor: EnhancedEditor) =>
 					runPrompt(editor, this, prompt.name),
-			});
-		}
-	}
-
-	initializeConstantCommands(): void {
-		const obsidianCommands = [
-			{
-				name: 'View Text Generation Logs',
-				icon: 'memory-stick',
-				onClick: async (_editor: EnhancedEditor) => {
-					const modal = new TextGenerationLogModal(this);
-					await modal.initStates();
-					modal.open();
-				},
-			},
-		];
-
-		for (const command of obsidianCommands) {
-			this.addCommand({
-				// Actions to mark it as a constant command
-				id: `actions-${slugify(command.name)}`,
-				name: command.name,
-				icon: this.constructIcon(slugify(command.name), command.icon),
-				editorCallback: (editor: EnhancedEditor) => command.onClick(editor),
 			});
 		}
 	}
