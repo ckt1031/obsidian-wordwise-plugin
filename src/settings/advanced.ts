@@ -1,5 +1,6 @@
 import { Setting } from 'obsidian';
 
+import { type APIProvider, PROVIDER_DEFAULTS } from '@/config';
 import type { SettingsTab } from '.';
 
 export const renderAdvancedSettings = (settingsTab: SettingsTab) => {
@@ -82,7 +83,10 @@ export const renderAdvancedSettings = (settingsTab: SettingsTab) => {
 			)
 			.addText((text) =>
 				text
-					.setPlaceholder('/v1/models')
+					.setPlaceholder(
+						PROVIDER_DEFAULTS[settings.aiProvider as APIProvider]?.models ||
+							'/v1/models',
+					)
 					.setValue(
 						settings.aiProviderConfig[settings.aiProvider].modelsPath || '',
 					)
@@ -99,7 +103,10 @@ export const renderAdvancedSettings = (settingsTab: SettingsTab) => {
 			)
 			.addText((text) =>
 				text
-					.setPlaceholder('/v1/chat/completions')
+					.setPlaceholder(
+						PROVIDER_DEFAULTS[settings.aiProvider as APIProvider]?.chat ||
+							'/v1/chat/completions',
+					)
 					.setValue(
 						settings.aiProviderConfig[settings.aiProvider].chatPath || '',
 					)

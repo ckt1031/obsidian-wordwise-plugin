@@ -77,7 +77,7 @@ export const PROVIDER_DEFAULTS: Record<
 	},
 	[APIProvider.GoogleGemini]: {
 		host: 'https://generativelanguage.googleapis.com',
-		models: '/v1beta/openai/models',
+		models: '/v1beta/models',
 		chat: '/v1beta/openai/chat/completions',
 	},
 	[APIProvider.Anthropic]: {
