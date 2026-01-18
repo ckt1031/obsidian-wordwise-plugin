@@ -19,6 +19,10 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
+      - uses: actions/setup-node@v6
+        with:
+          node-version: latest
+
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
