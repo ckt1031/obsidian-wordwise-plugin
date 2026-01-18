@@ -2,10 +2,10 @@ import { type ButtonComponent, Notice, Setting } from 'obsidian';
 
 import { nanoid } from 'nanoid';
 
-import { wrapAPIKeyComponent } from '../components/api-key';
-import { wrapFetchModelComponent } from '../components/fetch-model';
 import { APIProvider } from '../config';
 import type { SettingsTab } from '.';
+import { renderApiKeySetting } from './components/api-key';
+import { renderModelSetting } from './components/fetch-model';
 
 export const renderProviderSettings = (settingsTab: SettingsTab) => {
 	const { containerEl, plugin, forage } = settingsTab;
@@ -113,19 +113,7 @@ export const renderProviderSettings = (settingsTab: SettingsTab) => {
 				);
 		}
 
-		const apiKeySetting = new Setting(containerEl);
-		apiKeySetting.setName('API Key').addText((text) => {
-			wrapAPIKeyComponent({ setting: apiKeySetting, text, plugin });
-
-			text
-				.setPlaceholder('Enter your API Key')
-				.setValue(settings.aiProviderConfig[provider].apiKey)
-				.onChange(async (value) => {
-					// Update the API Key
-					settings.aiProviderConfig[provider].apiKey = value;
-					await plugin.saveSettings();
-				});
-		});
+		renderApiKeySetting({ containerEl, plugin, provider });
 
 		if (
 			settings.advancedSettings ||
@@ -164,89 +152,12 @@ export const renderProviderSettings = (settingsTab: SettingsTab) => {
 			);
 		}
 
-		const modelSetting = new Setting(containerEl);
-
-		modelSetting.setName('Model');
-
-		const providerConfig = settings.aiProviderConfig[provider];
-		const isManualInput =
-			providerConfig.manualModelInput || provider === APIProvider.AzureOpenAI;
-
-		if (provider !== APIProvider.AzureOpenAI) {
-			modelSetting.addExtraButton((cb) => {
-				cb.setIcon(isManualInput ? 'list' : 'pencil')
-					.setTooltip(
-						isManualInput ? 'Switch to dropdown' : 'Switch to manual input',
-					)
-					.onClick(async () => {
-						providerConfig.manualModelInput = !isManualInput;
-						await plugin.saveSettings();
-						settingsTab.display();
-					});
-			});
-		}
-
-		if (isManualInput) {
-			// Set model as text input
-			modelSetting.addText((text) =>
-				text
-					.setPlaceholder('Enter model ID')
-					.setValue(providerConfig.model || '')
-					.onChange(async (value) => {
-						// Update the model
-						providerConfig.model = value;
-						await plugin.saveSettings();
-					}),
-			);
-		} else {
-			modelSetting.addDropdown(async (dropDown) => {
-				const models = await forage.getModels(provider);
-
-				// Find out the only select element in the containerEl
-				const selectElement = modelSetting.settingEl.find(
-					'select',
-				) as HTMLSelectElement;
-
-				wrapFetchModelComponent({
-					dropDown,
-					setting: modelSetting,
-					plugin,
-					onUpdateModels: (models) => {
-						// Remove all options and fill it with the new models
-						selectElement.innerHTML = '';
-
-						// Add the new models to the dropdown
-						for (const model of models) {
-							selectElement.remove(models.indexOf(model));
-						}
-
-						for (const model of models) {
-							if (typeof model === 'string') {
-								dropDown.addOption(model, model);
-							} else {
-								dropDown.addOption(model.id, model.name || model.id);
-							}
-						}
-
-						// Set the value to the current model
-						dropDown.setValue(settings.aiProviderConfig[provider].model);
-					},
-				});
-
-				for (const model of models) {
-					if (typeof model === 'string') {
-						dropDown.addOption(model, model);
-					} else {
-						dropDown.addOption(model.id, model.name || model.id);
-					}
-				}
-				dropDown.setValue(settings.aiProviderConfig[provider].model);
-				dropDown.onChange(async (value) => {
-					// Update the Model
-					settings.aiProviderConfig[provider].model = value;
-					await plugin.saveSettings();
-				});
-			});
-		}
+		renderModelSetting({
+			containerEl,
+			plugin,
+			provider,
+			forage,
+			onReload: () => settingsTab.display(),
+		});
 	}
 };

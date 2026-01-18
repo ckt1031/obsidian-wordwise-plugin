@@ -357,15 +357,3 @@
 	padding: 20px;
 }
 
-.settings-button-row {
-	display: flex;
-	flex-direction: row;
-	gap: 10px;
-}
-
-.settings-input-wrapper {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	gap: 10px;
-}
