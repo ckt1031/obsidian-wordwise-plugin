@@ -58,11 +58,7 @@ export const wrapAPIKeyComponent = ({ setting, text, plugin }: Props) => {
 		const providerSettings =
 			plugin.settings.aiProviderConfig[plugin.settings.aiProvider];
 
-		const modelToCall =
-			providerSettings.customModelId &&
-			providerSettings.customModelId.length > 0
-				? providerSettings.customModelId
-				: providerSettings.model;
+		const modelToCall = providerSettings.model;
 
 		const hasNoModelConfigurated = !modelToCall || modelToCall.length === 0;
 

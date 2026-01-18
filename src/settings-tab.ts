@@ -197,15 +197,33 @@ export class SettingsTab extends PluginSettingTab {
 
 			modelSetting.setName('Model');
 
-			if (provider === APIProvider.AzureOpenAI) {
+			const providerConfig = settings.aiProviderConfig[provider];
+			const isManualInput =
+				providerConfig.manualModelInput || provider === APIProvider.AzureOpenAI;
+
+			if (provider !== APIProvider.AzureOpenAI) {
+				modelSetting.addExtraButton((cb) => {
+					cb.setIcon(isManualInput ? 'list' : 'pencil')
+						.setTooltip(
+							isManualInput ? 'Switch to dropdown' : 'Switch to manual input',
+						)
+						.onClick(async () => {
+							providerConfig.manualModelInput = !isManualInput;
+							await plugin.saveSettings();
+							this.display();
+						});
+				});
+			}
+
+			if (isManualInput) {
 				// Set model as text input
 				modelSetting.addText((text) =>
 					text
-						.setPlaceholder('gpt-4o-mini')
-						.setValue(settings.aiProviderConfig[provider].model || '')
+						.setPlaceholder('Enter model ID')
+						.setValue(providerConfig.model || '')
 						.onChange(async (value) => {
 							// Update the model
-							settings.aiProviderConfig[provider].model = value;
+							providerConfig.model = value;
 							await plugin.saveSettings();
 						}),
 				);
@@ -222,15 +240,6 @@ export class SettingsTab extends PluginSettingTab {
 						dropDown,
 						setting: modelSetting,
 						plugin,
-						triggerUIClearModels: () => {
-							// Remove all options and fill it with the new models
-							selectElement.innerHTML = '';
-
-							// Add the new models to the dropdown
-							for (const model of models) {
-								selectElement.remove(models.indexOf(model));
-							}
-						},
 						onUpdateModels: (models) => {
 							// Remove all options and fill it with the new models
 							selectElement.innerHTML = '';
@@ -423,25 +432,6 @@ export class SettingsTab extends PluginSettingTab {
 						)
 						.onChange(async (value) => {
 							settings.aiProviderConfig[settings.aiProvider].omitVersionPrefix =
-								value;
-							await plugin.saveSettings();
-						}),
-				);
-
-			new Setting(containerEl)
-				.setName('Custom Model ID')
-				.setDesc(
-					"If you don't enter anything here, the model selected above will be used.",
-				)
-				.addText((text) =>
-					text
-						.setPlaceholder('Enter the model name')
-						.setValue(
-							settings.aiProviderConfig[settings.aiProvider].customModelId ||
-								'',
-						)
-						.onChange(async (value) => {
-							settings.aiProviderConfig[settings.aiProvider].customModelId =
 								value;
 							await plugin.saveSettings();
 						}),

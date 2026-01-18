@@ -126,14 +126,9 @@ export async function runPrompt(
 		);
 	}
 
-	const settingsCustomModel = getNonEmptyString(
-		providerSettingEntry[1].customModelId,
-	);
-
 	// providerSettingEntry = [key, provider <--]
 	const providerSettings = providerSettingEntry[1];
-	const model =
-		commandSpecificModel || settingsCustomModel || providerSettings.model;
+	const model = commandSpecificModel || providerSettings.model;
 
 	// Reject if model is empty
 	if (!getNonEmptyString(model)) {

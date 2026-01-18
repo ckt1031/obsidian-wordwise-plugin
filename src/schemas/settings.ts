@@ -25,11 +25,10 @@ export const PluginSettingsSchema = v.object({
 			isCustom: v.optional(v.boolean()),
 			displayName: v.optional(v.string()),
 			omitVersionPrefix: v.optional(v.boolean()),
+			manualModelInput: v.optional(v.boolean()),
 
 			maxTokens: v.optional(v.number()),
 			temperature: v.optional(v.number()),
-
-			customModelId: v.optional(v.string()),
 		}),
 	),
 
