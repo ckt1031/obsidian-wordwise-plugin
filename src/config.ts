@@ -61,23 +61,80 @@ export enum PrePromptActions {
 	CustomInstructions = 1,
 }
 
-export const DEFAULT_HOST = {
-	[APIProvider.OpenAI]: 'https://api.openai.com',
-	[APIProvider.AzureOpenAI]: '', // Must be set by user
-	[APIProvider.GoogleGemini]: 'https://generativelanguage.googleapis.com',
-	[APIProvider.Anthropic]: 'https://api.anthropic.com',
-	[APIProvider.Cohere]: 'https://api.cohere.ai',
-	[APIProvider.OpenRouter]: 'https://openrouter.ai',
-	[APIProvider.PerplexityAI]: 'https://api.perplexity.ai',
-	[APIProvider.Ollama]: 'http://localhost:11434',
-	[APIProvider.LMStudio]: 'http://localhost:1234',
-	[APIProvider.DeepSeek]: 'https://api.deepseek.com',
-	[APIProvider.Mistral]: 'https://api.mistral.ai',
-	[APIProvider.XAI]: 'https://api.x.ai',
-	[APIProvider.GitHub]: 'https://models.inference.ai.azure.com',
-
-	// Placeholder for custom API
-	[APIProvider.Custom]: '',
+export const PROVIDER_DEFAULTS: Record<
+	APIProvider,
+	{ host: string; models: string; chat: string }
+> = {
+	[APIProvider.OpenAI]: {
+		host: 'https://api.openai.com',
+		models: '/v1/models',
+		chat: '/v1/chat/completions',
+	},
+	[APIProvider.AzureOpenAI]: {
+		host: '', // Must be set by user
+		models: '', // Not used for Azure
+		chat: '', // Not used for Azure
+	},
+	[APIProvider.GoogleGemini]: {
+		host: 'https://generativelanguage.googleapis.com',
+		models: '/v1beta/openai/models',
+		chat: '/v1beta/openai/chat/completions',
+	},
+	[APIProvider.Anthropic]: {
+		host: 'https://api.anthropic.com',
+		models: '/v1/models',
+		chat: '/v1/messages',
+	},
+	[APIProvider.Cohere]: {
+		host: 'https://api.cohere.ai',
+		models: '/compatibility/v1/models',
+		chat: '/compatibility/v1/chat/completions',
+	},
+	[APIProvider.OpenRouter]: {
+		host: 'https://openrouter.ai',
+		models: '/api/v1/models',
+		chat: '/api/v1/chat/completions',
+	},
+	[APIProvider.PerplexityAI]: {
+		host: 'https://api.perplexity.ai',
+		models: '/models',
+		chat: '/chat/completions',
+	},
+	[APIProvider.Ollama]: {
+		host: 'http://localhost:11434',
+		models: '/v1/models',
+		chat: '/v1/chat/completions',
+	},
+	[APIProvider.LMStudio]: {
+		host: 'http://localhost:1234',
+		models: '/v1/models',
+		chat: '/v1/chat/completions',
+	},
+	[APIProvider.DeepSeek]: {
+		host: 'https://api.deepseek.com',
+		models: '/v1/models',
+		chat: '/v1/chat/completions',
+	},
+	[APIProvider.Mistral]: {
+		host: 'https://api.mistral.ai',
+		models: '/v1/models',
+		chat: '/v1/chat/completions',
+	},
+	[APIProvider.XAI]: {
+		host: 'https://api.x.ai',
+		models: '/v1/models',
+		chat: '/v1/chat/completions',
+	},
+	[APIProvider.GitHub]: {
+		host: 'https://models.inference.ai.azure.com',
+		models: '/models',
+		chat: '/chat/completions',
+	},
+	[APIProvider.Custom]: {
+		host: '',
+		models: '/v1/models',
+		chat: '/v1/chat/completions',
+	},
 };
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -88,7 +145,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 			{
 				model: '',
 				apiKey: '',
-				baseUrl: DEFAULT_HOST[provider],
+				baseUrl: PROVIDER_DEFAULTS[provider as APIProvider].host,
 				isCustom: provider === APIProvider.Custom,
 			} as PluginSettings['aiProviderConfig'][APIProvider],
 		]),

@@ -1,6 +1,6 @@
 import { Notice, Setting } from 'obsidian';
 
-import { APIProvider, DEFAULT_HOST } from '@/config';
+import { APIProvider, PROVIDER_DEFAULTS } from '@/config';
 import type WordWisePlugin from '@/main';
 import { getAnthropicModels } from '@/provider/anthropic';
 import { getCohereModels } from '@/provider/cohere';
@@ -63,12 +63,10 @@ export const renderModelSetting = async ({
 
 						let models: Models = [];
 
-						const { baseUrl, apiKey } = providerConfig;
+						const { baseUrl, apiKey, modelsPath } = providerConfig;
 						const host = getAPIHost(
 							baseUrl,
-							provider in DEFAULT_HOST
-								? DEFAULT_HOST[provider as keyof typeof DEFAULT_HOST]
-								: '',
+							PROVIDER_DEFAULTS[provider as APIProvider]?.host || '',
 						);
 
 						switch (provider) {
@@ -88,7 +86,14 @@ export const renderModelSetting = async ({
 								models = await getMistralModels({ host, apiKey, provider });
 								break;
 							default:
-								models = await getOpenAIModels({ host, apiKey, provider });
+								models = await getOpenAIModels({
+									host,
+									apiKey,
+									provider,
+									modelsPath: settings.advancedSettings
+										? modelsPath
+										: undefined,
+								});
 						}
 
 						await setModels(provider, models);

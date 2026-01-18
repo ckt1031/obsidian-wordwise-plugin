@@ -2,6 +2,7 @@ import { requestUrl } from 'obsidian';
 
 import { parseAsync } from 'valibot';
 
+import { APIProvider, PROVIDER_DEFAULTS } from '@/config';
 import { MistralModelsSchema } from '@/schemas/models';
 import type { Models } from '@/types';
 
@@ -16,8 +17,9 @@ export async function getMistralModels({
 	apiKey,
 	provider,
 }: ModelRequestProps): Promise<Models> {
+	const path = PROVIDER_DEFAULTS[APIProvider.Mistral].models;
 	const response = await requestUrl({
-		url: `${host}/v1/models`,
+		url: `${host}${path}`,
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: `Bearer ${apiKey}`,

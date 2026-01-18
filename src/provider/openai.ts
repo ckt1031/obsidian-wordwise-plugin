@@ -3,7 +3,7 @@ import { requestUrl } from 'obsidian';
 import type OpenAI from 'openai';
 import { parseAsync } from 'valibot';
 
-import { APIProvider, DEFAULT_HOST } from '@/config';
+import { APIProvider, PROVIDER_DEFAULTS } from '@/config';
 import { OpenAIModelsSchema } from '@/schemas/models';
 import type { Models, ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
@@ -13,23 +13,23 @@ export type ModelRequestProps = {
 	host: string;
 	apiKey: string;
 	provider: string;
+	modelsPath?: string;
 };
 
 export async function getOpenAIModels({
 	host,
 	apiKey,
 	provider,
+	modelsPath,
 }: ModelRequestProps): Promise<Models> {
-	let path = '/v1/models';
+	const defaultEndpoints = PROVIDER_DEFAULTS[provider as APIProvider];
+
+	const path = modelsPath || defaultEndpoints?.models || '/v1/models';
 
 	const headers: Record<string, string> = {
 		'Content-Type': 'application/json',
 		Authorization: `Bearer ${apiKey}`,
 	};
-
-	if (provider === APIProvider.OpenRouter) {
-		path = `/api${path}`;
-	}
 
 	const response = await requestUrl({
 		url: `${host}${path}`,
@@ -78,12 +78,17 @@ export async function handleTextOpenAI({
 
 	const host = getAPIHost(
 		baseUrl,
-		plugin.settings.aiProvider in DEFAULT_HOST
-			? DEFAULT_HOST[plugin.settings.aiProvider as keyof typeof DEFAULT_HOST]
-			: '',
+		PROVIDER_DEFAULTS[plugin.settings.aiProvider as APIProvider]?.host || '',
 	);
 
-	let suffixPath = '/v1/';
+	const defaultEndpoints = PROVIDER_DEFAULTS[provider as APIProvider];
+
+	const path =
+		(plugin.settings.advancedSettings
+			? providerSettings.chatPath
+			: undefined) ||
+		defaultEndpoints?.chat ||
+		'/v1/chat/completions';
 
 	if (provider === APIProvider.OpenRouter) {
 		const OpenRouterHeaders = {
@@ -95,36 +100,7 @@ export async function handleTextOpenAI({
 			...headers,
 			...OpenRouterHeaders,
 		};
-		// OpenRouter needs to be https://openrouter.ai/api/v1/
-		suffixPath = `/api${suffixPath}`;
 	}
-
-	if (
-		provider === APIProvider.PerplexityAI ||
-		provider === APIProvider.GitHub
-	) {
-		// Remove /v1 from path
-		suffixPath = suffixPath.replace('/v1/', '/');
-	}
-
-	// Cohere compatibility
-	if (provider === APIProvider.Cohere) {
-		// https://example.com/v1/ to https://example.com/compatibility/v1/
-		suffixPath = suffixPath.replace('/v1/', '/compatibility/v1/');
-	}
-
-	// Google AI Studio compatibility
-	if (provider === APIProvider.GoogleGemini) {
-		// https://example.com/v1/ to https://example.com/v1beta/openai/
-		suffixPath = suffixPath.replace('/v1/', '/v1beta/openai/');
-	}
-
-	// FORCE Remove /v1 from path
-	if (providerSettings?.omitVersionPrefix && plugin.settings.advancedSettings) {
-		suffixPath = suffixPath.replace('/v1/', '/');
-	}
-
-	// const providerBody = createOpenAI(apiKey, `${host}${suffixPath}`);
 
 	const body: OpenAI.ChatCompletionCreateParamsNonStreaming = {
 		model,
@@ -161,7 +137,7 @@ export async function handleTextOpenAI({
 		}
 	}
 
-	const url = `${host}${suffixPath}chat/completions`;
+	const url = `${host}${path}`;
 
 	try {
 		const response = await fetch(url, {

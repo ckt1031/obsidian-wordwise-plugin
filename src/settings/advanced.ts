@@ -49,24 +49,6 @@ export const renderAdvancedSettings = (settingsTab: SettingsTab) => {
 			);
 
 		new Setting(containerEl)
-			.setName('Omit Version Prefix')
-			.setDesc(
-				'Use the web address without the version number (e.g., /chat/completions instead of /v1/chat/completions). Some providers might do this automatically.',
-			)
-			.addToggle((toggle) =>
-				toggle
-					.setValue(
-						settings.aiProviderConfig[settings.aiProvider].omitVersionPrefix ||
-							false,
-					)
-					.onChange(async (value) => {
-						settings.aiProviderConfig[settings.aiProvider].omitVersionPrefix =
-							value;
-						await plugin.saveSettings();
-					}),
-			);
-
-		new Setting(containerEl)
 			.setName('Max Tokens')
 			.setDesc(
 				'The maximum number of words or characters the AI can generate. Set to 0 to use the default.',
@@ -88,6 +70,42 @@ export const renderAdvancedSettings = (settingsTab: SettingsTab) => {
 								Number.parseInt(value, 10);
 							await plugin.saveSettings();
 						}
+					}),
+			);
+
+		new Setting(containerEl).setName('Custom Endpoints').setHeading();
+
+		new Setting(containerEl)
+			.setName('Custom Models Endpoint')
+			.setDesc(
+				'The endpoint to fetch models from. Leave empty to use the default.',
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder('/v1/models')
+					.setValue(
+						settings.aiProviderConfig[settings.aiProvider].modelsPath || '',
+					)
+					.onChange(async (value) => {
+						settings.aiProviderConfig[settings.aiProvider].modelsPath = value;
+						await plugin.saveSettings();
+					}),
+			);
+
+		new Setting(containerEl)
+			.setName('Custom Chat Endpoint')
+			.setDesc(
+				'The endpoint for chat completions. Leave empty to use the default.',
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder('/v1/chat/completions')
+					.setValue(
+						settings.aiProviderConfig[settings.aiProvider].chatPath || '',
+					)
+					.onChange(async (value) => {
+						settings.aiProviderConfig[settings.aiProvider].chatPath = value;
+						await plugin.saveSettings();
 					}),
 			);
 	}

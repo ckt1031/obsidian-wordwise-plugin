@@ -24,8 +24,9 @@ export const PluginSettingsSchema = v.object({
 			// New in v1.1.0
 			isCustom: v.optional(v.boolean()),
 			displayName: v.optional(v.string()),
-			omitVersionPrefix: v.optional(v.boolean()),
 			manualModelInput: v.optional(v.boolean()),
+			modelsPath: v.optional(v.string()),
+			chatPath: v.optional(v.string()),
 
 			maxTokens: v.optional(v.number()),
 			temperature: v.optional(v.number()),

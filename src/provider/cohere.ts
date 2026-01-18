@@ -2,6 +2,7 @@ import { requestUrl } from 'obsidian';
 
 import { parseAsync } from 'valibot';
 
+import { APIProvider, PROVIDER_DEFAULTS } from '@/config';
 import { CohereModelsSchema } from '@/schemas/models';
 import type { Models } from '@/types';
 import type { ModelRequestProps } from './openai';
@@ -10,7 +11,8 @@ export async function getCohereModels({
 	host,
 	apiKey,
 }: ModelRequestProps): Promise<Models> {
-	const url = `${host}/v1/models`;
+	const path = PROVIDER_DEFAULTS[APIProvider.Cohere].models;
+	const url = `${host}${path}`;
 
 	const headers: Record<string, string> = {
 		'Content-Type': 'application/json',
