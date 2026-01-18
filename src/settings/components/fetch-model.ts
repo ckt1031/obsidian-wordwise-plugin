@@ -98,6 +98,13 @@ export const renderModelSetting = async ({
 									provider,
 								});
 								break;
+							case APIProvider.OpenRouter:
+								models = await getOpenAIModels({
+									host,
+									apiKey,
+									provider,
+								});
+								break;
 							default: {
 								let finalHost = host;
 								if (providerConfig.isCustom) {

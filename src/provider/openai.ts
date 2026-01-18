@@ -61,7 +61,7 @@ export class OpenAIProvider extends BaseProvider {
 	) {
 		const { apiKey, baseUrl } = providerSettings;
 
-		let headers: Record<string, string> = {
+		const headers: Record<string, string> = {
 			Authorization: `Bearer ${apiKey}`,
 		};
 
@@ -75,15 +75,7 @@ export class OpenAIProvider extends BaseProvider {
 		if (isCustom) {
 			host = `${host}${providerSettings.chatPath || '/v1'}`;
 		} else {
-			host = `${host}${provider === APIProvider.OpenRouter ? '/api/v1' : '/v1'}`;
-		}
-
-		if (provider === APIProvider.OpenRouter) {
-			headers = {
-				...headers,
-				'HTTP-Referer': 'https://github.com/ckt1031/obsidian-wordwise-plugin',
-				'X-Title': 'Obsidian Wordwise Plugin',
-			};
+			host = `${host}/v1`;
 		}
 
 		const openai = createOpenAI({

@@ -5,6 +5,7 @@ import { handleTextGitHub } from '@/provider/github';
 import { handleTextGoogle } from '@/provider/google-ai';
 import { handleTextMistral } from '@/provider/mistral';
 import { handleTextOpenAI } from '@/provider/openai';
+import { handleTextOpenRouter } from '@/provider/openrouter';
 import type { CallTextAPIProps } from '@/types';
 
 export async function callTextAPI(
@@ -21,6 +22,7 @@ export async function callTextAPI(
 		[APIProvider.Mistral]: handleTextMistral,
 		[APIProvider.Cohere]: handleTextCohere,
 		[APIProvider.GitHub]: handleTextGitHub,
+		[APIProvider.OpenRouter]: handleTextOpenRouter,
 	};
 
 	const handler =
