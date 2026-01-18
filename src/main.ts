@@ -18,7 +18,7 @@ import { safeParseAsync } from 'valibot';
 import { DEFAULT_SETTINGS } from './config';
 import { retrieveAllPrompts } from './prompt';
 import { ObfuscatedPluginSettingsSchema } from './schemas';
-import { SettingsTab } from './settings-tab';
+import { SettingsTab } from './settings';
 import type {
 	EnhancedEditor,
 	ObfuscatedPluginSettings,
