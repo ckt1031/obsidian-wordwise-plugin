@@ -7,6 +7,7 @@ import { getCohereModels } from '@/provider/cohere';
 import { getGitHubModels } from '@/provider/github';
 import { getGoogleGenAIModels } from '@/provider/google-ai';
 import { getMistralModels } from '@/provider/mistral';
+import { getOllamaModels } from '@/provider/ollama';
 import { getOpenAIModels } from '@/provider/openai';
 import type { Models } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
@@ -103,6 +104,12 @@ export const renderModelSetting = async ({
 									host,
 									apiKey,
 									provider,
+								});
+								break;
+							case APIProvider.Ollama:
+								models = await getOllamaModels({
+									host,
+									apiKey,
 								});
 								break;
 							default: {

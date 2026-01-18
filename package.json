@@ -26,6 +26,7 @@
 		"@openrouter/ai-sdk-provider": "^1.5.4",
 		"@types/mustache": "^4.2.6",
 		"ai": "^6.0.39",
+		"ai-sdk-ollama": "^3.1.1",
 		"front-matter": "^4.0.2",
 		"fuse.js": "7.1.0",
 		"localforage": "1.10.0",

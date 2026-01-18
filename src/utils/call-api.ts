@@ -4,6 +4,7 @@ import { handleTextCohere } from '@/provider/cohere';
 import { handleTextGitHub } from '@/provider/github';
 import { handleTextGoogle } from '@/provider/google-ai';
 import { handleTextMistral } from '@/provider/mistral';
+import { handleTextOllama } from '@/provider/ollama';
 import { handleTextOpenAI } from '@/provider/openai';
 import { handleTextOpenRouter } from '@/provider/openrouter';
 import type { CallTextAPIProps } from '@/types';
@@ -23,6 +24,7 @@ export async function callTextAPI(
 		[APIProvider.Cohere]: handleTextCohere,
 		[APIProvider.GitHub]: handleTextGitHub,
 		[APIProvider.OpenRouter]: handleTextOpenRouter,
+		[APIProvider.Ollama]: handleTextOllama,
 	};
 
 	const handler =
