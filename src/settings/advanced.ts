@@ -74,46 +74,49 @@ export const renderAdvancedSettings = (settingsTab: SettingsTab) => {
 					}),
 			);
 
-		new Setting(containerEl).setName('Custom Endpoints').setHeading();
+		// Only when custom provider is selected
+		if (settings.aiProviderConfig[settings.aiProvider].isCustom) {
+			new Setting(containerEl).setName('Custom Endpoints').setHeading();
 
-		new Setting(containerEl)
-			.setName('Custom Models Endpoint')
-			.setDesc(
-				'The endpoint to fetch models from. Leave empty to use the default.',
-			)
-			.addText((text) =>
-				text
-					.setPlaceholder(
-						PROVIDER_DEFAULTS[settings.aiProvider as APIProvider]?.models ||
-							'/v1/models',
-					)
-					.setValue(
-						settings.aiProviderConfig[settings.aiProvider].modelsPath || '',
-					)
-					.onChange(async (value) => {
-						settings.aiProviderConfig[settings.aiProvider].modelsPath = value;
-						await plugin.saveSettings();
-					}),
-			);
+			new Setting(containerEl)
+				.setName('Custom Models Endpoint')
+				.setDesc(
+					'The endpoint to fetch models from. Leave empty to use the default.',
+				)
+				.addText((text) =>
+					text
+						.setPlaceholder(
+							PROVIDER_DEFAULTS[settings.aiProvider as APIProvider]?.models ||
+								'/v1/models',
+						)
+						.setValue(
+							settings.aiProviderConfig[settings.aiProvider].modelsPath || '',
+						)
+						.onChange(async (value) => {
+							settings.aiProviderConfig[settings.aiProvider].modelsPath = value;
+							await plugin.saveSettings();
+						}),
+				);
 
-		new Setting(containerEl)
-			.setName('Custom Chat Endpoint')
-			.setDesc(
-				'The endpoint for chat completions. Leave empty to use the default.',
-			)
-			.addText((text) =>
-				text
-					.setPlaceholder(
-						PROVIDER_DEFAULTS[settings.aiProvider as APIProvider]?.chat ||
-							'/v1/chat/completions',
-					)
-					.setValue(
-						settings.aiProviderConfig[settings.aiProvider].chatPath || '',
-					)
-					.onChange(async (value) => {
-						settings.aiProviderConfig[settings.aiProvider].chatPath = value;
-						await plugin.saveSettings();
-					}),
-			);
+			new Setting(containerEl)
+				.setName('Custom Chat Endpoint')
+				.setDesc(
+					'The endpoint for chat completions. Leave empty to use the default.',
+				)
+				.addText((text) =>
+					text
+						.setPlaceholder(
+							PROVIDER_DEFAULTS[settings.aiProvider as APIProvider]?.chat ||
+								'/v1/chat/completions',
+						)
+						.setValue(
+							settings.aiProviderConfig[settings.aiProvider].chatPath || '',
+						)
+						.onChange(async (value) => {
+							settings.aiProviderConfig[settings.aiProvider].chatPath = value;
+							await plugin.saveSettings();
+						}),
+				);
+		}
 	}
 };
