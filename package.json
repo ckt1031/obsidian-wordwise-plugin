@@ -7,13 +7,13 @@
 	"author": "ckt1031",
 	"main": "main.js",
 	"scripts": {
-		"build": "bun esbuild.config.ts production",
-		"dev": "bun esbuild.config.ts",
+		"build": "node esbuild.config.ts production",
+		"dev": "node esbuild.config.ts",
 		"format": "biome format . --write",
 		"lint": "tsc --noEmit --skipLibCheck && biome check .",
 		"lint:fix": "tsc --noEmit --skipLibCheck && biome check --write .",
 		"test": "vitest run",
-		"version": "bun scripts/version-bump.ts && biome format manifest.json versions.json --write && git add manifest.json versions.json",
+		"version": "node scripts/version-bump.ts && biome format manifest.json versions.json --write && git add manifest.json versions.json",
 		"prepare": "husky || true",
 		"lint-staged": "lint-staged"
 	},

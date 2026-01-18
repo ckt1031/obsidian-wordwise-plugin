@@ -1,10 +1,13 @@
 import { requestUrl } from 'obsidian';
 
+import { createOpenAI } from '@ai-sdk/openai';
 import { parseAsync } from 'valibot';
 
 import { APIProvider, PROVIDER_DEFAULTS } from '@/config';
 import { GitHubModelsSchema } from '@/schemas/models';
-import type { Models } from '@/types';
+import type { Models, ProviderTextAPIProps } from '@/types';
+import { getAPIHost } from '@/utils/get-url-host';
+import { BaseProvider } from './base';
 
 export type ModelRequestProps = {
 	host: string;
@@ -40,4 +43,29 @@ export async function getGitHubModels({
 		name: model.friendly_name,
 		provider,
 	}));
+}
+
+export class GitHubProvider extends BaseProvider {
+	protected createModel(
+		modelId: string,
+		providerSettings: ProviderTextAPIProps['providerSettings'],
+	) {
+		const { apiKey, baseUrl } = providerSettings;
+
+		const host = getAPIHost(
+			baseUrl,
+			PROVIDER_DEFAULTS[APIProvider.GitHub].host,
+		);
+
+		const github = createOpenAI({
+			apiKey,
+			baseURL: host,
+		});
+
+		return github.chat(modelId);
+	}
+}
+
+export async function handleTextGitHub(props: ProviderTextAPIProps) {
+	return new GitHubProvider().handleText(props);
 }
