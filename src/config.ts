@@ -9,8 +9,9 @@ export enum CustomBehavior {
 export enum APIProvider {
 	/** https://openai.com */
 	OpenAI = 'OpenAI',
+	// TODO: Add Azure OpenAI support with @ai-sdk/azure
 	/** https://azure.microsoft.com/en-us/products/ai-services/openai-service */
-	AzureOpenAI = 'Azure OpenAI',
+	// AzureOpenAI = 'Azure OpenAI',
 	/** https://deepmind.google/technologies/gemini */
 	GoogleGemini = 'Google Gemini',
 	/** https://www.anthropic.com */
@@ -63,77 +64,59 @@ export enum PrePromptActions {
 
 export const PROVIDER_DEFAULTS: Record<
 	APIProvider,
-	{ host: string; models: string; chat: string }
+	{ host: string; models: string }
 > = {
 	[APIProvider.OpenAI]: {
 		host: 'https://api.openai.com',
 		models: '/v1/models',
-		chat: '/v1/chat/completions',
-	},
-	[APIProvider.AzureOpenAI]: {
-		host: '', // Must be set by user
-		models: '', // Not used for Azure
-		chat: '', // Not used for Azure
 	},
 	[APIProvider.GoogleGemini]: {
 		host: 'https://generativelanguage.googleapis.com',
 		models: '/v1beta/models',
-		chat: '/v1beta/openai/chat/completions',
 	},
 	[APIProvider.Anthropic]: {
 		host: 'https://api.anthropic.com',
 		models: '/v1/models',
-		chat: '/v1/messages',
 	},
 	[APIProvider.Cohere]: {
 		host: 'https://api.cohere.ai',
 		models: '/compatibility/v1/models',
-		chat: '/compatibility/v1/chat/completions',
 	},
 	[APIProvider.OpenRouter]: {
 		host: 'https://openrouter.ai',
 		models: '/api/v1/models',
-		chat: '/api/v1/chat/completions',
 	},
 	[APIProvider.PerplexityAI]: {
 		host: 'https://api.perplexity.ai',
 		models: '/models',
-		chat: '/chat/completions',
 	},
 	[APIProvider.Ollama]: {
 		host: 'http://localhost:11434',
 		models: '/v1/models',
-		chat: '/v1/chat/completions',
 	},
 	[APIProvider.LMStudio]: {
 		host: 'http://localhost:1234',
 		models: '/v1/models',
-		chat: '/v1/chat/completions',
 	},
 	[APIProvider.DeepSeek]: {
 		host: 'https://api.deepseek.com',
 		models: '/v1/models',
-		chat: '/v1/chat/completions',
 	},
 	[APIProvider.Mistral]: {
 		host: 'https://api.mistral.ai',
 		models: '/v1/models',
-		chat: '/v1/chat/completions',
 	},
 	[APIProvider.XAI]: {
 		host: 'https://api.x.ai',
 		models: '/v1/models',
-		chat: '/v1/chat/completions',
 	},
 	[APIProvider.GitHub]: {
 		host: 'https://models.inference.ai.azure.com',
 		models: '/models',
-		chat: '/chat/completions',
 	},
 	[APIProvider.Custom]: {
 		host: '',
-		models: '/v1/models',
-		chat: '/v1/chat/completions',
+		models: '/models',
 	},
 };
 

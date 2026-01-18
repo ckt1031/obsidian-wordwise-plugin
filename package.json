@@ -18,7 +18,13 @@
 		"lint-staged": "lint-staged"
 	},
 	"dependencies": {
+		"@ai-sdk/anthropic": "^3.0.15",
+		"@ai-sdk/cohere": "^3.0.8",
+		"@ai-sdk/google": "^3.0.10",
+		"@ai-sdk/mistral": "^3.0.9",
+		"@ai-sdk/openai": "^3.0.12",
 		"@types/mustache": "^4.2.6",
+		"ai": "^6.0.39",
 		"front-matter": "^4.0.2",
 		"fuse.js": "7.1.0",
 		"localforage": "1.10.0",

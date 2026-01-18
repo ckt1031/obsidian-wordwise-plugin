@@ -1,30 +1,28 @@
 import { requestUrl } from 'obsidian';
 
-import type OpenAI from 'openai';
+import { createOpenAI } from '@ai-sdk/openai';
+import { generateText, streamText } from 'ai';
 import { parseAsync } from 'valibot';
 
 import { APIProvider, PROVIDER_DEFAULTS } from '@/config';
 import { OpenAIModelsSchema } from '@/schemas/models';
 import type { Models, ProviderTextAPIProps } from '@/types';
 import { getAPIHost } from '@/utils/get-url-host';
-import { streamText } from '@/utils/stream-text';
 
 export type ModelRequestProps = {
 	host: string;
 	apiKey: string;
 	provider: string;
-	modelsPath?: string;
 };
 
 export async function getOpenAIModels({
 	host,
 	apiKey,
 	provider,
-	modelsPath,
 }: ModelRequestProps): Promise<Models> {
 	const defaultEndpoints = PROVIDER_DEFAULTS[provider as APIProvider];
 
-	const path = modelsPath || defaultEndpoints?.models || '/v1/models';
+	const path = defaultEndpoints?.models || '/models';
 
 	const headers: Record<string, string> = {
 		'Content-Type': 'application/json',
@@ -72,23 +70,21 @@ export async function handleTextOpenAI({
 	const { apiKey, baseUrl } = providerSettings;
 
 	let headers: Record<string, string> = {
-		'Content-Type': 'application/json',
 		Authorization: `Bearer ${apiKey}`,
 	};
 
-	const host = getAPIHost(
+	let host = getAPIHost(
 		baseUrl,
 		PROVIDER_DEFAULTS[plugin.settings.aiProvider as APIProvider]?.host || '',
 	);
 
-	const defaultEndpoints = PROVIDER_DEFAULTS[provider as APIProvider];
+	const isCustom = providerSettings.isCustom;
 
-	const path =
-		(plugin.settings.advancedSettings
-			? providerSettings.chatPath
-			: undefined) ||
-		defaultEndpoints?.chat ||
-		'/v1/chat/completions';
+	if (isCustom) {
+		host = `${host}${providerSettings.chatPath || '/v1'}`;
+	} else {
+		host = `${host}${provider === APIProvider.OpenRouter ? '/api/v1' : '/v1'}`;
+	}
 
 	if (provider === APIProvider.OpenRouter) {
 		const OpenRouterHeaders = {
@@ -102,24 +98,17 @@ export async function handleTextOpenAI({
 		};
 	}
 
-	const body: OpenAI.ChatCompletionCreateParamsNonStreaming = {
-		model,
-		temperature: providerSettings.temperature || 0.6,
-		messages: [
-			// We will add system message here later if needed
-			{
-				role: 'user',
-				content: messages.user.trim(),
-			},
-		],
-		// Advanced settings here:
-		...(plugin.settings.advancedSettings && {
-			...(providerSettings.maxTokens &&
-				providerSettings.maxTokens > 0 && {
-					max_tokens: providerSettings.maxTokens,
-				}),
-		}),
-	};
+	const openai = createOpenAI({
+		apiKey,
+		baseURL: host,
+		headers,
+	});
+
+	const bodyMessages: (
+		| { role: 'system'; content: string }
+		| { role: 'user'; content: string }
+		| { role: 'assistant'; content: string }
+	)[] = [];
 
 	if (messages.system.length > 0) {
 		if (
@@ -127,55 +116,58 @@ export async function handleTextOpenAI({
 			plugin.settings.advancedSettings
 		) {
 			// Add system message to user message
-			body.messages[0].content = `${messages.system.trim()}\n\n${body.messages[0].content}`;
+			bodyMessages.push({
+				role: 'user',
+				content: `${messages.system.trim()}\n\n${messages.user.trim()}`,
+			});
 		} else {
-			// Add system message to the beginning
-			body.messages.unshift({
+			bodyMessages.push({
 				role: 'system',
 				content: messages.system.trim(),
 			});
+			bodyMessages.push({
+				role: 'user',
+				content: messages.user.trim(),
+			});
 		}
+	} else {
+		bodyMessages.push({
+			role: 'user',
+			content: messages.user.trim(),
+		});
 	}
 
-	const url = `${host}${path}`;
-
 	try {
-		const response = await fetch(url, {
-			headers,
-			method: 'POST',
-			body: JSON.stringify({ ...body, stream: props.stream }),
-			// Allowing interruptible request
-			signal: isTesting
+		const commonProps = {
+			model: openai.chat(model),
+			messages: bodyMessages,
+			temperature: providerSettings.temperature || 0.6,
+			abortSignal: isTesting
 				? undefined
 				: plugin.generationRequestAbortController?.signal,
-		});
-
-		if (!response.body) {
-			throw new Error('Response body is not readable.');
-		}
-
-		if (!response.ok || response.status !== 200) {
-			throw new Error(await response.text());
-		}
+			...(plugin.settings.advancedSettings && {
+				maxTokens:
+					providerSettings.maxTokens && providerSettings.maxTokens > 0
+						? providerSettings.maxTokens
+						: undefined,
+			}),
+		};
 
 		if (props.stream) {
-			const { textStream } = await streamText(response.body);
+			const { textStream } = streamText(commonProps);
 
-			const text: string[] = [];
-
+			let fullText = '';
 			for await (const textPart of textStream) {
-				text.push(textPart);
+				fullText += textPart;
 				props.onStreamText?.(textPart);
 			}
 
 			props.onStreamComplete?.();
-
-			return text.join('');
+			return fullText;
 		}
 
-		const resData: OpenAI.ChatCompletion = await response.json();
-
-		return resData.choices[0].message.content;
+		const { text } = await generateText(commonProps);
+		return text;
 	} catch (error) {
 		throw new Error('Request failed', {
 			cause:

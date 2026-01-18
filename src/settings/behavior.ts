@@ -30,9 +30,7 @@ export const renderBehaviorSettings = (settingsTab: SettingsTab) => {
 	// Streaming
 	new Setting(containerEl)
 		.setName('Streaming')
-		.setDesc(
-			'Enable streaming mode to receive text as it is generated. This is not supported with Azure OpenAI.',
-		)
+		.setDesc('Enable streaming mode to receive text as it is generated.')
 		.addToggle((toggle) =>
 			toggle.setValue(settings.enableStreaming).onChange(async (value) => {
 				settings.enableStreaming = value;

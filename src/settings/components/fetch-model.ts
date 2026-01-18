@@ -31,25 +31,22 @@ export const renderModelSetting = async ({
 	const providerConfig = settings.aiProviderConfig[provider];
 	const { setModels } = forage;
 
-	const isManualInput =
-		providerConfig.manualModelInput || provider === APIProvider.AzureOpenAI;
+	const isManualInput = providerConfig.manualModelInput;
 
 	const setting = new Setting(containerEl).setName('Model');
 
-	// 1. Add Toggle Manual/Dropdown Button (if not Azure)
-	if (provider !== APIProvider.AzureOpenAI) {
-		setting.addExtraButton((cb) => {
-			cb.setIcon(isManualInput ? 'list' : 'pencil')
-				.setTooltip(
-					isManualInput ? 'Switch to dropdown' : 'Switch to manual input',
-				)
-				.onClick(async () => {
-					providerConfig.manualModelInput = !isManualInput;
-					await plugin.saveSettings();
-					onReload();
-				});
-		});
-	}
+	// 1. Add Toggle Manual/Dropdown Button
+	setting.addExtraButton((cb) => {
+		cb.setIcon(isManualInput ? 'list' : 'pencil')
+			.setTooltip(
+				isManualInput ? 'Switch to dropdown' : 'Switch to manual input',
+			)
+			.onClick(async () => {
+				providerConfig.manualModelInput = !isManualInput;
+				await plugin.saveSettings();
+				onReload();
+			});
+	});
 
 	// 2. Add Fetch Models Button (only if dropdown mode)
 	if (!isManualInput) {
@@ -63,7 +60,7 @@ export const renderModelSetting = async ({
 
 						let models: Models = [];
 
-						const { baseUrl, apiKey, modelsPath } = providerConfig;
+						const { baseUrl, apiKey, chatPath } = providerConfig;
 						const host = getAPIHost(
 							baseUrl,
 							PROVIDER_DEFAULTS[provider as APIProvider]?.host || '',
@@ -71,29 +68,48 @@ export const renderModelSetting = async ({
 
 						switch (provider) {
 							case APIProvider.Cohere:
-								models = await getCohereModels({ host, apiKey, provider });
+								models = await getCohereModels({
+									host,
+									apiKey,
+									provider,
+								});
 								break;
 							case APIProvider.GoogleGemini:
-								models = await getGoogleGenAIModels({ host, apiKey, provider });
+								models = await getGoogleGenAIModels({
+									host,
+									apiKey,
+									provider,
+								});
 								break;
 							case APIProvider.Anthropic:
-								models = await getAnthropicModels({ host, apiKey, provider });
+								models = await getAnthropicModels({
+									host,
+									apiKey,
+									provider,
+								});
 								break;
 							case APIProvider.GitHub:
 								models = await getGitHubModels({ host, apiKey, provider });
 								break;
 							case APIProvider.Mistral:
-								models = await getMistralModels({ host, apiKey, provider });
-								break;
-							default:
-								models = await getOpenAIModels({
+								models = await getMistralModels({
 									host,
 									apiKey,
 									provider,
-									modelsPath: settings.advancedSettings
-										? modelsPath
-										: undefined,
 								});
+								break;
+							default: {
+								let finalHost = host;
+								if (providerConfig.isCustom) {
+									finalHost = `${host}${chatPath || '/v1'}`;
+								}
+
+								models = await getOpenAIModels({
+									host: finalHost,
+									apiKey,
+									provider,
+								});
+							}
 						}
 
 						await setModels(provider, models);

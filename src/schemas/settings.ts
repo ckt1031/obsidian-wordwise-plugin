@@ -18,9 +18,6 @@ export const PluginSettingsSchema = v.object({
 			apiKey: v.string(),
 			baseUrl: v.string(),
 
-			// New after Azure OpenAI, but not all providers have it
-			apiVersion: v.optional(v.string()),
-
 			// New in v1.1.0
 			isCustom: v.optional(v.boolean()),
 			displayName: v.optional(v.string()),

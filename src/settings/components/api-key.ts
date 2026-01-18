@@ -1,6 +1,5 @@
 import { Notice, Setting } from 'obsidian';
 
-import { APIProvider } from '@/config';
 import type WordWisePlugin from '@/main';
 import ErrorDialogModal from '@/modals/error-dialog';
 import { callTextAPI } from '@/utils/call-api';
@@ -28,13 +27,6 @@ export const renderApiKeySetting = ({
 				const modelToCall = providerConfig.model;
 
 				const hasNoModelConfigurated = !modelToCall || modelToCall.length === 0;
-
-				if (provider === APIProvider.AzureOpenAI && hasNoModelConfigurated) {
-					new Notice(
-						'You must configure the model ID from Azure OpenAI in the settings',
-					);
-					return;
-				}
 
 				if (hasNoModelConfigurated) {
 					new Notice(

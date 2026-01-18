@@ -5,7 +5,6 @@ import { nanoid } from 'nanoid';
 import slugify from 'slugify';
 
 import {
-	APIProvider,
 	CustomBehavior,
 	InternalPromptNames,
 	PrePromptActions,
@@ -189,9 +188,7 @@ export async function runPrompt(
 	};
 
 	const enableStreaming =
-		plugin.settings.enableStreaming &&
-		promptName !== 'Find Synonym' &&
-		providerSettingEntry[0] !== APIProvider.AzureOpenAI;
+		plugin.settings.enableStreaming && promptName !== 'Find Synonym';
 
 	const confirmModalWillShow =
 		enableStreaming || plugin.settings.enableConfirmationModal;

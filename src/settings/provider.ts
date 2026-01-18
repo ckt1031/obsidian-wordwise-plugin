@@ -117,8 +117,6 @@ export const renderProviderSettings = (settingsTab: SettingsTab) => {
 
 		if (
 			settings.advancedSettings ||
-			provider === APIProvider.AzureOpenAI ||
-			// provider === APIProvider.Custom
 			settings.aiProviderConfig[provider].isCustom
 		) {
 			new Setting(containerEl)
@@ -138,20 +136,6 @@ export const renderProviderSettings = (settingsTab: SettingsTab) => {
 				);
 		}
 
-		if (provider === APIProvider.AzureOpenAI) {
-			// API Version
-			new Setting(containerEl).setName('API Version').addText((text) =>
-				text
-					.setPlaceholder('2023-05-15')
-					.setValue(settings.aiProviderConfig[provider].apiVersion || '')
-					.onChange(async (value) => {
-						// Update the API Version
-						settings.aiProviderConfig[provider].apiVersion = value;
-						await plugin.saveSettings();
-					}),
-			);
-		}
-
 		renderModelSetting({
 			containerEl,
 			plugin,
@@ -159,5 +143,25 @@ export const renderProviderSettings = (settingsTab: SettingsTab) => {
 			forage,
 			onReload: () => settingsTab.display(),
 		});
+
+		// Only when custom provider is selected
+		if (settings.aiProviderConfig[settings.aiProvider].isCustom) {
+			new Setting(containerEl).setName('Custom Endpoints').setHeading();
+
+			new Setting(containerEl)
+				.setName('API Path')
+				.setDesc(
+					'The path suffix for the API (e.g., /v1). Leave empty to use the default.',
+				)
+				.addText((text) =>
+					text
+						.setPlaceholder('/v1')
+						.setValue(settings.aiProviderConfig[provider].chatPath || '')
+						.onChange(async (value) => {
+							settings.aiProviderConfig[provider].chatPath = value;
+							await plugin.saveSettings();
+						}),
+				);
+		}
 	}
 };
