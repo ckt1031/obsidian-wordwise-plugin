@@ -27,8 +27,15 @@ export async function callTextAPI(
 		[APIProvider.Ollama]: handleTextOllama,
 	};
 
+	const isKnownProvider = Object.values(APIProvider).includes(
+		props.provider as APIProvider,
+	);
+	if (!isKnownProvider && !props.providerSettings.isCustom) {
+		throw new Error(`Unsupported provider: ${props.provider}`);
+	}
+
 	const handler =
-		providerMap[props.provider as APIProvider] || handleTextOpenAI;
+		providerMap[props.provider as APIProvider] ?? handleTextOpenAI;
 
 	return handler(props);
 }

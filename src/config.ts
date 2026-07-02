@@ -9,9 +9,6 @@ export enum CustomBehavior {
 export enum APIProvider {
 	/** https://openai.com */
 	OpenAI = 'OpenAI',
-	// TODO: Add Azure OpenAI support with @ai-sdk/azure
-	/** https://azure.microsoft.com/en-us/products/ai-services/openai-service */
-	// AzureOpenAI = 'Azure OpenAI',
 	/** https://deepmind.google/technologies/gemini */
 	GoogleGemini = 'Google Gemini',
 	/** https://www.anthropic.com */

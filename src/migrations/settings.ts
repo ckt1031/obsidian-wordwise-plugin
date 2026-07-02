@@ -14,8 +14,10 @@ export function migrateLegacySettings(settings: PluginSettings): boolean {
 
 		// 1.3.x stored advanced manual model overrides in customModelId.
 		// 1.4.0+ uses the normal model field with manualModelInput enabled.
-		if (customModelId && providerSettings.model !== customModelId) {
-			providerSettings.model = customModelId;
+		if (customModelId) {
+			if (providerSettings.model !== customModelId) {
+				providerSettings.model = customModelId;
+			}
 			providerSettings.manualModelInput = true;
 			changed = true;
 		}

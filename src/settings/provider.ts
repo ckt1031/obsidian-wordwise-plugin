@@ -7,15 +7,25 @@ import type { SettingsTab } from '.';
 import { renderApiKeySetting } from './components/api-key';
 import { renderModelSetting } from './components/fetch-model';
 
+const isSupportedProvider = (provider: string) =>
+	Object.values(APIProvider).includes(provider as APIProvider);
+
 export const renderProviderSettings = (settingsTab: SettingsTab) => {
 	const { containerEl, plugin, forage } = settingsTab;
 	const { settings } = plugin;
+	const visibleProviders = Object.entries(settings.aiProviderConfig).filter(
+		([providerName, data]) =>
+			isSupportedProvider(providerName) || data.isCustom,
+	);
+	const selectedProvider = visibleProviders.some(
+		([providerName]) => providerName === settings.aiProvider,
+	)
+		? settings.aiProvider
+		: APIProvider.OpenAI;
 
 	new Setting(containerEl).setName('Provider').addDropdown((dropDown) => {
-		// Add all the API Providers, use value as option value
-		for (const [providerName, data] of Object.entries(
-			settings.aiProviderConfig,
-		)) {
+		// Hide unsupported legacy native providers, but keep user-created custom providers visible.
+		for (const [providerName, data] of visibleProviders) {
 			const display =
 				data.isCustom && data.displayName && data.displayName.length > 0
 					? `Custom: ${data.displayName}`
@@ -23,7 +33,7 @@ export const renderProviderSettings = (settingsTab: SettingsTab) => {
 			dropDown.addOption(providerName, display);
 		}
 
-		dropDown.setValue(settings.aiProvider);
+		dropDown.setValue(selectedProvider);
 		dropDown.onChange(async (value) => {
 			settings.aiProvider = value as APIProvider;
 			await plugin.saveSettings();
@@ -31,8 +41,8 @@ export const renderProviderSettings = (settingsTab: SettingsTab) => {
 		});
 	});
 
-	for (const provider of Object.keys(settings.aiProviderConfig)) {
-		if (settings.aiProvider !== provider) {
+	for (const [provider] of visibleProviders) {
+		if (selectedProvider !== provider) {
 			continue;
 		}
 
@@ -145,7 +155,7 @@ export const renderProviderSettings = (settingsTab: SettingsTab) => {
 		});
 
 		// Only when custom provider is selected
-		if (settings.aiProviderConfig[settings.aiProvider].isCustom) {
+		if (settings.aiProviderConfig[selectedProvider].isCustom) {
 			new Setting(containerEl).setName('Custom Endpoints').setHeading();
 
 			new Setting(containerEl)
