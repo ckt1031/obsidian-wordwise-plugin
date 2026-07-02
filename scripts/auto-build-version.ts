@@ -2,8 +2,8 @@
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 
-import manifest from '../manifest.json';
-import versions from '../versions.json';
+import manifest from '../manifest.json' with { type: 'json' };
+import versions from '../versions.json' with { type: 'json' };
 
 // Check current version in git
 const currentVersion = execSync('git describe --tags').toString().trim();
