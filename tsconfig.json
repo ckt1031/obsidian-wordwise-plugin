@@ -10,7 +10,7 @@
 		"lib": ["ESNext", "DOM", "dom.iterable", "DOM.AsyncIterable"],
 		"module": "ESNext",
 		"target": "ES2018",
-		"moduleResolution": "Node",
+		"moduleResolution": "Bundler",
 		"noEmit": true,
 		"noImplicitAny": true,
 		"noUnusedLocals": true,

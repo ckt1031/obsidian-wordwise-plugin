@@ -1,48 +1,47 @@
 name: BuildCI
 
 on:
-  push:
-    branches: ["**"]
-  pull_request:
-    branches: [main]
+    push:
+        branches: ["**"]
+    pull_request:
+        branches: [main]
 
 permissions:
-  contents: read
+    contents: read
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  fetch-tags: true
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version: latest
+            - uses: pnpm/action-setup@v6
 
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: latest
+                  cache: "pnpm"
 
-      - run: bun install
+            - run: pnpm install
 
-      - run: bun run lint
+            - run: pnpm run lint
 
-      - run: bun run test
+            - run: pnpm run test
 
-      - run: bun run build
-        env:
-          SETTINGS_OBFUSCATE_KEY: ${{ secrets.SETTINGS_OBFUSCATE_KEY }}
+            - run: pnpm run build
+              env:
+                  SETTINGS_OBFUSCATE_KEY: ${{ secrets.SETTINGS_OBFUSCATE_KEY }}
 
-      - run: bun run scripts/auto-build-version.ts
+            - run: node run scripts/auto-build-version.ts
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: plugin
-          path: |
-            dist/main.js
-            manifest.json
-            dist/styles.css
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: plugin
+                  path: |
+                      dist/main.js
+                      manifest.json
+                      dist/styles.css

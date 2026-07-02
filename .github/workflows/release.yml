@@ -1,77 +1,76 @@
 name: Release A New Version
 
 on:
-  push:
-    tags:
-      - "*"
+    push:
+        tags:
+            - "*"
 
 permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+    contents: write
+    issues: write
+    pull-requests: write
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+        steps:
+            - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version: latest
+            - uses: pnpm/action-setup@v6
 
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: latest
+                  cache: "pnpm"
 
-      - run: bun install
+            - run: pnpm install
 
-      - run: bun run lint
+            - run: pnpm run lint
 
-      - run: bun run test
+            - run: pnpm run test
 
-      - run: bun run build
-        env:
-          SETTINGS_OBFUSCATE_KEY: ${{ secrets.SETTINGS_OBFUSCATE_KEY }}
+            - run: pnpm run build
+              env:
+                  SETTINGS_OBFUSCATE_KEY: ${{ secrets.SETTINGS_OBFUSCATE_KEY }}
 
-      # Get the version number and put it in a variable
-      - name: Get version info
-        id: version
-        run: |
-          echo "name=$(git describe --abbrev=0 --tags)" >> $GITHUB_OUTPUT
+            # Get the version number and put it in a variable
+            - name: Get version info
+              id: version
+              run: |
+                  echo "name=$(git describe --abbrev=0 --tags)" >> $GITHUB_OUTPUT
 
-      - name: Prepare manifest file
-        run: |
-          if [[ "${{ contains(steps.version.outputs.name, '-beta') }}" == 'true' ]]; then
-              cp manifest-beta.json manifest.json
-          else
-              echo "Pass"
-          fi
-        shell: bash
+            - name: Prepare manifest file
+              run: |
+                  if [[ "${{ contains(steps.version.outputs.name, '-beta') }}" == 'true' ]]; then
+                      cp manifest-beta.json manifest.json
+                  else
+                      echo "Pass"
+                  fi
+              shell: bash
 
-      - name: Check tag matches manifest version
-        run: |
-          TAG_VERSION="${{ steps.version.outputs.name }}"
-          if [[ "$TAG_VERSION" == *-beta* ]]; then
-            MANIFEST_FILE="manifest-beta.json"
-          else
-            MANIFEST_FILE="manifest.json"
-          fi
-          MANIFEST_VERSION=$(jq -r .version "$MANIFEST_FILE")
-          if [[ "$TAG_VERSION" != "$MANIFEST_VERSION" ]]; then
-            echo "Tag version ($TAG_VERSION) does not match $MANIFEST_FILE version ($MANIFEST_VERSION)." >&2
-            exit 1
-          fi
-        shell: bash
+            - name: Check tag matches manifest version
+              run: |
+                  TAG_VERSION="${{ steps.version.outputs.name }}"
+                  if [[ "$TAG_VERSION" == *-beta* ]]; then
+                    MANIFEST_FILE="manifest-beta.json"
+                  else
+                    MANIFEST_FILE="manifest.json"
+                  fi
+                  MANIFEST_VERSION=$(jq -r .version "$MANIFEST_FILE")
+                  if [[ "$TAG_VERSION" != "$MANIFEST_VERSION" ]]; then
+                    echo "Tag version ($TAG_VERSION) does not match $MANIFEST_FILE version ($MANIFEST_VERSION)." >&2
+                    exit 1
+                  fi
+              shell: bash
 
-      - name: Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            dist/main.js
-            manifest.json
-            dist/styles.css
-          draft: false
-          prerelease: ${{ contains(steps.version.outputs.name, '-beta') }}
+            - name: Release
+              if: startsWith(github.ref, 'refs/tags/')
+              uses: softprops/action-gh-release@v2
+              with:
+                  files: |
+                      dist/main.js
+                      manifest.json
+                      dist/styles.css
+                  draft: false
+                  prerelease: ${{ contains(steps.version.outputs.name, '-beta') }}

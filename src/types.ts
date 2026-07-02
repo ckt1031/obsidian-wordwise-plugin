@@ -1,6 +1,6 @@
 import type { Editor, Menu } from 'obsidian';
 
-import type CodeMirror from 'codemirror';
+import type { EditorView } from 'codemirror';
 import type * as v from 'valibot';
 
 import type { APIProvider, PrePromptActions } from './config';
@@ -81,7 +81,7 @@ export type EnhancedMenu = Menu & { dom: HTMLElement };
 export type EnhancedEditor = Editor & {
 	cursorCoords: (where: boolean, mode: string) => Coords;
 	coordsAtPos: (where: number) => Coords;
-	cm: CodeMirror.Editor & { coordsAtPos: (where: number) => Coords };
+	cm: EditorView & { coordsAtPos: (where: number) => Coords };
 	hasFocus: () => boolean;
 	getSelection: () => string;
 };
