@@ -16,6 +16,8 @@ import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
 
 import { DEFAULT_SETTINGS } from './config';
+import { upgradeLocalForageInstance } from './migrations/localforage';
+import { migrateLegacySettings } from './migrations/settings';
 import { retrieveAllPrompts } from './prompt';
 import { ObfuscatedPluginSettingsSchema } from './schemas';
 import { SettingsTab } from './settings';
@@ -146,6 +148,9 @@ export default class WordWisePlugin extends Plugin {
 	async initializePlugin(): Promise<void> {
 		// Load settings to memory, ensuring the plugin is ready to go
 		await this.loadSettings();
+
+		// Run storage migrations before localforage binds to the current database.
+		await upgradeLocalForageInstance(this);
 
 		// Initialize localForage
 		localforage.config({
@@ -286,6 +291,11 @@ export default class WordWisePlugin extends Plugin {
 		this.settings.aiProviderConfig = merge(DEFAULT_SETTINGS.aiProviderConfig)(
 			this.settings.aiProviderConfig,
 		);
+
+		// Persist one-time legacy setting migrations after the default merge.
+		if (migrateLegacySettings(this.settings)) {
+			await this.saveSettings();
+		}
 	}
 
 	async saveSettings() {
