@@ -11,12 +11,19 @@ const isSupportedProvider = (provider: string) =>
 	Object.values(APIProvider).includes(provider as APIProvider);
 
 export const renderProviderSettings = (settingsTab: SettingsTab) => {
-	const { containerEl, plugin, forage } = settingsTab;
-	const { settings } = plugin;
+	const {
+		containerEl,
+		plugin,
+		plugin: { settings },
+		forage,
+	} = settingsTab;
+
+	// For natively deprecated providers, only show them if they are the selected provider or if they are a custom provider.
 	const visibleProviders = Object.entries(settings.aiProviderConfig).filter(
 		([providerName, data]) =>
 			isSupportedProvider(providerName) || data.isCustom,
 	);
+	// Fall back to OpenAI if the selected provider is not in the visible providers list.
 	const selectedProvider = visibleProviders.some(
 		([providerName]) => providerName === settings.aiProvider,
 	)
