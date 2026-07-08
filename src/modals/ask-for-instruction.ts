@@ -7,8 +7,8 @@ export default class AskForInstructionModal extends Modal {
 	private instruction: string;
 
 	// Promise Properties
-	private resolve: (value: string | PromiseLike<string>) => void;
-	private reject: (reason?: unknown) => void;
+	private resolve!: (value: string | PromiseLike<string>) => void;
+	private reject!: (reason?: unknown) => void;
 	promise: Promise<string>;
 
 	constructor(plugin: WordWisePlugin) {
