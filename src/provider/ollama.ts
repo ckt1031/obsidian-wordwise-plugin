@@ -34,7 +34,7 @@ export async function getOllamaModels({
 
 	return models.models.map((model) => ({
 		id: model.name,
-		name: `${model.name} (${model.details.parameter_size})`,
+		name: model.name,
 	}));
 }
 
