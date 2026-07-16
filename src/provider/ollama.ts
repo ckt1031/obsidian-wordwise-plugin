@@ -32,10 +32,12 @@ export async function getOllamaModels({
 
 	const models = await parseAsync(OllamaModelsSchema, response.json);
 
-	return models.models.map((model) => ({
-		id: model.name,
-		name: model.name,
-	}));
+	return models.models
+		.filter((model) => model.capabilities.includes('completion'))
+		.map((model) => ({
+			id: model.name,
+			name: model.name,
+		}));
 }
 
 export class OllamaProvider extends BaseProvider {

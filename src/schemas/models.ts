@@ -70,6 +70,7 @@ export const OllamaModelsSchema = v.object({
 				parameter_size: v.string(),
 				quantization_level: v.string(),
 			}),
+			capabilities: v.array(v.string()),
 		}),
 	),
 });
