@@ -22,6 +22,7 @@
 		"@ai-sdk/google": "^4.0.12",
 		"@ai-sdk/mistral": "^4.0.8",
 		"@ai-sdk/openai": "^4.0.11",
+		"@ai-sdk/provider": "^4.0.3",
 		"@openrouter/ai-sdk-provider": "^3.0.0",
 		"@types/mustache": "^4.2.6",
 		"ai": "^7.0.22",

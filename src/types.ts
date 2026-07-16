@@ -1,5 +1,6 @@
 import type { Editor, Menu } from 'obsidian';
 
+import type { LanguageModelV4CallOptions } from '@ai-sdk/provider';
 import type { EditorView } from 'codemirror';
 import type * as v from 'valibot';
 
@@ -48,6 +49,9 @@ export interface CallTextAPIProps {
 	stream: boolean;
 	onStreamText?: (text: string) => void;
 	onStreamComplete?: () => void;
+
+	// Reasoning
+	reasoning?: LanguageModelV4CallOptions['reasoning'];
 }
 
 export interface ProviderTextAPIProps extends CallTextAPIProps {

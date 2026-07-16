@@ -20,6 +20,9 @@ importers:
       '@ai-sdk/openai':
         specifier: ^4.0.11
         version: 4.0.11(zod@4.4.3)
+      '@ai-sdk/provider':
+        specifier: ^4.0.3
+        version: 4.0.3
       '@openrouter/ai-sdk-provider':
         specifier: ^3.0.0
         version: 3.0.0(ai@7.0.22(zod@4.4.3))(zod@4.4.3)

@@ -47,6 +47,7 @@ export const renderApiKeySetting = ({
 						messages: { system: '', user: 'Say word hello only.' },
 						isTesting: true,
 						stream: false,
+						reasoning: 'none',
 					});
 
 					if (!result || result.length === 0) {

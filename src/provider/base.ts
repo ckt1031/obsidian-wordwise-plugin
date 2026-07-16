@@ -76,6 +76,7 @@ export abstract class BaseProvider {
 							: undefined,
 				}),
 				allowSystemInMessages: true,
+				...(props.reasoning !== undefined && { reasoning: 'none' }),
 			};
 
 			if (stream) {
