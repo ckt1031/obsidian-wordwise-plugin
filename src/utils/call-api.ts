@@ -1,6 +1,5 @@
 import { APIProvider } from '@/config';
 import { handleTextAnthropic } from '@/provider/anthropic';
-import { handleTextCohere } from '@/provider/cohere';
 import { handleTextGitHub } from '@/provider/github';
 import { handleTextGoogle } from '@/provider/google-ai';
 import { handleTextMistral } from '@/provider/mistral';
@@ -21,7 +20,6 @@ export async function callTextAPI(
 		[APIProvider.GoogleGemini]: handleTextGoogle,
 		[APIProvider.Anthropic]: handleTextAnthropic,
 		[APIProvider.Mistral]: handleTextMistral,
-		[APIProvider.Cohere]: handleTextCohere,
 		[APIProvider.GitHub]: handleTextGitHub,
 		[APIProvider.OpenRouter]: handleTextOpenRouter,
 		[APIProvider.Ollama]: handleTextOllama,

@@ -3,7 +3,6 @@ import { Notice, Setting } from 'obsidian';
 import { APIProvider, PROVIDER_DEFAULTS } from '@/config';
 import type WordWisePlugin from '@/main';
 import { getAnthropicModels } from '@/provider/anthropic';
-import { getCohereModels } from '@/provider/cohere';
 import { getGitHubModels } from '@/provider/github';
 import { getGoogleGenAIModels } from '@/provider/google-ai';
 import { getMistralModels } from '@/provider/mistral';
@@ -68,13 +67,6 @@ export const renderModelSetting = async ({
 						);
 
 						switch (provider) {
-							case APIProvider.Cohere:
-								models = await getCohereModels({
-									host,
-									apiKey,
-									provider,
-								});
-								break;
 							case APIProvider.GoogleGemini:
 								models = await getGoogleGenAIModels({
 									host,

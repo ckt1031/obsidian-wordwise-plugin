@@ -2,7 +2,7 @@
 
 This plugin brings AI features to Obsidian, designed to improve your writing. You can experiment with the built-in prompts or create your own to fit your specific needs. It’s built to be easy to use and focuses on boosting both your writing skills and productivity.
 
-It supports various AI models, including OpenAI, Google’s Gemini, Cohere, DeepSeek, Anthropic, and OpenRouter.
+It supports various AI models, including OpenAI, Google’s Gemini, DeepSeek, Anthropic, and OpenRouter.
 
 For guidance on creating your own file-based prompts, see: [Docs](docs/file-prompts.md).
 

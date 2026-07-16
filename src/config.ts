@@ -13,8 +13,6 @@ export enum APIProvider {
 	GoogleGemini = 'Google Gemini',
 	/** https://www.anthropic.com */
 	Anthropic = 'Anthropic',
-	/** https://cohere.com */
-	Cohere = 'Cohere',
 	/** https://openrouter.ai */
 	OpenRouter = 'OpenRouter',
 	/** https://docs.perplexity.ai */
@@ -74,10 +72,6 @@ export const PROVIDER_DEFAULTS: Record<
 	[APIProvider.Anthropic]: {
 		host: 'https://api.anthropic.com',
 		models: '/v1/models',
-	},
-	[APIProvider.Cohere]: {
-		host: 'https://api.cohere.ai',
-		models: '/compatibility/v1/models',
 	},
 	[APIProvider.OpenRouter]: {
 		host: 'https://openrouter.ai',
