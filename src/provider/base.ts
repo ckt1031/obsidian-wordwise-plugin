@@ -62,7 +62,7 @@ export abstract class BaseProvider {
 		try {
 			const model = this.createModel(modelId, providerSettings, provider);
 
-			const commonProps = {
+			const commonProps: Parameters<typeof streamText>[0] = {
 				model,
 				messages: bodyMessages,
 				temperature: providerSettings.temperature || 0.6,
@@ -75,6 +75,7 @@ export abstract class BaseProvider {
 							? providerSettings.maxTokens
 							: undefined,
 				}),
+				allowSystemInMessages: true,
 			};
 
 			if (stream) {
