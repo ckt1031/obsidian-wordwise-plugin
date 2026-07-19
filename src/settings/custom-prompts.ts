@@ -1,8 +1,7 @@
 import { type ButtonComponent, Notice, Setting } from 'obsidian';
 
-import { debounce } from 'rambdax';
-
 import AddCustomPromptModal from '../modals/add-custom-prompt';
+import { debounce } from '../utils/debounce';
 import stringToFragment from '../utils/string-fragment';
 import type { SettingsTab } from '.';
 

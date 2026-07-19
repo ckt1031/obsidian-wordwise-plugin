@@ -10,8 +10,6 @@ import {
 } from 'obsidian';
 
 import localforage from 'localforage';
-import { merge } from 'rambda';
-import { debounce } from 'rambdax';
 import slugify from 'slugify';
 import { safeParseAsync } from 'valibot';
 
@@ -27,6 +25,7 @@ import type {
 	OutputInternalPromptProps,
 	PluginSettings,
 } from './types';
+import { debounce } from './utils/debounce';
 import {
 	addBrainCogIcon,
 	getFirstTextEmoji,
@@ -281,16 +280,17 @@ export default class WordWisePlugin extends Plugin {
 			localData = deobfuscateConfig(localData) ?? DEFAULT_SETTINGS;
 		}
 
-		this.settings = merge(DEFAULT_SETTINGS)(localData);
+		this.settings = { ...DEFAULT_SETTINGS, ...localData };
 
 		/**
 		 * Merge providers when there is new native supported provider
 		 * This merge the EXISTING provider settings INTO the new provider settings
 		 * And save it back to the settings
 		 */
-		this.settings.aiProviderConfig = merge(DEFAULT_SETTINGS.aiProviderConfig)(
-			this.settings.aiProviderConfig,
-		);
+		this.settings.aiProviderConfig = {
+			...DEFAULT_SETTINGS.aiProviderConfig,
+			...this.settings.aiProviderConfig,
+		};
 
 		// Persist one-time legacy setting migrations after the default merge.
 		if (migrateLegacySettings(this.settings)) {

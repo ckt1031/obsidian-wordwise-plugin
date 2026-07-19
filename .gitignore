@@ -19,3 +19,4 @@ data.json
 .idea
 
 dist
+.pnpm-store
