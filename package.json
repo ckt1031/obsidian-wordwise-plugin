@@ -32,7 +32,6 @@
 		"localforage": "1.10.0",
 		"mustache": "^4.2.0",
 		"nanoid": "5.1.6",
-		"openai": "^6.46.0",
 		"slugify": "1.6.6",
 		"valibot": "1.2.0"
 	},
